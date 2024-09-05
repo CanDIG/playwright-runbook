@@ -5,6 +5,7 @@ import path from "path";
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 test.describe("summary page", () => {
+  // test.setTimeout(310000);
   test.beforeEach(async ({ page }) => {
     // Login before each test.
     await page.goto(process.env.CANDIG_URL!);
@@ -47,38 +48,38 @@ test.describe("summary page", () => {
     const treatmentGraph = await page
       .locator('text="Treatment Type Distribution"')
       .locator("..");
-    await expect(treatmentGraph).toHaveScreenshot({ threshold: 0.01 });
+    await expect(treatmentGraph).toHaveScreenshot('treatment.png',{ threshold: 0.01 });
 
     // test primary site distribution
     const primarySiteGraph = await page
       .locator('text="Tumour Primary Site Distribution"')
       .locator("..");
-    await expect(primarySiteGraph).toHaveScreenshot({ threshold: 0.01 });
+    await expect(primarySiteGraph).toHaveScreenshot('primary.png',{ threshold: 0.01 });
 
     // test cohort by node
     const cohortGraph = await page
       .locator('text="Distribution of Cohort by Node"')
       .locator("..");
-    await expect(cohortGraph).toHaveScreenshot({ threshold: 0.01 });
+    await expect(cohortGraph).toHaveScreenshot('cohort.png',{ threshold: 0.01 });
 
     // test complete clinical
     const clinicalGraph = await page
       .locator('text="Complete Clinical"')
       .locator("..");
-    await expect(clinicalGraph).toHaveScreenshot({ threshold: 0.01 });
+    await expect(clinicalGraph).toHaveScreenshot('clinical.png',{ threshold: 0.01 });
 
     // test complete genomic
     const genomicGraph = await page
       .locator('text="Complete Genomic"')
       .locator("..");
-    await expect(genomicGraph).toHaveScreenshot({ threshold: 0.01 });
+    await expect(genomicGraph).toHaveScreenshot('genomic.png',{ threshold: 0.01 });
 
     // test footer
     const footer = page.locator('footer');
-    await expect(footer).toHaveScreenshot({ threshold: 0.01 });
+    await expect(footer).toHaveScreenshot('footer.png',{ threshold: 0.01 });
 
     // test whole page look
-    await expect(page).toHaveScreenshot({
+    await expect(page).toHaveScreenshot('full-page.png',{
       threshold: 0.01,
       fullPage: true,
     });
