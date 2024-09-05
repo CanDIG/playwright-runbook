@@ -5,6 +5,10 @@
 npm install
 ```
 
+# Set .env
+
+Rename `.env.sample` to `.env` and modify the values
+
 # Running the Test
 
 ```bash
