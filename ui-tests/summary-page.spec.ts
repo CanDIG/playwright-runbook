@@ -42,7 +42,9 @@ test.describe("summary page", () => {
     const diagnosisGraph = await page
       .locator('text="Age at First Diagnosis"')
       .locator("..");
-    await expect(diagnosisGraph).toHaveScreenshot({ threshold: 0.01 });
+    await expect(diagnosisGraph).toHaveScreenshot("age.png", {
+      threshold: 0.01,
+    });
 
     // test treatment type distribution
     const treatmentGraph = await page
