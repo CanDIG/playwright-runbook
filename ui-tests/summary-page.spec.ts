@@ -49,6 +49,14 @@ test.describe("summary page", () => {
     await expect(textValue).toHaveText("4");
   });
 
+  test("full page graph", async () => {
+    await expect(page).toHaveScreenshot("full-page.png", {
+      threshold: 0.01,
+      fullPage: true,
+    });
+  });
+
+  /* test Age at First Diagnosis start */
   test("age at first diagnosis graph", async () => {
     const diagnosisGraph = await page
       .locator('text="Age at First Diagnosis"')
@@ -57,6 +65,60 @@ test.describe("summary page", () => {
       threshold: 0.01,
     });
   });
+
+  test("total number of patients in range 30-39 is: 12", async () => {
+    const selectedBar = await page
+      .locator('text="Age at First Diagnosis"')
+      .locator("..")
+      .locator(".highcharts-series > path")
+      .first();
+    await selectedBar.hover();
+    const tooltip = await page.locator(".highcharts-tooltip").nth(1);
+    await expect(tooltip).toHaveText(
+      " 30-39 - 12 (14.29%) total number of patients"
+    );
+  });
+
+  test("total number of patients in range 40-49 is: 27", async () => {
+    const selectedBar = await page
+      .locator('text="Age at First Diagnosis"')
+      .locator("..")
+      .locator(".highcharts-series > path")
+      .nth(1);
+    await selectedBar.hover();
+    const tooltip = await page.locator(".highcharts-tooltip").nth(1);
+    await expect(tooltip).toHaveText(
+      " 40-49 - 27 (32.14%) total number of patients"
+    );
+  });
+
+  test("total number of patients in range 50-59 is: 32", async () => {
+    const selectedBar = await page
+      .locator('text="Age at First Diagnosis"')
+      .locator("..")
+      .locator(".highcharts-series > path")
+      .nth(2);
+    await selectedBar.hover();
+    const tooltip = await page.locator(".highcharts-tooltip").nth(1);
+    await expect(tooltip).toHaveText(
+      " 50-59 - 32 (38.10%) total number of patients"
+    );
+  });
+
+  test("total number of patients in range null is: 13", async () => {
+    const selectedBar = await page
+      .locator('text="Age at First Diagnosis"')
+      .locator("..")
+      .locator(".highcharts-series > path")
+      .nth(3);
+    await selectedBar.hover();
+    const tooltip = await page.locator(".highcharts-tooltip").nth(1);
+    await expect(tooltip).toHaveText(
+      " null - 13 (15.48%) total number of patients"
+    );
+    await page.mouse.move(0, 0);
+  });
+  /* test Age at First Diagnosis end */
 
   test("diagnosis graph", async () => {
     const diagnosisGraph = await page
@@ -71,73 +133,75 @@ test.describe("summary page", () => {
     const treatmentGraph = await page
       .locator('text="Treatment Type Distribution"')
       .locator("..");
-    await expect(treatmentGraph).toHaveScreenshot('treatment.png',{ threshold: 0.01 });
+    await expect(treatmentGraph).toHaveScreenshot("treatment.png", {
+      threshold: 0.01,
+    });
   });
 
   test("primary site graph", async () => {
     const primarySiteGraph = await page
       .locator('text="Tumour Primary Site Distribution"')
       .locator("..");
-    await expect(primarySiteGraph).toHaveScreenshot('primary.png',{ threshold: 0.01 });
+    await expect(primarySiteGraph).toHaveScreenshot("primary.png", {
+      threshold: 0.01,
+    });
   });
 
   test("cohort graph", async () => {
     const cohortGraph = await page
       .locator('text="Distribution of Cohort by Node"')
       .locator("..");
-    await expect(cohortGraph).toHaveScreenshot('cohort.png',{ threshold: 0.01 });
+    await expect(cohortGraph).toHaveScreenshot("cohort.png", {
+      threshold: 0.01,
+    });
   });
 
   test("clinical graph", async () => {
     const clinicalGraph = await page
       .locator('text="Complete Clinical"')
       .locator("..");
-    await expect(clinicalGraph).toHaveScreenshot('clinical.png',{ threshold: 0.01 });
+    await expect(clinicalGraph).toHaveScreenshot("clinical.png", {
+      threshold: 0.01,
+    });
   });
 
   test("genomic graph", async () => {
     const genomicGraph = await page
       .locator('text="Complete Genomic"')
       .locator("..");
-    await expect(genomicGraph).toHaveScreenshot('genomic.png',{ threshold: 0.01 });
-  });
-
-  test("footer graph", async () => {
-    const footer = page.locator('footer');
-    await expect(footer).toHaveScreenshot('footer.png',{ threshold: 0.01 });
-  });
-
-  test("full page graph", async () => {
-    await expect(page).toHaveScreenshot('full-page.png',{
+    await expect(genomicGraph).toHaveScreenshot("genomic.png", {
       threshold: 0.01,
-      fullPage: true,
     });
   });
 
-  test("page loading", async ({ page }) => {
-    // const bar1 = await page.locator(".highcharts-series > path").first();
-    // // Hover over the element to trigger the tooltip
-    // await bar1.hover();
-    // // Locate the tooltip element that appears after hovering
-    // const tooltip = await page.locator(".highcharts-tooltip").nth(1);
-    // await expect(tooltip).toHaveText('30-39 - 10 (16.67%) total number of patients');
+  test("footer graph", async () => {
+    const footer = page.locator("footer");
+    await expect(footer).toHaveScreenshot("footer.png", { threshold: 0.01 });
+  });
 
-    
-    // locator('.highcharts-series > path:nth-child(2)').first()
-    // locator('.highcharts-series > path:nth-child(3)').first()
-    // locator('.highcharts-series > path:nth-child(4)').first()
-    // treatment
-    // locator('.highcharts-series > path:nth-child(7)')
-    // cohort
-    // locator('g:nth-child(5) > .highcharts-point').first()
+  test("open CanDIG GitHub link", async () => {
+    const pagePromise = context.waitForEvent("page");
+    await page.getByRole("link", { name: "CanDIG GitHub" }).click();
+    const newPage = await pagePromise;
+    await expect(
+      newPage.getByRole("heading", { name: "CanDIG" })
+    ).toBeVisible();
+    await expect(newPage.getByText("© 2024 GitHub, Inc.")).toBeVisible();
+  });
 
-    // getByText('Have questions or want to')
-    //  await page.getByRole('link', { name: 'CanDIG GitHub' }).click();
-    // await page.getByRole('link', { name: 'CanDIG logo hyperlink' }).click();
-    //  await page.getByRole('button', { name: 'info@distributedgenomics.ca' }).click();
+  test("open CanDIG link", async () => {
+    const pagePromise = context.waitForEvent("page");
+    await page.getByRole("link", { name: "CanDIG", exact: true }).click();
+    const newPage = await pagePromise;
+    await expect(newPage).toHaveTitle("CanDIG");
+    await expect(newPage.getByText("Copyright © CanDIG")).toBeVisible();
+  });
 
-    // logout button
-    // await page.getByRole('banner').getByRole('button').nth(4).click();
-    // await page.getByRole('link', { name: 'Logout' }).click();
+  test("logout", async () => {
+    await page.getByRole("banner").getByRole("button").nth(4).click();
+    await page.getByRole("link", { name: "Logout" }).click();
+    await expect(
+      page.getByRole("heading", { name: "Sign in to your account" })
+    ).toBeVisible();
   });
 });
