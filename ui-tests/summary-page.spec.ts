@@ -8,8 +8,12 @@ test.describe("summary page", () => {
   let context;
   let page;
 
+  /*
+   * ========
+   * Setup
+   * ========
+   */
   test.beforeAll(async ({ browser }) => {
-    // Setup context and login once
     context = await browser.newContext();
     page = await context.newPage();
     await page.goto(process.env.CANDIG_URL!);
@@ -28,11 +32,20 @@ test.describe("summary page", () => {
   });
 
   test.afterAll(async () => {
-    // Cleanup after all tests
     await page.close();
     await context.close();
   });
+  /*
+   * ===============
+   * End of Setup
+   * ===============
+   */
 
+  /*
+   * ======================
+   * Test: Page Overview
+   * ======================
+   */
   test("number of patients is 84", async () => {
     const textValue = await page
       .locator("text=Number of Patients")
@@ -55,9 +68,18 @@ test.describe("summary page", () => {
       fullPage: true,
     });
   });
+  /*
+   * ==============================
+   * End of Test: Page overview
+   * ==============================
+   */
 
-  /* test Age at First Diagnosis start */
-  test("age at first diagnosis graph", async () => {
+  /*
+   * ===============================
+   * Test: Age at First Diagnosis
+   * ===============================
+   */
+  test("diagnosis graph", async () => {
     const diagnosisGraph = await page
       .locator('text="Age at First Diagnosis"')
       .locator("..");
@@ -118,17 +140,17 @@ test.describe("summary page", () => {
     );
     await page.mouse.move(0, 0);
   });
-  /* test Age at First Diagnosis end */
+  /*
+   * ======================================
+   * End of Test: Age at First Diagnosis
+   * ======================================
+   */
 
-  test("diagnosis graph", async () => {
-    const diagnosisGraph = await page
-      .locator('text="Age at First Diagnosis"')
-      .locator("..");
-    await expect(diagnosisGraph).toHaveScreenshot("age.png", {
-      threshold: 0.01,
-    });
-  });
-
+  /*
+   * ==================
+   * Test: Treatment
+   * ==================
+   */
   test("treatment graph", async () => {
     const treatmentGraph = await page
       .locator('text="Treatment Type Distribution"')
@@ -137,7 +159,17 @@ test.describe("summary page", () => {
       threshold: 0.01,
     });
   });
+  /*
+   * =========================
+   * End of Test: Treatment
+   * =========================
+   */
 
+  /*
+   * =====================
+   * Test: Primary Site
+   * =====================
+   */
   test("primary site graph", async () => {
     const primarySiteGraph = await page
       .locator('text="Tumour Primary Site Distribution"')
@@ -146,7 +178,17 @@ test.describe("summary page", () => {
       threshold: 0.01,
     });
   });
+  /*
+   * ============================
+   * End of Test: Primary Site
+   * ============================
+   */
 
+  /*
+   * ===============
+   * Test: Cohort
+   * ===============
+   */
   test("cohort graph", async () => {
     const cohortGraph = await page
       .locator('text="Distribution of Cohort by Node"')
@@ -155,7 +197,17 @@ test.describe("summary page", () => {
       threshold: 0.01,
     });
   });
+  /*
+   * ======================
+   * End of Test: Cohort
+   * ======================
+   */
 
+  /*
+   * =================
+   * Test: Clinical
+   * =================
+   */
   test("clinical graph", async () => {
     const clinicalGraph = await page
       .locator('text="Complete Clinical"')
@@ -164,7 +216,17 @@ test.describe("summary page", () => {
       threshold: 0.01,
     });
   });
+  /*
+   * ========================
+   * End of Test: Clinical
+   * ========================
+   */
 
+  /*
+   * =================
+   * Test: Genomic
+   * =================
+   */
   test("genomic graph", async () => {
     const genomicGraph = await page
       .locator('text="Complete Genomic"')
@@ -173,7 +235,17 @@ test.describe("summary page", () => {
       threshold: 0.01,
     });
   });
+  /*
+   * =======================
+   * End of Test: Genomic
+   * =======================
+   */
 
+  /*
+   * ===============
+   * Test: Footer
+   * ===============
+   */
   test("footer graph", async () => {
     const footer = page.locator("footer");
     await expect(footer).toHaveScreenshot("footer.png", { threshold: 0.01 });
@@ -196,7 +268,17 @@ test.describe("summary page", () => {
     await expect(newPage).toHaveTitle("CanDIG");
     await expect(newPage.getByText("Copyright © CanDIG")).toBeVisible();
   });
+  /*
+   * ======================
+   * End of Test: Footer
+   * ======================
+   */
 
+  /*
+   * ===============
+   * Test: Logout
+   * ===============
+   */
   test("logout", async () => {
     await page.getByRole("banner").getByRole("button").nth(4).click();
     await page.getByRole("link", { name: "Logout" }).click();
@@ -204,4 +286,9 @@ test.describe("summary page", () => {
       page.getByRole("heading", { name: "Sign in to your account" })
     ).toBeVisible();
   });
+  /*
+   * ======================
+   * End of Test: Logout
+   * ======================
+   */
 });
