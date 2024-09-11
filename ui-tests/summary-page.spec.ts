@@ -28,7 +28,7 @@ test.describe("summary page", () => {
     await page.getByRole("button", { name: "Sign In" }).click();
 
     // Make sure we can login
-    await expect(page.getByRole("button", { name: "Summary" })).toBeVisible();
+    await expect(page).toHaveTitle("CanDIG Data Portal");
 
     // Wait for all the 6 graphs to load
     await expect(page.locator(".highcharts-loading-hidden")).toHaveCount(6, {
@@ -514,25 +514,6 @@ test.describe("summary page", () => {
     const footer = page.locator("footer");
     await expect(footer).toHaveScreenshot("footer.png", { threshold: 0.01 });
   });
-
-  test("open CanDIG GitHub link", async () => {
-    const pagePromise = context.waitForEvent("page");
-    await page.getByRole("link", { name: "CanDIG GitHub" }).click();
-    const newPage = await pagePromise;
-    await expect(
-      newPage.getByRole("heading", { name: "CanDIG" })
-    ).toBeVisible();
-    await expect(newPage.getByText("© 2024 GitHub, Inc.")).toBeVisible();
-  });
-
-  test("open CanDIG link", async () => {
-    const pagePromise = context.waitForEvent("page");
-    await page.getByRole("link", { name: "CanDIG", exact: true }).click();
-    const newPage = await pagePromise;
-    await expect(newPage).toHaveTitle("CanDIG");
-    await expect(newPage.getByText("Copyright © CanDIG")).toBeVisible();
-  });
-
   /*
    * ======================
    * End of Test: Footer
@@ -556,6 +537,84 @@ test.describe("summary page", () => {
    * =========================
    * End of Test: Full page
    * =========================
+   */
+
+  /*
+   * ======================
+   * Test: External link
+   * ======================
+   */
+  test("open CanDIG link", async () => {
+    const pagePromise = context.waitForEvent("page");
+    await page.getByRole("link", { name: "CanDIG", exact: true }).click();
+    const newPage = await pagePromise;
+    await expect(newPage).toHaveTitle("CanDIG");
+    await expect(newPage.getByText("Copyright © CanDIG")).toBeVisible();
+  });
+
+  test("open CanDIG GitHub link", async () => {
+    const pagePromise = context.waitForEvent("page");
+    await page.getByRole("link", { name: "CanDIG GitHub" }).click();
+    const newPage = await pagePromise;
+    await expect(
+      newPage.getByRole("heading", { name: "CanDIG" })
+    ).toBeVisible();
+    await expect(newPage.getByText("© 2024 GitHub, Inc.")).toBeVisible();
+  });
+
+  test("open version", async () => {
+    const pagePromise = context.waitForEvent("page");
+    await page.getByRole("link", { name: "CanDIG v4.1.0" }).click();
+    const newPage = await pagePromise;
+    await expect(newPage).toHaveTitle(/v4.1.0/);
+    await expect(newPage.getByText("© 2024 GitHub, Inc.")).toBeVisible();
+  });
+
+  test("open TFRI link", async () => {
+    const pagePromise = context.waitForEvent("page");
+    await page.getByRole("link", { name: "TFRI" }).click();
+    const newPage = await pagePromise;
+    await expect(newPage).toHaveTitle(/Home/);
+    await expect(
+      newPage.getByText("© 2019 THE TERRY FOX RESEARCH")
+    ).toBeVisible();
+  });
+
+  test("open UHN link", async () => {
+    const pagePromise = context.waitForEvent("page");
+    await page.getByRole("link", { name: "UHN DATA" }).click();
+    const newPage = await pagePromise;
+    await expect(newPage).toHaveTitle(/UHN DATA/);
+    await expect(
+      newPage.getByText("Copyright © 2024 The DATA Team")
+    ).toBeVisible();
+  });
+
+  test("open BCGSC link", async () => {
+    const pagePromise = context.waitForEvent("page");
+    await page.getByRole("link", { name: "BCGSC" }).click();
+    const newPage = await pagePromise;
+    await expect(newPage).toHaveTitle(/Genome Sciences Centre/);
+    await expect(newPage.getByText(/Copyright © BC Cancer/)).toBeVisible();
+  });
+  test("open C3G link", async () => {
+    const pagePromise = context.waitForEvent("page");
+    await page.getByRole("link", { name: "C3G" }).click();
+    const newPage = await pagePromise;
+    await expect(newPage).toHaveTitle(
+      "Canadian Centre for Computational Genomics – C3G Website"
+    );
+    await expect(newPage.getByText(/C3G All rights reserved/)).toBeVisible();
+  });
+
+  test("open logo link", async () => {
+    await page.getByRole("link", { name: "CanDIG logo hyperlink" }).click();
+    await expect(page).toHaveTitle("CanDIG Data Portal");
+  });
+  /*
+   * =============================
+   * End of Test: External link
+   * =============================
    */
 
   /*
