@@ -68,11 +68,6 @@ test.describe("summary page", () => {
     // Hover over the selected bar
     await selectedBar.hover();
 
-    // const baseLocator = page.locator(`text="${graphTitle}"`).locator("..");
-    // const tooltip = await (tooltipType === 1
-    //   ? baseLocator.locator("..").locator(".highcharts-tooltip").nth(1)
-    //   : baseLocator.locator(".highcharts-tooltip"));
-
     // Locate the tooltip relative to the graph title
     const tooltip = await page
       .locator(`text="${graphTitle}"`)
