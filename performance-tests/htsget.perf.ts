@@ -4,13 +4,13 @@ import path from "path";
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
-/**************************************
+/*************************************
  * TESTING API CALLS THROUGH HTSGET
  *
  * These tests call some of Htsget's endpoints to
  * measure response times under various load conditions.
  * Note: Access tokens are used for authentication during these calls.
- **************************************/
+ *************************************/
 
 /*
  * =======================
@@ -155,6 +155,7 @@ test("beacon pos", async ({ page, request }) => {
   );
   expect(response.status()).toBe(200);
 });
+
 /*
  * ===========================
  * End: beacon endpoints
