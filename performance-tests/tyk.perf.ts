@@ -1,4 +1,4 @@
-import { test, expect, request } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 import dotenv from "dotenv";
 import path from "path";
 
@@ -12,7 +12,9 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
  * Note: The refresh token is used since these calls are made via the frontend.
  **************************************/
 
-const BASE_URL = 'http://localhost:5080'
+const BASE_URL = 'http://localhost:5080' // local
+// const BASE_URL = 'http://candig-dev.hpc4healthlocal:5080' // dev
+
 /*
  * =======================
  * Begin: Helper functions
@@ -148,10 +150,10 @@ test("summary page katsu v3/authorized/donors/", async ({ page, request }) => {
   expect(response.status()).toBe(200);
 });
 
-test("summary page katsu discovery/programs/", async ({ page, request }) => {
+test("summary page query discovery/programs", async ({ page, request }) => {
   const data = {
     method: "GET",
-    path: "discovery/programs/",
+    path: "discovery/programs",
     payload: {},
     service: "query",
   };
@@ -223,7 +225,7 @@ test("search page htsget /genomics/htsget/v1/genes", async ({ page, request }) =
   expect(response.status()).toBe(200);
 });
 
-test("search discovery query", async ({ page, request }) => {
+test("search page query discovery/query", async ({ page, request }) => {
   const data = {
     method: "GET",
     path: "discovery/query",
@@ -234,7 +236,7 @@ test("search discovery query", async ({ page, request }) => {
   expect(response.status()).toBe(200);
 });
 
-test("search authorized query", async ({ page, request }) => {
+test("search page query query", async ({ page, request }) => {
   const data = {
     method: "GET",
     path: "query",
@@ -244,7 +246,8 @@ test("search authorized query", async ({ page, request }) => {
   const response = await fanoutThroughFederation(page, request, data);
   expect(response.status()).toBe(200);
 });
-test("search authorized donor with clinical", async ({ page, request }) => {
+
+test("search page katsu v3/authorized/donor_with_clinical_data/", async ({ page, request }) => {
   const data = {
     method: "GET",
     path: "v3/authorized/donor_with_clinical_data/program/SYNTH_01/donor/DONOR_0001",
@@ -266,7 +269,7 @@ test("search authorized donor with clinical", async ({ page, request }) => {
  * Start: Completeness page endpoints
  * ==================================
  */
-test("completeness discovery query", async ({ page, request }) => {
+test("completeness page query discovery/programs", async ({ page, request }) => {
   const data = {
     method: "GET",
     path: "discovery/programs",
@@ -277,7 +280,7 @@ test("completeness discovery query", async ({ page, request }) => {
   expect(response.status()).toBe(200);
 });
 
-test("completeness authorized query", async ({ page, request }) => {
+test("completeness page query genomic_completeness", async ({ page, request }) => {
   const data = {
     method: "GET",
     path: "genomic_completeness",
