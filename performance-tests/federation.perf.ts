@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import path from "path";
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
+const BASE_URL = 'http://localhost:4232/federation/v1' // local
 
 /*****************************************
  * TESTING API CALLS THROUGH FEDERATION
@@ -26,7 +27,7 @@ async function postEndpoint(page, request, data) {
     "Content-Type": "application/json",
     Authorization: `Bearer ${sessionCookie?.value}`,
   };
-  let url = "http://localhost:4232/federation/v1/fanout";
+  let url = `${BASE_URL}/fanout`;
   return request.post(url, { headers, data });
 }
 
@@ -43,7 +44,7 @@ async function postEndpoint(page, request, data) {
  */
 test("service-info", async ({ request }) => {
   const response = await request.get(
-    "http://candig.docker.internal:4232/federation/v1/service-info"
+    `${BASE_URL}/service-info`
   );
   expect(response.status()).toBe(200);
 });

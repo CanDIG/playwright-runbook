@@ -6,9 +6,13 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
 const authFile = path.join(__dirname, "../.auth/user.json");
 
+const BASE_URL = 'http://candig.docker.internal:8080' // local
+// const BASE_URL = 'http://candig-dev.hpc4healthlocal:8080' // dev
+const CLIENT_ID = "local_candig"
+
 setup("authenticate", async ({ page }) => {
   const response = await fetch(
-    `http://candig.docker.internal:8080/auth/realms/candig/protocol/openid-connect/token`,
+    `${BASE_URL}/auth/realms/candig/protocol/openid-connect/token`,
     {
       method: "POST",
       headers: {
@@ -17,7 +21,7 @@ setup("authenticate", async ({ page }) => {
       body: new URLSearchParams({
         username: process.env.CANDIG_USERNAME!,
         password: process.env.CANDIG_PASSWORD!,
-        client_id: "local_candig",
+        client_id: CLIENT_ID,
         client_secret: process.env.CLIENT_SECRET!,
         grant_type: "password",
         scope: "openid",

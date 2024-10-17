@@ -1,4 +1,4 @@
-import { test, expect, request } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 import dotenv from "dotenv";
 import path from "path";
 
@@ -11,6 +11,9 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
  * when interacting with the data-portal.
  * Note: The refresh token is used since these calls are made via the frontend.
  **************************************/
+
+const BASE_URL = 'http://localhost:5080' // local
+// const BASE_URL = 'http://candig-dev.hpc4healthlocal:5080' // dev
 
 /*
  * =======================
@@ -26,7 +29,7 @@ async function fanoutThroughFederation(page, request, data) {
     "Content-Type": "application/json",
     Authorization: `Bearer ${sessionCookie?.value}`,
   };
-  let url = "http://localhost:5080/federation/v1/fanout";
+  let url = `${BASE_URL}/federation/v1/fanout`;
   return request.post(url, { headers, data });
 }
 
@@ -39,7 +42,7 @@ async function postThroughTyk(page, request, endpoint) {
     "Content-Type": "application/json",
     Authorization: `Bearer ${sessionCookie?.value}`,
   };
-  const url = `http://localhost:5080/${endpoint}`;
+  const url = `${BASE_URL}/${endpoint}`;
   return request.post(url, { headers });
 }
 
@@ -54,8 +57,8 @@ async function postThroughTyk(page, request, endpoint) {
  * Begin: baseline
  * ===============
  */
-test("service-info", async ({ request }) => {
-  const response = await request.get("http://localhost:5080/hello");
+test("tyk service-info", async ({ request }) => {
+  const response = await request.get(`${BASE_URL}/hello`);
   expect(response.status()).toBe(200);
 });
 
@@ -70,10 +73,10 @@ test("service-info", async ({ request }) => {
  * Begin: Summary page endpoints
  * =============================
  */
-test("summary individual_count", async ({ page, request }) => {
+test("summary page katsu v3/discovery/overview/individual_count/", async ({ page, request }) => {
   const data = {
     method: "GET",
-    path: "v3/discovery/overview/individual_count",
+    path: "v3/discovery/overview/individual_count/",
     payload: {},
     service: "katsu",
   };
@@ -81,10 +84,10 @@ test("summary individual_count", async ({ page, request }) => {
   expect(response.status()).toBe(200);
 });
 
-test("summary primary_site_count", async ({ page, request }) => {
+test("summary page katsu v3/discovery/overview/primary_site_count/", async ({ page, request }) => {
   const data = {
     method: "GET",
-    path: "v3/discovery/overview/individual_count",
+    path: "v3/discovery/overview/primary_site_count/",
     payload: {},
     service: "katsu",
   };
@@ -92,10 +95,10 @@ test("summary primary_site_count", async ({ page, request }) => {
   expect(response.status()).toBe(200);
 });
 
-test("summary cohort_count", async ({ page, request }) => {
+test("summary page katsu v3/discovery/overview/cohort_count/", async ({ page, request }) => {
   const data = {
     method: "GET",
-    path: "v3/discovery/overview/individual_count",
+    path: "v3/discovery/overview/cohort_count/",
     payload: {},
     service: "katsu",
   };
@@ -103,10 +106,10 @@ test("summary cohort_count", async ({ page, request }) => {
   expect(response.status()).toBe(200);
 });
 
-test("summary patients_per_cohort", async ({ page, request }) => {
+test("summary page katsu v3/discovery/overview/patients_per_cohort/", async ({ page, request }) => {
   const data = {
     method: "GET",
-    path: "v3/discovery/overview/individual_count",
+    path: "v3/discovery/overview/patients_per_cohort/",
     payload: {},
     service: "katsu",
   };
@@ -114,10 +117,10 @@ test("summary patients_per_cohort", async ({ page, request }) => {
   expect(response.status()).toBe(200);
 });
 
-test("summary treatment_type_count", async ({ page, request }) => {
+test("summary page katsu v3/discovery/overview/treatment_type_count/", async ({ page, request }) => {
   const data = {
     method: "GET",
-    path: "v3/discovery/overview/individual_count",
+    path: "v3/discovery/overview/treatment_type_count/",
     payload: {},
     service: "katsu",
   };
@@ -125,10 +128,10 @@ test("summary treatment_type_count", async ({ page, request }) => {
   expect(response.status()).toBe(200);
 });
 
-test("summary diagnosis_age_count", async ({ page, request }) => {
+test("summary page katsu v3/discovery/overview/diagnosis_age_count/", async ({ page, request }) => {
   const data = {
     method: "GET",
-    path: "v3/discovery/overview/individual_count",
+    path: "v3/discovery/overview/diagnosis_age_count/",
     payload: {},
     service: "katsu",
   };
@@ -136,7 +139,7 @@ test("summary diagnosis_age_count", async ({ page, request }) => {
   expect(response.status()).toBe(200);
 });
 
-test("summary authorized donors", async ({ page, request }) => {
+test("summary page katsu v3/authorized/donors/", async ({ page, request }) => {
   const data = {
     method: "GET",
     path: "v3/authorized/donors/",
@@ -147,7 +150,7 @@ test("summary authorized donors", async ({ page, request }) => {
   expect(response.status()).toBe(200);
 });
 
-test("summary discovery program", async ({ page, request }) => {
+test("summary page query discovery/programs", async ({ page, request }) => {
   const data = {
     method: "GET",
     path: "discovery/programs",
@@ -158,7 +161,7 @@ test("summary discovery program", async ({ page, request }) => {
   expect(response.status()).toBe(200);
 });
 
-test("summary genomic_completeness", async ({ page, request }) => {
+test("summary page query genomic_completeness", async ({ page, request }) => {
   const data = {
     method: "GET",
     path: "genomic_completeness",
@@ -180,10 +183,10 @@ test("summary genomic_completeness", async ({ page, request }) => {
  * Start: Search page endpoints
  * ============================
  */
-test("search sidebar", async ({ page, request }) => {
+test("search page katsu v3/discovery/sidebar_list/", async ({ page, request }) => {
   const data = {
     method: "GET",
-    path: "v3/discovery/sidebar_list",
+    path: "v3/discovery/sidebar_list/",
     payload: {},
     service: "katsu",
   };
@@ -191,10 +194,10 @@ test("search sidebar", async ({ page, request }) => {
   expect(response.status()).toBe(200);
 });
 
-test("search patients_per_cohort", async ({ page, request }) => {
+test("search page katsu v3/discovery/overview/patients_per_cohort/", async ({ page, request }) => {
   const data = {
     method: "GET",
-    path: "v3/discovery/overview/patients_per_cohort",
+    path: "v3/discovery/overview/patients_per_cohort/",
     payload: {},
     service: "katsu",
   };
@@ -202,10 +205,10 @@ test("search patients_per_cohort", async ({ page, request }) => {
   expect(response.status()).toBe(200);
 });
 
-test("search authorized program", async ({ page, request }) => {
+test("search page katsu v3/authorized/programs/", async ({ page, request }) => {
   const data = {
     method: "GET",
-    path: "v3/authorized/programs",
+    path: "v3/authorized/programs/",
     payload: {},
     service: "katsu",
   };
@@ -213,7 +216,7 @@ test("search authorized program", async ({ page, request }) => {
   expect(response.status()).toBe(200);
 });
 
-test("search genes", async ({ page, request }) => {
+test("search page htsget /genomics/htsget/v1/genes", async ({ page, request }) => {
   const response = await postThroughTyk(
     page,
     request,
@@ -222,7 +225,7 @@ test("search genes", async ({ page, request }) => {
   expect(response.status()).toBe(200);
 });
 
-test("search discovery query", async ({ page, request }) => {
+test("search page query discovery/query", async ({ page, request }) => {
   const data = {
     method: "GET",
     path: "discovery/query",
@@ -233,7 +236,7 @@ test("search discovery query", async ({ page, request }) => {
   expect(response.status()).toBe(200);
 });
 
-test("search authorized query", async ({ page, request }) => {
+test("search page query query", async ({ page, request }) => {
   const data = {
     method: "GET",
     path: "query",
@@ -243,7 +246,8 @@ test("search authorized query", async ({ page, request }) => {
   const response = await fanoutThroughFederation(page, request, data);
   expect(response.status()).toBe(200);
 });
-test("search authorized donor with clinical", async ({ page, request }) => {
+
+test("search page katsu v3/authorized/donor_with_clinical_data/", async ({ page, request }) => {
   const data = {
     method: "GET",
     path: "v3/authorized/donor_with_clinical_data/program/SYNTH_01/donor/DONOR_0001",
@@ -265,7 +269,7 @@ test("search authorized donor with clinical", async ({ page, request }) => {
  * Start: Completeness page endpoints
  * ==================================
  */
-test("completeness discovery query", async ({ page, request }) => {
+test("completeness page query discovery/programs", async ({ page, request }) => {
   const data = {
     method: "GET",
     path: "discovery/programs",
@@ -276,7 +280,7 @@ test("completeness discovery query", async ({ page, request }) => {
   expect(response.status()).toBe(200);
 });
 
-test("completeness authorized query", async ({ page, request }) => {
+test("completeness page query genomic_completeness", async ({ page, request }) => {
   const data = {
     method: "GET",
     path: "genomic_completeness",

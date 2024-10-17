@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import path from "path";
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
+const BASE_URL = 'http://localhost:1236' // local
 
 /************************************
  * TESTING API CALLS THROUGH QUERY
@@ -24,7 +25,7 @@ async function getEndpoint(page, request, endpoint) {
     "Content-Type": "application/json",
      "Authorization": `Bearer ${sessionCookie.value}`,
   };
-  const url = `http://localhost:1236/${endpoint}`;
+  const url = `${BASE_URL}/${endpoint}`;
   return request.get(url, { headers });
 }
 
