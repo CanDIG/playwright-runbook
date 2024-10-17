@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import path from "path";
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
+const BASE_URL = 'http://localhost:8008/v3' // local
 
 /**************************************
  * TESTING API CALLS THROUGH KATSU
@@ -27,7 +28,7 @@ async function getEndpoint(page, request, endpoint, serviceToken = "") {
   if (serviceToken) {
     headers["X-Service-Token"] = serviceToken;
   }
-  const url = `http://localhost:8008/v3/${endpoint}`;
+  const url = `${BASE_URL}/${endpoint}`;
   return request.get(url, { headers });
 }
 

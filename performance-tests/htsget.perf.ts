@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import path from "path";
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
+const BASE_URL = 'http://localhost:3333' // local
 
 /*************************************
  * TESTING API CALLS THROUGH HTSGET
@@ -26,7 +27,7 @@ async function getEndpoint(page, request, endpoint, serviceToken = "") {
     "Content-Type": "application/json",
     Authorization: `Bearer ${sessionCookie?.value}`,
   };
-  const url = `http://localhost:3333/${endpoint}`;
+  const url = `${BASE_URL}/${endpoint}`;
   return request.get(url, { headers });
 }
 
@@ -39,7 +40,7 @@ async function postEndpoint(page, request, endpoint, data) {
     "Content-Type": "application/json",
     Authorization: `Bearer ${sessionCookie?.value}`,
   };
-  const url = `http://localhost:3333/${endpoint}`;
+  const url = `${BASE_URL}/${endpoint}`;
   return request.get(url, { headers, data });
 }
 
