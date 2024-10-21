@@ -1,19 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 
 /**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// import dotenv from 'dotenv';
-// dotenv.config({ path: path.resolve(__dirname, '.env') });
-
-/**
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: "./ui-tests",
-  // testDir: "./performance-tests",
-
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -46,8 +36,9 @@ export default defineConfig({
       },
     },
     {
-      name: "performance",
-      testMatch: /.*\.perf.ts/,
+      name: "api",
+      testDir: "./api-tests",
+      testMatch: /.*\.api.ts/,
       use: {
         ...devices["Desktop Chrome"],
         launchOptions: {
@@ -57,15 +48,17 @@ export default defineConfig({
       },
       dependencies: ["setup"],
     },
-    // {
-    //   name: "ui",
-    //   use: {
-    //     ...devices["Desktop Chrome"],
-    //     launchOptions: {
-    //       args: ["--host-resolver-rules=MAP candig.docker.internal [::1]"],
-    //     },
-    //   },
-    // },
+    {
+      name: "ui",
+      testDir: "./ui-tests",
+      testMatch: /.*\.ui.ts/,
+      use: {
+        ...devices["Desktop Chrome"],
+        launchOptions: {
+          args: ["--host-resolver-rules=MAP candig.docker.internal [::1]"],
+        },
+      },
+    },
 
     /* Test against Firefox. */
     // {

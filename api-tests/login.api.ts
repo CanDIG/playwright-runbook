@@ -23,8 +23,10 @@ test("login", async ({ page }) => {
   await page.getByRole("button", { name: "Sign In" }).click();
 
   await expect(page).toHaveTitle("CanDIG Data Portal");
+
   //  Wait for all the 6 graphs to load
   await expect(page.locator(".highcharts-loading-hidden")).toHaveCount(6, {
     timeout: 30000,
   });
 });
+
