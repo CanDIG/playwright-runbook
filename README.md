@@ -7,6 +7,7 @@
 Clone the repository and execute the following commands:
 
 ```bash
+cd playwright-runbook
 npm install
 npx playwright install
 ```
