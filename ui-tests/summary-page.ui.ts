@@ -108,6 +108,7 @@ test.describe("summary page", () => {
     await expect(tooltip).toContainText(expectedLabel);
     await expect(tooltip).toContainText(expectedValue);
   }
+
   /*
    * =========================
    * End of Helper function
@@ -119,6 +120,14 @@ test.describe("summary page", () => {
    * Test: Page Overview
    * ======================
    */
+  test("number of nodes is 1", async () => {
+    const textValue = await page
+      .locator("text=Nodes")
+      .locator("..")
+      .locator("h4");
+    await expect(textValue).toHaveText("1");
+  });
+
   test("number of patients is 84", async () => {
     const textValue = await page
       .locator("text=Number of Patients")
@@ -134,6 +143,15 @@ test.describe("summary page", () => {
       .locator("h4");
     await expect(textValue).toHaveText("4");
   });
+
+  test("number of provinces is 1", async () => {
+    const textValue = await page
+      .locator("text=Provinces")
+      .locator("..")
+      .locator("h4");
+    await expect(textValue).toHaveText("1");
+  });
+
   /*
    * ==============================
    * End of Test: Page overview
@@ -149,49 +167,50 @@ test.describe("summary page", () => {
     await page.mouse.move(0, 0);
     const diagnosisGraph = await page
       .locator('text="Age at First Diagnosis"')
-      .locator("..");
+      .locator("..")
+      .last();
     await expect(diagnosisGraph).toHaveScreenshot("age.png", {
       threshold: 0.01,
     });
   });
 
-  test("total number of patients in range 30-39 is: 12", async () => {
+  test("total number of patients in range 30-39 is: 11", async () => {
     await testBarGraphHoverText({
       page,
       graphTitle: "Age at First Diagnosis",
       barIndex: 0,
       expectedLabel: "30-39",
-      expectedValue: "12",
+      expectedValue: "11",
     });
   });
 
-  test("total number of patients in range 40-49 is: 27", async () => {
+  test("total number of patients in range 40-49 is: 24", async () => {
     await testBarGraphHoverText({
       page,
       graphTitle: "Age at First Diagnosis",
       barIndex: 1,
       expectedLabel: "40-49",
-      expectedValue: "27",
+      expectedValue: "24",
     });
   });
 
-  test("total number of patients in range 50-59 is: 32", async () => {
+  test("total number of patients in range 50-59 is: 31", async () => {
     await testBarGraphHoverText({
       page,
       graphTitle: "Age at First Diagnosis",
       barIndex: 2,
       expectedLabel: "50-59",
-      expectedValue: "32",
+      expectedValue: "31",
     });
   });
 
-  test("total number of patients in range null is: 13", async () => {
+  test("total number of patients in range null is: 18", async () => {
     await testBarGraphHoverText({
       page,
       graphTitle: "Age at First Diagnosis",
       barIndex: 3,
       expectedLabel: "null",
-      expectedValue: "13",
+      expectedValue: "18",
     });
   });
 
@@ -210,7 +229,8 @@ test.describe("summary page", () => {
     await page.mouse.move(0, 0);
     const treatmentGraph = await page
       .locator('text="Treatment Type Distribution"')
-      .locator("..");
+      .locator("..")
+      .last();
     await expect(treatmentGraph).toHaveScreenshot("treatment.png", {
       threshold: 0.01,
     });
@@ -226,63 +246,73 @@ test.describe("summary page", () => {
     });
   });
 
-  test("surgery is: 99", async () => {
+  test("surgery is: 92", async () => {
     await testBarGraphHoverText({
       page,
       graphTitle: "Treatment Type Distribution",
       barIndex: 1,
       expectedLabel: "Surgery",
-      expectedValue: "99",
+      expectedValue: "92",
     });
   });
 
-  test("radiation therapy is: 86", async () => {
+  test("radiation therapy is: 77", async () => {
     await testBarGraphHoverText({
       page,
       graphTitle: "Treatment Type Distribution",
       barIndex: 2,
       expectedLabel: "Radiation therapy",
-      expectedValue: "86",
+      expectedValue: "77",
     });
   });
 
-  test("stem cell transplant is: 31", async () => {
+  test("targeted molecular therapy is: 34", async () => {
     await testBarGraphHoverText({
       page,
       graphTitle: "Treatment Type Distribution",
       barIndex: 3,
-      expectedLabel: "Stem cell transplant",
-      expectedValue: "31",
+      expectedLabel: "Targeted molecular therapy",
+      expectedValue: "34",
     });
   });
 
-  test("bone marrow transplant is: 30", async () => {
+  test("bone marrow transplant is: 33", async () => {
     await testBarGraphHoverText({
       page,
       graphTitle: "Treatment Type Distribution",
       barIndex: 4,
       expectedLabel: "Bone marrow transplant",
-      expectedValue: "30",
+      expectedValue: "33",
     });
   });
 
-  test("other targeting molecular therapy is: 28", async () => {
+  test("stem cell transplant is: 30", async () => {
     await testBarGraphHoverText({
       page,
       graphTitle: "Treatment Type Distribution",
       barIndex: 5,
-      expectedLabel: "Other targeting molecular therapy",
-      expectedValue: "28",
+      expectedLabel: "Stem cell transplant",
+      expectedValue: "30",
     });
   });
 
-  test("photodynamic therapy is: 26", async () => {
+  test("other is: 24", async () => {
     await testBarGraphHoverText({
       page,
       graphTitle: "Treatment Type Distribution",
       barIndex: 6,
+      expectedLabel: "Other",
+      expectedValue: "24",
+    });
+  });
+
+  test("photodynamic is: 18", async () => {
+    await testBarGraphHoverText({
+      page,
+      graphTitle: "Treatment Type Distribution",
+      barIndex: 7,
       expectedLabel: "Photodynamic therapy",
-      expectedValue: "26",
+      expectedValue: "18",
     });
   });
 
@@ -301,7 +331,8 @@ test.describe("summary page", () => {
     await page.mouse.move(0, 0);
     const primarySiteGraph = await page
       .locator('text="Tumour Primary Site Distribution"')
-      .locator("..");
+      .locator("..")
+      .last();
     await expect(primarySiteGraph).toHaveScreenshot("primary.png", {
       threshold: 0.01,
     });
@@ -357,7 +388,7 @@ test.describe("summary page", () => {
     });
   });
 
-  test("floor of mouth is: hidden since less than 5", async () => {
+  test("floor of mouth is: hidden since less than 10", async () => {
     const selectedBar = await page
       .locator(`text="Tumour Primary Site Distribution"`)
       .locator("..")
@@ -374,9 +405,10 @@ test.describe("summary page", () => {
       .locator(".highcharts-caption");
 
     await expect(caption).toContainText(
-      "Totals do not include counts of less than 5"
+      "Attention: Totals do not include counts of less than 10 from any node"
     );
   });
+
   /*
    * ============================
    * End of Test: Primary Site
@@ -392,7 +424,8 @@ test.describe("summary page", () => {
     await page.mouse.move(0, 0);
     const cohortGraph = await page
       .locator('text="Distribution of Cohort by Node"')
-      .locator("..");
+      .locator("..")
+      .last();
     await expect(cohortGraph).toHaveScreenshot("cohort.png", {
       threshold: 0.01,
     });
@@ -453,11 +486,13 @@ test.describe("summary page", () => {
     await page.mouse.move(0, 0);
     const clinicalGraph = await page
       .locator('text="Complete Clinical"')
-      .locator("..");
+      .locator("..")
+      .last();
     await expect(clinicalGraph).toHaveScreenshot("clinical.png", {
       threshold: 0.01,
     });
   });
+
   /*
    * ========================
    * End of Test: Clinical
@@ -473,7 +508,8 @@ test.describe("summary page", () => {
     await page.mouse.move(0, 0);
     const genomicGraph = await page
       .locator('text="Complete Genomic"')
-      .locator("..");
+      .locator("..")
+      .last();
     await expect(genomicGraph).toHaveScreenshot("genomic.png", {
       threshold: 0.01,
     });
@@ -498,6 +534,7 @@ test.describe("summary page", () => {
       expectedValue: "5",
     });
   });
+
   /*
    * =======================
    * End of Test: Genomic
@@ -514,6 +551,7 @@ test.describe("summary page", () => {
     const footer = page.locator("footer");
     await expect(footer).toHaveScreenshot("footer.png", { threshold: 0.01 });
   });
+
   /*
    * ======================
    * End of Test: Footer
@@ -611,6 +649,7 @@ test.describe("summary page", () => {
     await page.getByRole("link", { name: "CanDIG logo hyperlink" }).click();
     await expect(page).toHaveTitle("CanDIG Data Portal");
   });
+
   /*
    * =============================
    * End of Test: External link
@@ -650,6 +689,7 @@ test.describe("summary page", () => {
       page.getByRole("button", { name: "candig-logo" })
     ).toBeVisible();
   });
+
   /*
    * ======================
    * End of Test: Logout
