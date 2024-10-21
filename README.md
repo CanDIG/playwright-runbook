@@ -36,10 +36,10 @@ npx playwright test summary                           # Run a specific file
 npx playwright test summary -g "diagnosis graph"      # Run a single test
 ```
 
-### Running Performance Tests
+### Running API Tests
 
 ```bash
-npx playwright test --project=performance --workers=100 --repeat-each=100   # Adjust the number as needed
+npx playwright test --project=api --workers=100 --repeat-each=100   # Adjust the number as needed
 npx playwright test tyk                                # Run a specific file
 npx playwright test tyk -g "tyk service-info"          # Run a single test
 ```
@@ -63,7 +63,7 @@ All UI tests should be placed in the `ui-tests` folder and use the `.ui.ts` exte
 
 The `api-tests` folder contains a series of API calls to assess service performance, primarily focusing on API response times. It is recommended to run API tests with parallel workers and repeat tests multiple times to gather sufficient data for later analysis.
 
-All performance tests should be placed in the `api-tests` folder and use the `.api.ts` extension for proper test matching.
+All api tests should be placed in the `api-tests` folder and use the `.api.ts` extension for proper test matching.
 
 ## Checklist
 
@@ -123,9 +123,9 @@ Tests are based on a small dataset with admin credentials. Adjust the results fo
 
 For UI tests, delete all the snapshots inside the `snapshots` folder and rerun the tests. This will generate new snapshots. Then, update the expected values in each test accordingly.
 
-### Performance Tests
+### API Tests
 
-Performance tests do not verify the returned values. Simply create or delete the relevant endpoint tests as needed.
+API tests do not verify the returned values. Simply create or delete the relevant endpoint tests as needed.
 
 # Report
 
