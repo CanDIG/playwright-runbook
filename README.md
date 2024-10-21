@@ -73,6 +73,8 @@ Below is the list of tests covered by the Summary page:
 |----------------------------------|---------------------------------------|--------------------------------------|
 | **Overview**                     | Number of patients                    | 84                                   |
 |                                  | Number of cohorts                     | 4                                    |
+|                                  | Number of nodes                       | 1                                    |
+|                                  | Number of provinces                   | 1                                    |
 | **Diagnosis**                    | Graph                                 | ![Diagnosis Graph](https://github.com/user-attachments/assets/0b0f4dc3-4ead-4368-bb20-361afd59f7c4)                                   |
 |                                  | Patients (30-39)                      | 11                                   |
 |                                  | Patients (40-49)                      | 24                                   |
