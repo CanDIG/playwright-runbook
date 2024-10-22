@@ -85,6 +85,7 @@ Note: Only the Tyk API test is needed for general performance.
 # Checklist
 
 The test results assumed using a small dataset and login as user2.
+
 Below is a list of the tests covered on the Summary page:
 
 | **Category**                     | **Subcategory**                       | **Expected Value**                            |
