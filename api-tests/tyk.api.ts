@@ -12,8 +12,7 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
  * Note: The refresh token is used since these calls are made via the frontend.
  **************************************/
 
-const BASE_URL = 'http://localhost:5080' // local
-// const BASE_URL = 'http://candig-dev.hpc4healthlocal:5080' // dev
+const TYK_URL = process.env.CANDIG_URL!
 
 /*
  * =======================
@@ -29,7 +28,7 @@ async function fanoutThroughFederation(page, request, data) {
     "Content-Type": "application/json",
     Authorization: `Bearer ${sessionCookie?.value}`,
   };
-  let url = `${BASE_URL}/federation/v1/fanout`;
+  let url = `${TYK_URL}/federation/v1/fanout`;
   return request.post(url, { headers, data });
 }
 
@@ -42,7 +41,7 @@ async function postThroughTyk(page, request, endpoint) {
     "Content-Type": "application/json",
     Authorization: `Bearer ${sessionCookie?.value}`,
   };
-  const url = `${BASE_URL}/${endpoint}`;
+  const url = `${TYK_URL}/${endpoint}`;
   return request.post(url, { headers });
 }
 
@@ -58,7 +57,7 @@ async function postThroughTyk(page, request, endpoint) {
  * ===============
  */
 test("tyk service-info", async ({ request }) => {
-  const response = await request.get(`${BASE_URL}/hello`);
+  const response = await request.get(`${TYK_URL}/hello`);
   expect(response.status()).toBe(200);
 });
 
