@@ -1,6 +1,6 @@
 # CanDIGv2 Playwright Runbook
 
-This repository provides a Playwright-based framework for automated UI and API performance testing of CanDIG systems. It includes scripts to run tests on local, development, or production server (limited access) to make sure both front-end functionality and backend performance meet expectations.
+This repository provides a Playwright-based framework for automated UI and API performance testing of CanDIG systems. It includes scripts to run tests on local, development, or production server (with limited access) to make sure both frontend and backend meet expectations.
 
 # Installing Playwright
 
@@ -16,13 +16,25 @@ npx playwright install
 
 # Configuring Environment Variables
 
-Rename `.env.sample` to `.env`, and update the environment values.
+Rename `.env.sample` to `.env`, and update the environment values. Credentials can be found in the `CanDIGv2/tmp/keycloak` folder.
 
-For local testing, set the URL to `localhost` or `candig.docker.internal`. All the credentials can be found in the `CanDIGv2/tmp/keycloak` folder.
+For local testing:
+
+- Set the URL to `localhost` or `candig.docker.internal`.
+
+For dev testing:
+
+- Set the URL to your dev server (e.g., `candig-dev.hpc4health.local`)
+
+For prod testing:
+
+- Set the URL to your production server (e.g., `candig.uhnresearch.ca`).
+
+Note: The `QUERY_SERVICE_TOKEN` can be ignored unless you want to run katsu explorer api.
 
 # Running Tests
 
-All the tests can be run by using:
+Once the URL is set and the target server (local/dev/prod) is running, you can run all tests by using:
 
 ```bash
 npx playwright test
@@ -64,13 +76,16 @@ All UI tests should be placed in the `ui-tests` folder and use the `.ui.ts` exte
 
 ### API Tests
 
-The `api-tests` folder contains a series of API calls to assess service performance, primarily focusing on API response times. It is recommended to run API tests with parallel workers and repeat tests multiple times to gather sufficient data for later [analysis](https://github.com/CanDIG/playwright-notebook).
+The `api-tests` folder contains a series of API calls to assess service performance, primarily focusing on API response times. It is recommended to run API tests only with parallel workers and repeat tests multiple times to gather sufficient data for later [analysis](https://github.com/CanDIG/playwright-notebook).
 
 All api tests should be placed in the `api-tests` folder and use the `.api.ts` extension for proper test matching.
 
-## Checklist
+Note: Only the Tyk API test is needed for general performance.
 
-Below is the list of tests covered by the Summary page:
+# Checklist
+
+The test results assumed using a small dataset and login as user2.
+Below is a list of the tests covered on the Summary page:
 
 | **Category**                     | **Subcategory**                       | **Expected Value**                            |
 |----------------------------------|---------------------------------------|--------------------------------------|
@@ -122,7 +137,7 @@ Below is the list of tests covered by the Summary page:
 
 # Updating the Tests
 
-Tests are based on a small dataset with admin credentials. Adjust the results for different dataset.
+Adjust the test for different dataset or different user.
 
 ### UI Tests
 
