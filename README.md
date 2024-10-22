@@ -1,3 +1,7 @@
+# CanDIGv2 Playwright Runbook
+
+This repository provides a Playwright-based framework for automated UI and API performance testing of CanDIG systems. It includes scripts to run tests on local, development, or production server (limited access) to make sure both front-end functionality and backend performance meet expectations.
+
 # Prerequisites
 
 [Playwright](https://playwright.dev/) requires [Node.js](https://nodejs.org/en/download/package-manager).
