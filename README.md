@@ -2,11 +2,9 @@
 
 This repository provides a Playwright-based framework for automated UI and API performance testing of CanDIG systems. It includes scripts to run tests on local, development, or production server (limited access) to make sure both front-end functionality and backend performance meet expectations.
 
-# Prerequisites
+# Installing Playwright
 
 [Playwright](https://playwright.dev/) requires [Node.js](https://nodejs.org/en/download/package-manager).
-
-# Installing Playwright
 
 Clone the repository and execute the following commands:
 
@@ -66,7 +64,7 @@ All UI tests should be placed in the `ui-tests` folder and use the `.ui.ts` exte
 
 ### API Tests
 
-The `api-tests` folder contains a series of API calls to assess service performance, primarily focusing on API response times. It is recommended to run API tests with parallel workers and repeat tests multiple times to gather sufficient data for later analysis.
+The `api-tests` folder contains a series of API calls to assess service performance, primarily focusing on API response times. It is recommended to run API tests with parallel workers and repeat tests multiple times to gather sufficient data for later [analysis](https://github.com/CanDIG/playwright-notebook).
 
 All api tests should be placed in the `api-tests` folder and use the `.api.ts` extension for proper test matching.
 
