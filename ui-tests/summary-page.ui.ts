@@ -515,16 +515,6 @@ test.describe("summary page", () => {
     });
   });
 
-  // test("synthetic dataset 1 is 6", async () => {
-  //   await testStackedBarGraphHoverText({
-  //     page,
-  //     graphTitle: "Complete Genomic",
-  //     barIndex: 1,
-  //     expectedLabel: "SYNTH_02",
-  //     expectedValue: "6",
-  //   });
-  // });
-
   test("synthetic dataset 2 is 5", async () => {
     await testStackedBarGraphHoverText({
       page,
