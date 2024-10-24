@@ -2,7 +2,7 @@
 
 This repository provides a Playwright-based framework for automated UI and API performance testing of CanDIG systems. It includes scripts to run tests on local, development, or production server (with limited access) to make sure both frontend and backend meet expectations.
 
-# Installing Playwright
+## Installing Playwright
 
 [Playwright](https://playwright.dev/) requires [Node.js](https://nodejs.org/en/download/package-manager).
 
@@ -14,7 +14,7 @@ npm install
 npx playwright install
 ```
 
-# Configuring Environment Variables
+## Configuring Environment Variables
 
 Rename `.env.sample` to `.env`, and update the environment values. Credentials can be found in the `CanDIGv2/tmp/keycloak` folder.
 
@@ -32,7 +32,7 @@ For prod testing:
 
 Note: The `QUERY_SERVICE_TOKEN` can be ignored unless you want to run katsu explorer api.
 
-# Running Tests
+## Running Tests
 
 Once the URL is set and the target server (local/dev/prod) is running, you can run all tests by using:
 
@@ -59,13 +59,14 @@ npx playwright test tyk                                # Run a specific file
 npx playwright test tyk -g "tyk service-info"          # Run a single test
 ```
 
-# Test Folders
+## Test Folders
 
 There are two main groups of tests, each organized into its own folder: `ui-tests` and `api-tests`.
 
 ### UI Tests
 
 The `ui-tests` folder contains tests that simulate user interactions with the data portal. These tests verify basic frontend functionality, such as:
+
 - Page loading
 - Component rendering
 - Button clicks
@@ -82,7 +83,7 @@ All api tests should be placed in the `api-tests` folder and use the `.api.ts` e
 
 Note: Only the Tyk API test is needed for general performance.
 
-# Checklist
+## Checklist
 
 The test results assumed using a small dataset and login as user2.
 
@@ -136,7 +137,7 @@ Below is a list of the tests covered on the Summary page:
 |                                  | Log in                                | Yes                                  |
 |                                  | Log out                               | Yes                                  |
 
-# Updating the Tests
+## Updating the Tests
 
 Adjust the test for different dataset or different user.
 
@@ -148,7 +149,7 @@ For UI tests, delete all the snapshots inside the `snapshots` folder and rerun t
 
 API tests do not verify the returned values. Simply create or delete the relevant endpoint tests as needed.
 
-# Report
+## Report
 
 Test reports are available in the `playwright-report` and `blob-report` directories.
 
