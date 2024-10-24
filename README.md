@@ -34,15 +34,9 @@ Note: The `QUERY_SERVICE_TOKEN` can be ignored unless you want to run katsu expl
 
 ## Running Tests
 
-Once the URL is set and the target server (local/dev/prod) is running, you can run all tests by using:
+It is recommended to run UI or API tests separately with specific settings. Make sure the URL is set and the target server (local/dev/prod) is running.
 
-```bash
-npx playwright test
-```
-
-However, it’s recommended to run each project separately with specific settings.
-
-### Running UI Tests
+### For UI
 
 ```bash
 npx playwright test --project=ui --workers=1          # Run all tests with a single worker
@@ -51,7 +45,7 @@ npx playwright test summary                           # Run a specific file
 npx playwright test summary -g "diagnosis graph"      # Run a single test
 ```
 
-### Running API Tests
+### For API
 
 ```bash
 npx playwright test --project=api --workers=100 --repeat-each=100   # Adjust the number as needed
