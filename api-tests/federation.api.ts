@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import path from "path";
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
-const BASE_URL = 'http://localhost:4232/federation/v1' // local
+const BASE_URL = `${process.env.BASE_URL}:4232/federation/v1`
 
 /*****************************************
  * TESTING API CALLS THROUGH FEDERATION

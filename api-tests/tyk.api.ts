@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import path from "path";
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
+const TYK_URL = process.env.CANDIG_URL!
 
 /**************************************
  * TESTING API CALLS THROUGH TYK
@@ -11,8 +12,6 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
  * when interacting with the data-portal.
  * Note: The refresh token is used since these calls are made via the frontend.
  **************************************/
-
-const TYK_URL = process.env.CANDIG_URL!
 
 /*
  * =======================
