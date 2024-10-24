@@ -98,7 +98,7 @@ test("Authorized donors with clinical data", async ({ page, request }) => {
   const response = await getEndpoint(
     page,
     request,
-    "authorized/donor_with_clinical_data/program/SYNTH_01/donor/DONOR_0001"
+    "authorized/donor_with_clinical_data/program/SYNTH_02/donor/DONOR_0021"
   );
   expect(response.status()).toBe(200);
 });

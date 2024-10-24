@@ -248,7 +248,7 @@ test("search page query query", async ({ page, request }) => {
 test("search page katsu v3/authorized/donor_with_clinical_data/", async ({ page, request }) => {
   const data = {
     method: "GET",
-    path: "v3/authorized/donor_with_clinical_data/program/SYNTH_01/donor/DONOR_0001",
+    path: "v3/authorized/donor_with_clinical_data/program/SYNTH_02/donor/DONOR_0021",
     payload: {},
     service: "katsu",
   };
