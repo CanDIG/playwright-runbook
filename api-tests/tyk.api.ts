@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import path from "path";
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
+const TYK_URL = process.env.CANDIG_URL!
 
 /**************************************
  * TESTING API CALLS THROUGH TYK
@@ -11,9 +12,6 @@ dotenv.config({ path: path.resolve(__dirname, "../.env") });
  * when interacting with the data-portal.
  * Note: The refresh token is used since these calls are made via the frontend.
  **************************************/
-
-const BASE_URL = 'http://localhost:5080' // local
-// const BASE_URL = 'http://candig-dev.hpc4healthlocal:5080' // dev
 
 /*
  * =======================
@@ -29,7 +27,7 @@ async function fanoutThroughFederation(page, request, data) {
     "Content-Type": "application/json",
     Authorization: `Bearer ${sessionCookie?.value}`,
   };
-  let url = `${BASE_URL}/federation/v1/fanout`;
+  let url = `${TYK_URL}/federation/v1/fanout`;
   return request.post(url, { headers, data });
 }
 
@@ -42,7 +40,7 @@ async function postThroughTyk(page, request, endpoint) {
     "Content-Type": "application/json",
     Authorization: `Bearer ${sessionCookie?.value}`,
   };
-  const url = `${BASE_URL}/${endpoint}`;
+  const url = `${TYK_URL}/${endpoint}`;
   return request.post(url, { headers });
 }
 
@@ -58,7 +56,7 @@ async function postThroughTyk(page, request, endpoint) {
  * ===============
  */
 test("tyk service-info", async ({ request }) => {
-  const response = await request.get(`${BASE_URL}/hello`);
+  const response = await request.get(`${TYK_URL}/hello`);
   expect(response.status()).toBe(200);
 });
 
@@ -250,7 +248,7 @@ test("search page query query", async ({ page, request }) => {
 test("search page katsu v3/authorized/donor_with_clinical_data/", async ({ page, request }) => {
   const data = {
     method: "GET",
-    path: "v3/authorized/donor_with_clinical_data/program/SYNTH_01/donor/DONOR_0001",
+    path: "v3/authorized/donor_with_clinical_data/program/SYNTH_02/donor/DONOR_0021",
     payload: {},
     service: "katsu",
   };

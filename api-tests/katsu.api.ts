@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import path from "path";
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
-const BASE_URL = 'http://localhost:8008/v3' // local
+const BASE_URL = `${process.env.BASE_URL}:8008/v3`
 
 /**************************************
  * TESTING API CALLS THROUGH KATSU
@@ -98,7 +98,7 @@ test("Authorized donors with clinical data", async ({ page, request }) => {
   const response = await getEndpoint(
     page,
     request,
-    "authorized/donor_with_clinical_data/program/SYNTH_01/donor/DONOR_0001"
+    "authorized/donor_with_clinical_data/program/SYNTH_02/donor/DONOR_0021"
   );
   expect(response.status()).toBe(200);
 });

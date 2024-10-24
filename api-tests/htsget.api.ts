@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import path from "path";
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
-const BASE_URL = 'http://localhost:3333' // local
+const BASE_URL = `${process.env.BASE_URL}:3333`
 
 /*************************************
  * TESTING API CALLS THROUGH HTSGET

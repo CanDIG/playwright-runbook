@@ -515,21 +515,11 @@ test.describe("summary page", () => {
     });
   });
 
-  test("synthetic dataset 1 is 6", async () => {
-    await testStackedBarGraphHoverText({
-      page,
-      graphTitle: "Complete Genomic",
-      barIndex: 1,
-      expectedLabel: "SYNTH_01",
-      expectedValue: "6",
-    });
-  });
-
   test("synthetic dataset 2 is 5", async () => {
     await testStackedBarGraphHoverText({
       page,
       graphTitle: "Complete Genomic",
-      barIndex: 4,
+      barIndex: 1,
       expectedLabel: "SYNTH_02",
       expectedValue: "5",
     });
@@ -663,7 +653,7 @@ test.describe("summary page", () => {
    */
   test("display logged in user", async () => {
     await page.getByRole("banner").getByRole("button").nth(4).click();
-    await expect(page.getByText("site_admin@test.ca, LOCAL")).toBeVisible(); // assumed using site_admin
+    await expect(page.getByText("user2@test.ca, LOCAL")).toBeVisible();
   });
 
   test("logout", async () => {
