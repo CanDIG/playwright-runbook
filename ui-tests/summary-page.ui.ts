@@ -515,11 +515,21 @@ test.describe("summary page", () => {
     });
   });
 
-  test("synthetic dataset 2 is 5", async () => {
+  test("synthetic dataset 1 is 6", async () => {
     await testStackedBarGraphHoverText({
       page,
       graphTitle: "Complete Genomic",
       barIndex: 1,
+      expectedLabel: "SYNTH_01",
+      expectedValue: "6",
+    });
+  });
+
+  test("synthetic dataset 2 is 5", async () => {
+    await testStackedBarGraphHoverText({
+      page,
+      graphTitle: "Complete Genomic",
+      barIndex: 4,
       expectedLabel: "SYNTH_02",
       expectedValue: "5",
     });
@@ -592,9 +602,9 @@ test.describe("summary page", () => {
 
   test("open version", async () => {
     const pagePromise = context.waitForEvent("page");
-    await page.getByRole("link", { name: "CanDIG v4.1.0" }).click();
+    await page.getByRole("link", { name: "CanDIG v5.0.0" }).click();
     const newPage = await pagePromise;
-    await expect(newPage).toHaveTitle(/v4.1.0/);
+    await expect(newPage).toHaveTitle(/v5.0.0/);
     await expect(newPage.getByText("© 2024 GitHub, Inc.")).toBeVisible();
   });
 
