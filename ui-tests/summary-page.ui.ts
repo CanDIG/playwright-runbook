@@ -435,7 +435,7 @@ test.describe("summary page", () => {
     await testStackedBarGraphHoverText({
       page,
       graphTitle: "Distribution of Cohort by Node",
-      barIndex: 1,
+      barIndex: 0,
       expectedLabel: "SYNTH_01",
       expectedValue: "24",
     });
@@ -455,7 +455,7 @@ test.describe("summary page", () => {
     await testStackedBarGraphHoverText({
       page,
       graphTitle: "Distribution of Cohort by Node",
-      barIndex: 0,
+      barIndex: 1,
       expectedLabel: "SYNTH_03",
       expectedValue: "20",
     });
