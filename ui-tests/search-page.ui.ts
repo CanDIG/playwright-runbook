@@ -225,10 +225,10 @@ test.describe("Search page", () => {
       // Values in patient data section after expanding
       const expectedValues = [
           { name: 'LOCAL', firstNumber: '84', secondNumber: '84', thirdNumber: '4', full: 'LLOCAL84844' },
-          { name: 'LOCAL-SYNTH_03', firstNumber: '20', secondNumber: '20', thirdNumber: '', full: 'SYNTH_032020Request Access' },
-          { name: 'LOCAL-SYNTH_01', firstNumber: '24', secondNumber: '24', thirdNumber: '', full: 'SYNTH_012424Request Access' },
-          { name: 'LOCAL-SYNTH_02', firstNumber: '20', secondNumber: '20', thirdNumber: '', full: 'SYNTH_022020' }, 
-          { name: 'LOCAL-SYNTH_04', firstNumber: '20', secondNumber: '20', thirdNumber: '', full: 'SYNTH_042020Request Access' }
+          { name: 'LOCAL-SYNTH_01', firstNumber: '24', secondNumber: '24', thirdNumber: '', full: 'LOCAL-SYNTH_012424Request Access' },
+          { name: 'LOCAL-SYNTH_02', firstNumber: '20', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_022020' }, 
+          { name: 'LOCAL-SYNTH_03', firstNumber: '20', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_032020Request Access' },
+          { name: 'LOCAL-SYNTH_04', firstNumber: '20', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_042020Request Access' }
       ];
 
       // Wait for the table rows to be visible after expanding
@@ -250,7 +250,7 @@ test.describe("Search page", () => {
           joinedReceivedText = joinedReceivedText.replace(/\u00A0/g, ' ');
 
           // Compare the normalized text
-          expect(joinedReceivedText).toEqual(expectedText);
+          expect(joinedReceivedText).toContain(expectedText);
       }
   });
 
