@@ -225,10 +225,10 @@ test.describe("Search page", () => {
       // Values in patient data section after expanding
       const expectedValues = [
           { name: 'LOCAL', firstNumber: '84', secondNumber: '84', thirdNumber: '4', full: 'LLOCAL84844' },
-          { name: 'SYNTH_03', firstNumber: '20', secondNumber: '20', thirdNumber: '', full: 'SYNTH_032020Request Access' },
-          { name: 'SYNTH_01', firstNumber: '24', secondNumber: '24', thirdNumber: '', full: 'SYNTH_012424Request Access' },
-          { name: 'SYNTH_02', firstNumber: '20', secondNumber: '20', thirdNumber: '', full: 'SYNTH_022020' }, 
-          { name: 'SYNTH_04', firstNumber: '20', secondNumber: '20', thirdNumber: '', full: 'SYNTH_042020Request Access' }
+          { name: 'LOCAL-SYNTH_03', firstNumber: '20', secondNumber: '20', thirdNumber: '', full: 'SYNTH_032020Request Access' },
+          { name: 'LOCAL-SYNTH_01', firstNumber: '24', secondNumber: '24', thirdNumber: '', full: 'SYNTH_012424Request Access' },
+          { name: 'LOCAL-SYNTH_02', firstNumber: '20', secondNumber: '20', thirdNumber: '', full: 'SYNTH_022020' }, 
+          { name: 'LOCAL-SYNTH_04', firstNumber: '20', secondNumber: '20', thirdNumber: '', full: 'SYNTH_042020Request Access' }
       ];
 
       // Wait for the table rows to be visible after expanding
@@ -453,6 +453,8 @@ test.describe("Search page", () => {
 test.describe('Sidebar Tests', () => {
     test("Tumour Primary Site = Breast", async () => {
       await fillCheckbox('#checkboxes-tags-primary_site', 'Breast');
+      const searchButton = page.locator('button:has-text("Search")');
+      await searchButton.click();
       const expectedValues = [
           { name: 'LOCAL', firstNumber: '4-34', secondNumber: '84', thirdNumber: '4', full: 'LLOCAL84844' },
           { name: 'SYNTH_03', firstNumber: '<10', secondNumber: '20', thirdNumber: '', full: 'SYNTH_032020Request Access' },
@@ -503,10 +505,10 @@ test.describe('Sidebar Tests', () => {
       await fillCheckbox('#checkboxes-tags-drug_name', 'Tamoxifen');
       const expectedValues = [
           { name: 'LOCAL', firstNumber: '30-40', secondNumber: '84', thirdNumber: '4', full: 'LLOCAL84844' },
-          { name: 'SYNTH_03', firstNumber: '11', secondNumber: '20', thirdNumber: '', full: 'SYNTH_032020Request Access' },
-          { name: 'SYNTH_01', firstNumber: '11', secondNumber: '24', thirdNumber: '', full: 'SYNTH_012424Request Access' },
-          { name: 'SYNTH_02', firstNumber: '8', secondNumber: '20', thirdNumber: '', full: 'SYNTH_022020' }, 
-          { name: 'SYNTH_04', firstNumber: '<10', secondNumber: '20', thirdNumber: '', full: 'SYNTH_042020Request Access' }
+          { name: 'LOCAL-SYNTH_03', firstNumber: '11', secondNumber: '20', thirdNumber: '', full: 'SYNTH_032020Request Access' },
+          { name: 'LOCAL-SYNTH_01', firstNumber: '11', secondNumber: '24', thirdNumber: '', full: 'SYNTH_012424Request Access' },
+          { name: 'LOCAL-SYNTH_02', firstNumber: '8', secondNumber: '20', thirdNumber: '', full: 'SYNTH_022020' }, 
+          { name: 'LOCAL-SYNTH_04', firstNumber: '<10', secondNumber: '20', thirdNumber: '', full: 'SYNTH_042020Request Access' }
       ];
       await verifyPatientDataSection(expectedValues);
     });
@@ -519,10 +521,10 @@ test.describe('Sidebar Tests', () => {
   
       const expectedValues = [
           { name: 'LOCAL', firstNumber: '1-11', secondNumber: '84', thirdNumber: '4', full: 'LLOCAL84844' },
-          { name: 'SYNTH_03', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'SYNTH_032020Request Access' },
-          { name: 'SYNTH_01', firstNumber: '<10', secondNumber: '24', thirdNumber: '', full: 'SYNTH_012424Request Access' },
-          { name: 'SYNTH_02', firstNumber: '1', secondNumber: '20', thirdNumber: '', full: 'SYNTH_022020' }, 
-          { name: 'SYNTH_04', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'SYNTH_042020Request Access' }
+          { name: 'LOCAL-SYNTH_03', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'SYNTH_032020Request Access' },
+          { name: 'LOCAL-SYNTH_01', firstNumber: '<10', secondNumber: '24', thirdNumber: '', full: 'SYNTH_012424Request Access' },
+          { name: 'LOCAL-SYNTH_02', firstNumber: '1', secondNumber: '20', thirdNumber: '', full: 'SYNTH_022020' }, 
+          { name: 'LOCAL-SYNTH_04', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'SYNTH_042020Request Access' }
       ];
   
       await verifyPatientDataSection(expectedValues);
@@ -536,10 +538,10 @@ test.describe('Sidebar Tests', () => {
     
         const expectedValues = [
             { name: 'LOCAL', firstNumber: '0', secondNumber: '84', thirdNumber: '4', full: 'LLOCAL84844' },
-            { name: 'SYNTH_03', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'SYNTH_032020Request Access' },
-            { name: 'SYNTH_01', firstNumber: '<10', secondNumber: '24', thirdNumber: '', full: 'SYNTH_012424Request Access' },
-            { name: 'SYNTH_02', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'SYNTH_022020' }, 
-            { name: 'SYNTH_04', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'SYNTH_042020Request Access' }
+            { name: 'LOCAL-SYNTH_03', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'SYNTH_032020Request Access' },
+            { name: 'LOCAL-SYNTH_01', firstNumber: '<10', secondNumber: '24', thirdNumber: '', full: 'SYNTH_012424Request Access' },
+            { name: 'LOCAL-SYNTH_02', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'SYNTH_022020' }, 
+            { name: 'LOCAL-SYNTH_04', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'SYNTH_042020Request Access' }
         ];
     
         await verifyPatientDataSection(expectedValues);
@@ -563,10 +565,10 @@ test.describe('Sidebar Tests', () => {
     
         const expectedValues = [
             { name: 'LOCAL', firstNumber: '1-11', secondNumber: '84', thirdNumber: '4', full: 'LLOCAL84844' },
-            { name: 'SYNTH_03', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'SYNTH_032020Request Access' },
-            { name: 'SYNTH_01', firstNumber: '<10', secondNumber: '24', thirdNumber: '', full: 'SYNTH_012424Request Access' },
-            { name: 'SYNTH_02', firstNumber: '1', secondNumber: '20', thirdNumber: '', full: 'SYNTH_022020' }, 
-            { name: 'SYNTH_04', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'SYNTH_042020Request Access' }
+            { name: 'LOCAL-SYNTH_03', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'SYNTH_032020Request Access' },
+            { name: 'LOCAL-SYNTH_01', firstNumber: '<10', secondNumber: '24', thirdNumber: '', full: 'SYNTH_012424Request Access' },
+            { name: 'LOCAL-SYNTH_02', firstNumber: '1', secondNumber: '20', thirdNumber: '', full: 'SYNTH_022020' }, 
+            { name: 'LOCAL-SYNTH_04', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'SYNTH_042020Request Access' }
         ];
     
         await verifyPatientDataSection(expectedValues);
@@ -576,10 +578,10 @@ test.describe('Sidebar Tests', () => {
         await page.locator('label:has-text("LOCAL") input[type="checkbox"]').uncheck();
         const expectedValues = [
             { name: 'LOCAL', firstNumber: '0', secondNumber: '84', thirdNumber: '4', full: 'LLOCAL0844' },
-            { name: 'SYNTH_03', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'SYNTH_03020Request Access' },
-            { name: 'SYNTH_01', firstNumber: '0', secondNumber: '24', thirdNumber: '', full: 'SYNTH_01024Request Access' },
-            { name: 'SYNTH_02', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'SYNTH_02020' }, 
-            { name: 'SYNTH_04', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'SYNTH_04020Request Access' }
+            { name: 'LOCAL-SYNTH_03', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'SYNTH_03020Request Access' },
+            { name: 'LOCAL-SYNTH_01', firstNumber: '0', secondNumber: '24', thirdNumber: '', full: 'SYNTH_01024Request Access' },
+            { name: 'LOCAL-SYNTH_02', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'SYNTH_02020' }, 
+            { name: 'LOCAL-SYNTH_04', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'SYNTH_04020Request Access' }
         ];
     
         await verifyPatientDataSection(expectedValues);
@@ -588,10 +590,10 @@ test.describe('Sidebar Tests', () => {
     
         const expectedValuesCheck = [
             { name: 'LOCAL', firstNumber: '84', secondNumber: '84', thirdNumber: '4', full: 'LLOCAL84844' },
-            { name: 'SYNTH_03', firstNumber: '20', secondNumber: '20', thirdNumber: '', full: 'SYNTH_032020Request Access' },
-            { name: 'SYNTH_01', firstNumber: '24', secondNumber: '24', thirdNumber: '', full: 'SYNTH_012424Request Access' },
-            { name: 'SYNTH_02', firstNumber: '20', secondNumber: '20', thirdNumber: '', full: 'SYNTH_022020' }, 
-            { name: 'SYNTH_04', firstNumber: '20', secondNumber: '20', thirdNumber: '', full: 'SYNTH_042020Request Access' }
+            { name: 'LOCAL-SYNTH_03', firstNumber: '20', secondNumber: '20', thirdNumber: '', full: 'SYNTH_032020Request Access' },
+            { name: 'LOCAL-SYNTH_01', firstNumber: '24', secondNumber: '24', thirdNumber: '', full: 'SYNTH_012424Request Access' },
+            { name: 'LOCAL-SYNTH_02', firstNumber: '20', secondNumber: '20', thirdNumber: '', full: 'SYNTH_022020' }, 
+            { name: 'LOCAL-SYNTH_04', firstNumber: '20', secondNumber: '20', thirdNumber: '', full: 'SYNTH_042020Request Access' }
         ];
     
         await verifyPatientDataSection(expectedValuesCheck);
