@@ -558,6 +558,7 @@ test.describe("Search page", () => {
 
 test.describe('Sidebar Tests', () => {
   test("Tumour Primary Site = Breast", async () => {
+    await page.waitForTimeout(2000); 
     await selectPrimarySiteCheckbox('Breast');
     await clickSearchButton();
   
