@@ -1,10 +1,3 @@
-// Application Configuration
-export const APP_CONFIG = {
-  URL: process.env.CANDIG_URL,
-  USERNAME: process.env.CANDIG_USERNAME,
-  PASSWORD: process.env.CANDIG_PASSWORD,
-};
-
 // Viewport Dimensions
 export const VIEWPORT = {
   WIDTH: 1920,

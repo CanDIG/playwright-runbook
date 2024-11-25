@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import dotenv from "dotenv";
 import path from "path";
-import { APP_CONFIG, VIEWPORT, TIMEOUTS, DEBUG, FILE_PATHS } from './constants';
+import { VIEWPORT, TIMEOUTS, DEBUG, FILE_PATHS } from './constants';
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
@@ -12,8 +12,8 @@ test.describe("Search page", () => {
   test.beforeAll(async ({ browser }) => {
     const config = {
       url: process.env.CANDIG_URL,
-      username: process.env.CANDIG_USERNAME,
-      password: process.env.CANDIG_PASSWORD,
+      username: process.env.CANDIG_USER2_USERNAME,
+      password: process.env.CANDIG_USER2_PASSWORD,
     };
 
     context = await browser.newContext({
