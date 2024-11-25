@@ -839,9 +839,11 @@ test.describe('Sidebar Tests', () => {
     // Check LOCAL Node
     await fieldset.locator('label:has-text("LOCAL") input[type="checkbox"]').check();
 
+    await searchButton.click();
+
     // Expected values after re-checking LOCAL
     const expectedValuesCheck = [
-        { name: 'LOCAL', firstNumber: '84', secondNumber: '84', thirdNumber: '4', full: 'LLOCAL0844' },
+        { name: 'LOCAL', firstNumber: '84', secondNumber: '84', thirdNumber: '4', full: 'LLOCAL84844' },
         { name: 'LOCAL-SYNTH_01', firstNumber: '24', secondNumber: '24', thirdNumber: '', full: 'LOCAL-SYNTH_012424Request Access' },
         { name: 'LOCAL-SYNTH_03', firstNumber: '20', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_032020Request Access' },
         { name: 'LOCAL-SYNTH_02', firstNumber: '20', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_022020' },
