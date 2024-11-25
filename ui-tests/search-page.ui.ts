@@ -12,8 +12,8 @@ test.describe("Search page", () => {
   test.beforeAll(async ({ browser }) => {
     const config = {
       url: process.env.CANDIG_URL,
-      username: process.env.CANDIG_USER2_USERNAME,
-      password: process.env.CANDIG_USER2_PASSWORD,
+      username: process.env.CANDIG_USERNAME,
+      password: process.env.CANDIG_PASSWORD,
     };
 
     context = await browser.newContext({
