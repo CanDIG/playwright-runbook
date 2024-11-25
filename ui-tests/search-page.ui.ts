@@ -228,6 +228,11 @@ test.describe("Search page", () => {
     await searchButton.click();
   };
 
+  const clickResetButton = async () => {
+    const resetButton = page.locator('button:has-text("Reset")');
+    await resetButton.click();
+  };
+
   const verifyPatientData = async (expectedValues) => {
     await verifyPatientDataSection(expectedValues);
   };
@@ -576,6 +581,8 @@ test.describe('Sidebar Tests', () => {
     ];
   
     await verifyClinicalData(clinicalDataRows);
+
+    clickResetButton();
   });
 
   test("Treatment = Targeted molecular therapy", async () => {  
@@ -598,6 +605,8 @@ test.describe('Sidebar Tests', () => {
     /*
     *  More than 10 patients unpredictability in the data
     */
+
+    clickResetButton();
   });
 
   test("Treatment = Systemic therapy & Drug name = Carboplatin", async () => {
@@ -627,6 +636,8 @@ test.describe('Sidebar Tests', () => {
     ];
   
     await verifyClinicalData(clinicalDataRows);
+
+    clickResetButton();
   });
 
   test("Systemic therapy drug names = 'Durvalumab', 'Atezolizumab', 'Tamoxifen'", async () => {
@@ -658,6 +669,8 @@ test.describe('Sidebar Tests', () => {
     ];
   
     await verifyClinicalData(clinicalDataRows);
+
+    clickResetButton();
   });
     
   // Genomic test: SLC2A5, LOC102723996, and SLX9. Positional test: chr=21, start=5030000, end=5030847
@@ -707,6 +720,8 @@ test.describe('Sidebar Tests', () => {
     ];
 
     await verifyGenomicData(genomicDataRows);
+
+    clickResetButton();
   });
   
   test("Gene search=SLX9", async () => {
@@ -737,6 +752,8 @@ test.describe('Sidebar Tests', () => {
       const genomicDataRows = [];
 
       await verifyGenomicData(genomicDataRows);
+
+      clickResetButton();
   });
     
   test("Positional search: chr=21, start=5030000, end=5030847", async () => {
@@ -790,6 +807,8 @@ test.describe('Sidebar Tests', () => {
       ];
 
       await verifyGenomicData(genomicDataRows);
+
+      clickResetButton();
   });
     
   test("Node selection", async () => {
@@ -827,6 +846,8 @@ test.describe('Sidebar Tests', () => {
 
     // Verify updated patient data
     await verifyPatientDataSection(expectedValuesCheck);
+
+    clickResetButton();
 });
   });
 
