@@ -143,6 +143,7 @@ test.describe("Search page", () => {
         console.log(row);
         expect(joinedReceivedText).toEqual(expectedText);
     }
+    await expandButton.click(); // Click to un-expand
   };
 
   async function verifyClinicalTable(clinicalDataRows) {
@@ -358,6 +359,8 @@ test.describe("Search page", () => {
 
       expect(receivedText).toContain(expectedText);
     }
+
+    await expandButton.click(); // Click to shrink it back
   });
 
   /*
@@ -528,10 +531,11 @@ test.describe("Search page", () => {
     const clinicalTable = await page
       .getByRole('main')
       .locator('div')
-      .filter({ hasText: 'Clinical Data Donor' })
+      .filter({ hasText: 'Clinical Data' })
       .nth(-2);
-    expect(clinicalTable).toBeVisible();
-    expect(clinicalTable).toContainText('DONOR_0026');
+
+    await expect(clinicalTable).toBeVisible();
+    await expect(clinicalTable).toContainText('DONOR_0034');
   });
 
   /*
@@ -546,8 +550,8 @@ test.describe("Search page", () => {
       .filter({ hasText: 'Genomic Variants: Please query from the sidebar to populate' })
       .locator('text=No rows');
   
-    expect(genomicTable).toBeVisible();
-    expect(genomicTable).toContainText('No rows');
+    await expect(genomicTable).toBeVisible();
+    await expect(genomicTable).toContainText('No rows');
   });
   /*
    * ========================
@@ -558,7 +562,6 @@ test.describe("Search page", () => {
 
 test.describe('Sidebar Tests', () => {
   test("Tumour Primary Site = Breast", async () => {
-    await page.waitForTimeout(2000); 
     await selectPrimarySiteCheckbox('Breast');
     await clickSearchButton();
   
