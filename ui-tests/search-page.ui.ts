@@ -204,7 +204,7 @@ test.describe("Search page", () => {
         const fields = [
           { field: "location", value: expected.location },
           { field: "donor_id", value: expected.donor_id },
-          { field: "program_id", value: expected.cohort_id },
+          { field: "program_id", value: expected.program_id },
           { field: "position", value: expected.position },
           { field: "tumour_normal_designation", value: expected.tumour_normal_designation },
           { field: "submitter_specimen_id", value: expected.submitter_specimen_id },
@@ -298,8 +298,8 @@ test.describe("Search page", () => {
         }
       });
     const headerTexts = [
-      "All Cohorts",
-      "Authorized Cohorts"
+      "All Programs",
+      "Authorized Programs"
     ];
     
     for (const text of headerTexts) {
@@ -332,8 +332,8 @@ test.describe("Search page", () => {
       const totalPatients = patientDataSection.locator('p:has-text("84")').nth(1);
       await expect(totalPatients).toBeVisible();
 
-      const totalCohorts = patientDataSection.locator('p:has-text("4")').nth(2);
-      await expect(totalCohorts).toBeVisible();
+      const totalPrograms = patientDataSection.locator('p:has-text("4")').nth(2);
+      await expect(totalPrograms).toBeVisible();
 
       const expandButton = patientDataSection.locator('button[type="button"]');
       await expandButton.click();
@@ -476,10 +476,10 @@ test.describe("Search page", () => {
   
     /*
      * 
-     * Test: Cohort Graph
+     * Test: Program Graph
      * 
      */
-    test.describe("Cohort Graph", () => {
+    test.describe("Program Graph", () => {
       const testCases = [
         { label: "SYNTH_01", value: "24", barIndex: 0 },
         { label: "SYNTH_02", value: "20", barIndex: 1 },
@@ -491,7 +491,7 @@ test.describe("Search page", () => {
         test(`Synthetic dataset ${label} is ${value}`, async () => {
           await testStackedBarGraphHoverText({
             page,
-            graphTitle: "Distribution of Cohort by Node",
+            graphTitle: "Distribution of Program by Node",
             barIndex,
             expectedLabel: label,
             expectedValue: value,
@@ -515,7 +515,7 @@ test.describe("Search page", () => {
       const confirmButton = page.locator('button:has-text("Confirm")');
       await confirmButton.click();
   
-      const graphLocator = page.locator(`text="Distribution of Cohort by Node"`);
+      const graphLocator = page.locator(`text="Distribution of Program by Node"`);
       await expect(graphLocator).toHaveCount(9); 
     });
   
@@ -712,15 +712,15 @@ test.describe('Sidebar Tests', () => {
     await verifyClinicalData(clinicalDataRows);
 
     const genomicDataRows = [
-      { donor_id: 'DONOR_0021', location: 'LOCAL', cohort_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
-      { donor_id: 'DONOR_0021', location: 'LOCAL', cohort_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030551A>C)', zygosity: 'simple heterozygous' },
-      { donor_id: 'DONOR_0021', location: 'LOCAL', cohort_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030551=)', zygosity: 'simple heterozygous' },
-      { donor_id: 'DONOR_0021', location: 'LOCAL', cohort_id: 'LOCAL-SYNTH_02', position: '5030637', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
-      { donor_id: 'DONOR_0021', location: 'LOCAL', cohort_id: 'LOCAL-SYNTH_02', position: '5030637', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030638A>T)', zygosity: 'simple heterozygous' },
-      { donor_id: 'DONOR_0021', location: 'LOCAL', cohort_id: 'LOCAL-SYNTH_02', position: '5030637', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030638=)', zygosity: 'simple heterozygous' },
-      { donor_id: 'DONOR_0021', location: 'LOCAL', cohort_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
-      { donor_id: 'DONOR_0021', location: 'LOCAL', cohort_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030847T>A)', zygosity: 'simple heterozygous' },
-      { donor_id: 'DONOR_0021', location: 'LOCAL', cohort_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030847=)', zygosity: 'simple heterozygous' }
+      { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
+      { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030551A>C)', zygosity: 'simple heterozygous' },
+      { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030551=)', zygosity: 'simple heterozygous' },
+      { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030637', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
+      { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030637', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030638A>T)', zygosity: 'simple heterozygous' },
+      { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030637', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030638=)', zygosity: 'simple heterozygous' },
+      { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
+      { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030847T>A)', zygosity: 'simple heterozygous' },
+      { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030847=)', zygosity: 'simple heterozygous' }
     ];
 
     await verifyGenomicData(genomicDataRows);
@@ -799,15 +799,15 @@ test.describe('Sidebar Tests', () => {
       await verifyClinicalData(clinicalDataRows);
 
       const genomicDataRows = [
-        { donor_id: 'DONOR_0021', location: 'LOCAL', cohort_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
-        { donor_id: 'DONOR_0021', location: 'LOCAL', cohort_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030551A>C)', zygosity: 'simple heterozygous' },
-        { donor_id: 'DONOR_0021', location: 'LOCAL', cohort_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030551=)', zygosity: 'simple heterozygous' },
-        { donor_id: 'DONOR_0021', location: 'LOCAL', cohort_id: 'LOCAL-SYNTH_02', position: '5030637', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
-        { donor_id: 'DONOR_0021', location: 'LOCAL', cohort_id: 'LOCAL-SYNTH_02', position: '5030637', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030638A>T)', zygosity: 'simple heterozygous' },
-        { donor_id: 'DONOR_0021', location: 'LOCAL', cohort_id: 'LOCAL-SYNTH_02', position: '5030637', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030638=)', zygosity: 'simple heterozygous' },
-        { donor_id: 'DONOR_0021', location: 'LOCAL', cohort_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
-        { donor_id: 'DONOR_0021', location: 'LOCAL', cohort_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030847T>A)', zygosity: 'simple heterozygous' },
-        { donor_id: 'DONOR_0021', location: 'LOCAL', cohort_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030847=)', zygosity: 'simple heterozygous' }
+        { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
+        { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030551A>C)', zygosity: 'simple heterozygous' },
+        { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030551=)', zygosity: 'simple heterozygous' },
+        { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030637', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
+        { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030637', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030638A>T)', zygosity: 'simple heterozygous' },
+        { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030637', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030638=)', zygosity: 'simple heterozygous' },
+        { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
+        { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030847T>A)', zygosity: 'simple heterozygous' },
+        { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030847=)', zygosity: 'simple heterozygous' }
       ];
 
       await verifyGenomicData(genomicDataRows);

@@ -65,7 +65,7 @@ The `ui-tests` folder contains tests that simulate user interactions with the da
 - Component rendering
 - Button clicks
 - URL redirection
-- Display of expected results (e.g., number of cohorts, patients)
+- Display of expected results (e.g., number of programs, patients)
 
 All UI tests should be placed in the `ui-tests` folder and use the `.ui.ts` extension for proper test matching.
 
@@ -86,7 +86,7 @@ Below is a list of the tests covered on the Summary page:
 | **Category**                     | **Subcategory**                       | **Expected Value**                            |
 |----------------------------------|---------------------------------------|--------------------------------------|
 | **Overview**                     | Number of patients                    | 84                                   |
-|                                  | Number of cohorts                     | 4                                    |
+|                                  | Number of programs                     | 4                                    |
 |                                  | Number of nodes                       | 1                                    |
 |                                  | Number of provinces                   | 1                                    |
 | **Diagnosis**                    | Graph                                 | ![Diagnosis Graph](https://github.com/user-attachments/assets/0b0f4dc3-4ead-4368-bb20-361afd59f7c4)                                   |
@@ -110,7 +110,7 @@ Below is a list of the tests covered on the Summary page:
 |                                  | Colon                                 | 16                                   |
 |                                  | Bronchus and lung                     | 16                                   |
 |                                  | Floor of mouth                        | Hidden (less than 10)                 |
-| **Cohort**                       | Graph                                 | ![Diagnosis Graph](https://github.com/user-attachments/assets/9f8ab2c6-11bd-4edd-b436-483faf174f12)  |
+| **Program**                       | Graph                                 | ![Diagnosis Graph](https://github.com/user-attachments/assets/9f8ab2c6-11bd-4edd-b436-483faf174f12)  |
 |                                  | Synthetic dataset 1                   | 24                                   |
 |                                  | Synthetic dataset 2                   | 20                                   |
 |                                  | Synthetic dataset 3                   | 20                                   |

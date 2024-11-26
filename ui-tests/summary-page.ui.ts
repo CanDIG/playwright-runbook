@@ -136,9 +136,9 @@ test.describe("summary page", () => {
     await expect(textValue).toHaveText("84");
   });
 
-  test("number of cohorts is 4", async () => {
+  test("number of programs is 4", async () => {
     const textValue = await page
-      .locator("text=Cohorts")
+      .locator("text=Programs")
       .locator("..")
       .locator("h4");
     await expect(textValue).toHaveText("4");
@@ -417,16 +417,16 @@ test.describe("summary page", () => {
 
   /*
    * ===============
-   * Test: Cohort
+   * Test: Program
    * ===============
    */
-  test("cohort graph", async () => {
+  test("program graph", async () => {
     await page.mouse.move(0, 0);
-    const cohortGraph = await page
-      .locator('text="Distribution of Cohort by Node"')
+    const programGraph = await page
+      .locator('text="Distribution of Program by Node"')
       .locator("..")
       .last();
-    await expect(cohortGraph).toHaveScreenshot("cohort.png", {
+    await expect(programGraph).toHaveScreenshot("program.png", {
       threshold: 0.01,
     });
   });
@@ -434,7 +434,7 @@ test.describe("summary page", () => {
   test("synthetic dataset 1 is 24", async () => {
     await testStackedBarGraphHoverText({
       page,
-      graphTitle: "Distribution of Cohort by Node",
+      graphTitle: "Distribution of Program by Node",
       barIndex: 0,
       expectedLabel: "SYNTH_01",
       expectedValue: "24",
@@ -444,7 +444,7 @@ test.describe("summary page", () => {
   test("synthetic dataset 2 is 20", async () => {
     await testStackedBarGraphHoverText({
       page,
-      graphTitle: "Distribution of Cohort by Node",
+      graphTitle: "Distribution of Program by Node",
       barIndex: 2,
       expectedLabel: "SYNTH_02",
       expectedValue: "20",
@@ -454,7 +454,7 @@ test.describe("summary page", () => {
   test("synthetic dataset 3 is 20", async () => {
     await testStackedBarGraphHoverText({
       page,
-      graphTitle: "Distribution of Cohort by Node",
+      graphTitle: "Distribution of Program by Node",
       barIndex: 1,
       expectedLabel: "SYNTH_03",
       expectedValue: "20",
@@ -464,7 +464,7 @@ test.describe("summary page", () => {
   test("synthetic dataset 4 is 20", async () => {
     await testStackedBarGraphHoverText({
       page,
-      graphTitle: "Distribution of Cohort by Node",
+      graphTitle: "Distribution of Program by Node",
       barIndex: 3,
       expectedLabel: "SYNTH_04",
       expectedValue: "20",
@@ -473,7 +473,7 @@ test.describe("summary page", () => {
 
   /*
    * ======================
-   * End of Test: Cohort
+   * End of Test: Program
    * ======================
    */
 
