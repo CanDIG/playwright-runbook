@@ -5,7 +5,9 @@ import { VIEWPORT, TIMEOUTS, DEBUG, FILE_PATHS } from './constants';
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
-test.describe("Search page", () => {
+const BASE_URL = `${process.env.BASE_URL}:1236`
+
+test.describe("Search page", async () => {
   let context;
   let page;
 
@@ -45,36 +47,6 @@ test.describe("Search page", () => {
     await page.getByRole("button", { name: "Sign In" }).click();
   }
 
-  async function testBarGraphHoverText({
-    page,
-    graphTitle,
-    barIndex,
-    expectedLabel,
-    expectedValue,
-  }) {
-    // Locate the bar based on the graph title and bar index
-    const selectedBar = await page
-      .locator(`text="${graphTitle}"`)
-      .locator("..")
-      .locator(".highcharts-series > path")
-      .nth(barIndex);
-
-    // Hover over the selected bar
-    await selectedBar.hover();
-
-    // Locate the tooltip relative to the graph title
-    const tooltip = await page
-      .locator(`text="${graphTitle}"`)
-      .locator("..")
-      .locator("..")
-      .locator(".highcharts-tooltip")
-      .nth(1);
-
-    // Verify the tooltip text
-    await expect(tooltip).toContainText(expectedLabel);
-    await expect(tooltip).toContainText(expectedValue);
-  }
-
   async function testStackedBarGraphHoverText({
     page,
     graphTitle,
@@ -86,7 +58,7 @@ test.describe("Search page", () => {
     const selectedBar = await page
       .locator(`text="${graphTitle}"`)
       .locator("..")
-      .locator(".highcharts-series-group > path")
+      .locator(".highcharts-series > path")
       .nth(barIndex);
 
     // Hover over the selected bar
@@ -111,15 +83,22 @@ test.describe("Search page", () => {
     expectedValue,
   }) {
     // Locate the bar based on the graph title and bar index
-    const selectedBar = await page
+    /* const selectedBar = await page
       .getByText(graphTitle)
       .locator("..")
       .locator("..")
       .locator(".highcharts-series > path")
-      .nth(barIndex);
+      .nth(barIndex); */
+    const selectedBar = await page
+      .getByText(graphTitle)
+      .locator("..")
+      .locator("..")
+      .locator('.highcharts-root > .highcharts-series-group > .highcharts-series > path')
+      .nth(barIndex)
 
     // Hover over the selected bar
-    await selectedBar.hover();
+    await expect(selectedBar).toBeVisible();
+    await selectedBar.hover({ force: true });
 
     // Locate the tooltip relative to the graph title
     const tooltip = await page
@@ -221,23 +200,36 @@ test.describe("Search page", () => {
   //#endregion
 
   //#region Field Level
-  test.describe('Field-level Completeness', () => {
+  test('Field-level Completeness', async () => {
+    async function getEndpoint(page, request, endpoint) {
+      const { cookies } = await page.context().storageState();
+      const sessionCookie = cookies.find(cookie => cookie.name === "access_token");
+      let headers = {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${sessionCookie.value}`,
+      };
+      const url = `${BASE_URL}/${endpoint}`;
+      return request.get(url, { headers });
+    }
+
+    // Query the discovery/programs endpoint
+    const response = await getEndpoint(page, fetch, "discovery/programs");
+
+    console.log(response);
+
     const testCases = [
-      { label: "Radiations: RADIATION THERAPY DOSAGE", value: "11%", barIndex: 0 },
+      { label: "radiations/radiation_therapy_dosage", value: "11%", barIndex: 0 },
+      { label: "radiations/radiation_therapy_fractions", value: "14%", barIndex: 1 },
+      { label: "radiations/radiation_therapy_type", value: "43%", barIndex: 2 },
+      { label: "radiations/radiation_therapy_modality", value: "60%", barIndex: 3 },
+      { label: "donors/sex_at_birth", value: "64%", barIndex: 4 }
     ];
 
+    await page.waitForTimeout(1000);
+
+    // Wait for the page 
     testCases.forEach(({ label, value, barIndex }) => {
       test(`Total number of patients in range ${label} is: ${value}`, async () => {
-
-        const fieldLevel = await page
-          .getByText("Field Level")
-          .locator("..")
-          .locator("..")
-          .locator(".highcharts-series > path")
-          .nth(0);
-        console.log(fieldLevel);
-        await expect(fieldLevel).toBeVisible();
-
         await testFieldLevelHoverText({
           page,
           graphTitle: "Field Level",
