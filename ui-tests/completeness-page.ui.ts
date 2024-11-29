@@ -250,6 +250,14 @@ test.describe("Completeness page", async () => {
       .locator("..")
       .locator(".."))
       .toHaveText(/.+Radiations.+/i);
+    const fieldLevelGraph = await page
+      .getByText("Field Level")
+      .locator("..")
+      .locator("..")
+      .last();
+    await expect(fieldLevelGraph).toHaveScreenshot("fieldLevel.png", {
+      threshold: 0.01,
+    });
 
     // Query the discovery/programs endpoint
     const response = await getEndpoint(page, "query/discovery/programs");
