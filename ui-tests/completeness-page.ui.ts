@@ -5,9 +5,9 @@ import { VIEWPORT, TIMEOUTS, DEBUG, FILE_PATHS } from './constants';
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
-const BASE_URL = `${process.env.BASE_URL}:1236`
+const BASE_URL = `${process.env.CANDIG_URL}`
 
-test.describe("Search page", async () => {
+test.describe("Completeness page", async () => {
   let context;
   let page;
 
@@ -98,6 +98,15 @@ test.describe("Search page", async () => {
 
     // Hover over the selected bar
     await expect(selectedBar).toBeVisible();
+    /* if (barIndex > 5) {
+      // Scroll the scrollbar a bit down
+      // Doesn't seem to work under any circumstances with Highcharts
+      await page.locator('.highcharts-scrollbar-thumb').hover({ force: true });
+      await page.mouse.down();
+      await page.mouse.move(page.mouse._x, page.mouse._y + 100);
+      await page.mouse.up();
+    } */
+    // NOTE: force: true is needed because highcharts intercepts the normal hover event
     await selectedBar.hover({ force: true });
 
     // Locate the tooltip relative to the graph title
@@ -111,6 +120,30 @@ test.describe("Search page", async () => {
     // Verify the tooltip text
     await expect(tooltip).toContainText(expectedLabel);
     await expect(tooltip).toContainText(expectedValue);
+  }
+
+  async function testFieldLevel(page, testCases) {
+    // Sort the percentages
+    testCases.sort((a, b) => a.label.localeCompare(b.label));
+    testCases.sort((a, b) => a.pct - b.pct);
+    testCases.forEach((datum, index) => {
+      datum.value = `${datum.pct}%`;
+      datum.barIndex = index;
+    });
+    for (const {label, value, barIndex } of testCases) {
+      // DEBUG: Currently there is no way to scroll this particular graph
+      // So, we'll do only one page of results
+      if (barIndex > 10) {
+        break;
+      }
+      await testFieldLevelHoverText({
+        page,
+        graphTitle: "Field Level",
+        barIndex,
+        expectedLabel: label,
+        expectedValue: value,
+      });
+    }
   }
   //#endregion
 
@@ -200,44 +233,74 @@ test.describe("Search page", async () => {
   //#endregion
 
   //#region Field Level
-  test('Field-level Completeness', async () => {
-    async function getEndpoint(page, request, endpoint) {
+  test('Field-level Completeness', async ({ request }) => {
+    async function getEndpoint(page, endpoint) {
       const { cookies } = await page.context().storageState();
-      const sessionCookie = cookies.find(cookie => cookie.name === "access_token");
+      const sessionCookie = cookies.find(cookie => cookie.name === "session_id");
       let headers = {
         "Content-Type": "application/json",
         "Authorization": `Bearer ${sessionCookie.value}`,
       };
       const url = `${BASE_URL}/${endpoint}`;
-      return request.get(url, { headers });
+      return fetch(url, { headers });
     }
 
+    // Wait for the page to finish loading the field level completeness
+    await expect(page.getByText("Field Level")
+      .locator("..")
+      .locator(".."))
+      .toHaveText(/.+Radiations.+/i);
+
     // Query the discovery/programs endpoint
-    const response = await getEndpoint(page, fetch, "discovery/programs");
+    const response = await getEndpoint(page, "query/discovery/programs");
+    await response.json().then(async (data) => {
+      let lastButtonText = /All programs/;
+      const allCases = {};
+      for (const program of data.programs) {
+        const programButton = await page.getByText(lastButtonText).first();
+        // 1: Switch the display to being this particular program
+        await programButton.click();
+        lastButtonText = new RegExp(`.+${program.program_id}`, "i");
+        await page.getByRole('option', { name: lastButtonText }).click();
 
-    console.log(response);
+        const completenessData = program.metadata.required_but_missing;
+        const categories = Object.keys(completenessData);
+        const testCases = categories.map((category) => {
+          return Object.keys(completenessData[category]).map((key) => {
+            const label = `${category}/${key}`;
+            const pct = Math.round((1 - (completenessData[category][key]['missing'] / completenessData[category][key]['total'])) * 100);
 
-    const testCases = [
-      { label: "radiations/radiation_therapy_dosage", value: "11%", barIndex: 0 },
-      { label: "radiations/radiation_therapy_fractions", value: "14%", barIndex: 1 },
-      { label: "radiations/radiation_therapy_type", value: "43%", barIndex: 2 },
-      { label: "radiations/radiation_therapy_modality", value: "60%", barIndex: 3 },
-      { label: "donors/sex_at_birth", value: "64%", barIndex: 4 }
-    ];
+            // Fill out the allCases for the final round
+            if (label in allCases) {
+              allCases[label]['missing'] += completenessData[category][key]['missing'];
+              allCases[label]['total'] += completenessData[category][key]['total'];
+            } else {
+              allCases[label] = {
+                'missing': completenessData[category][key]['missing'],
+                'total': completenessData[category][key]['total']
+              }
+            }
+            return { label, pct, value: 'NA', barIndex: 0 };
+          });
+        }).flat(1);
 
-    await page.waitForTimeout(1000);
+        await testFieldLevel(page, testCases);
+      }
 
-    // Wait for the page 
-    testCases.forEach(({ label, value, barIndex }) => {
-      test(`Total number of patients in range ${label} is: ${value}`, async () => {
-        await testFieldLevelHoverText({
-          page,
-          graphTitle: "Field Level",
-          barIndex,
-          expectedLabel: label,
-          expectedValue: value,
+      // Do one final round for the final cases
+      await page.getByText(lastButtonText).first().click();
+      await page.getByRole('option', { name: "All programs" }).click();
+      await page.waitForTimeout(1000);
+
+      const allCasesList = Object.keys(allCases).map((thisCase) => {
+        return ({
+          label: thisCase,
+          pct: Math.round((1 - (allCases[thisCase].missing / allCases[thisCase].total)) * 100),
+          value: 'NA',
+          barIndex: 0
         });
       });
+      await testFieldLevel(page, allCasesList);
     });
   });
   //#endregion
