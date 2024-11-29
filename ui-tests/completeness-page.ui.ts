@@ -83,12 +83,6 @@ test.describe("Completeness page", async () => {
     expectedValue,
   }) {
     // Locate the bar based on the graph title and bar index
-    /* const selectedBar = await page
-      .getByText(graphTitle)
-      .locator("..")
-      .locator("..")
-      .locator(".highcharts-series > path")
-      .nth(barIndex); */
     const selectedBar = await page
       .getByText(graphTitle)
       .locator("..")
@@ -98,9 +92,9 @@ test.describe("Completeness page", async () => {
 
     // Hover over the selected bar
     await expect(selectedBar).toBeVisible();
+    // Doesn't seem to work under any circumstances with Highcharts
     /* if (barIndex > 5) {
       // Scroll the scrollbar a bit down
-      // Doesn't seem to work under any circumstances with Highcharts
       await page.locator('.highcharts-scrollbar-thumb').hover({ force: true });
       await page.mouse.down();
       await page.mouse.move(page.mouse._x, page.mouse._y + 100);
@@ -297,7 +291,7 @@ test.describe("Completeness page", async () => {
         await testFieldLevel(page, testCases, program.program_id);
       }
 
-      // Do one final round for the final cases
+      // Do one final round for the "all programs" option
       await page.getByText(lastButtonText).first().click();
       await page.getByRole('option', { name: "All programs" }).click();
       await page.waitForTimeout(1000);
