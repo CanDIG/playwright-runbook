@@ -260,7 +260,7 @@ test.describe("Completeness page", async () => {
         const programButton = await page.getByText(lastButtonText).first();
         // 1: Switch the display to being this particular program
         await programButton.click();
-        lastButtonText = new RegExp(`.+${program.program_id}`, "i");
+        lastButtonText = new RegExp(`.+ ${program.program_id}`, "i");
         await page.getByRole('option', { name: lastButtonText }).click();
 
         const completenessData = program.metadata.required_but_missing;
