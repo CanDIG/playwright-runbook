@@ -122,7 +122,17 @@ test.describe("Completeness page", async () => {
     await expect(tooltip).toContainText(expectedValue);
   }
 
-  async function testFieldLevel(page, testCases) {
+  async function testFieldLevel(page, testCases, programName) {
+
+    const fieldLevelGraph = await page
+      .getByText("Field Level")
+      .locator("..")
+      .locator("..")
+      .last();
+
+    await expect(fieldLevelGraph).toHaveScreenshot(`FieldLevel-${programName}.png`, {
+      threshold: 0.01,
+    });
     // Sort the percentages
     testCases.sort((a, b) => a.label.localeCompare(b.label));
     testCases.sort((a, b) => a.pct - b.pct);
@@ -250,14 +260,6 @@ test.describe("Completeness page", async () => {
       .locator("..")
       .locator(".."))
       .toHaveText(/.+Radiations.+/i);
-    const fieldLevelGraph = await page
-      .getByText("Field Level")
-      .locator("..")
-      .locator("..")
-      .last();
-    await expect(fieldLevelGraph).toHaveScreenshot("fieldLevel.png", {
-      threshold: 0.01,
-    });
 
     // Query the discovery/programs endpoint
     const response = await getEndpoint(page, "query/discovery/programs");
@@ -292,7 +294,7 @@ test.describe("Completeness page", async () => {
           });
         }).flat(1);
 
-        await testFieldLevel(page, testCases);
+        await testFieldLevel(page, testCases, program.program_id);
       }
 
       // Do one final round for the final cases
@@ -308,7 +310,7 @@ test.describe("Completeness page", async () => {
           barIndex: 0
         });
       });
-      await testFieldLevel(page, allCasesList);
+      await testFieldLevel(page, allCasesList, 'allprograms');
     });
   });
   //#endregion
