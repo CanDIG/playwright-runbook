@@ -74,7 +74,7 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
   */
 
 
-  test("Landing Page", async () => {
+  test("Biomarkers", async () => {
     
     const fields = [
         { field: "cea" },
@@ -103,7 +103,7 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
     await verifyPatientInfoTable(fields, patientInfoDataRows);
   });
 
-  test("Priamry Site", async () => {
+  test("Priamry Diagnoses", async () => {
     await page.getByRole('button', { name: 'Primary Diagnoses' }).click();
     
     const fields = [
