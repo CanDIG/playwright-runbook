@@ -2,6 +2,20 @@ import { test, expect } from "@playwright/test";
 import dotenv from "dotenv";
 import path from "path";
 import { VIEWPORT, TIMEOUTS, DEBUG, FILE_PATHS } from './constants';
+import {
+  login,
+  testBarGraphHoverText,
+  testStackedBarGraphHoverText,
+  verifyPatientData,
+  verifyClinicalData,
+  verifyGenomicData,
+  clickSearchButton,
+  clickResetButton,
+  selectPrimarySiteCheckbox,
+  selectTreatmentCheckbox,
+  selectTreatmentAndDrug,
+  selectDrugs,
+} from './helpers.ui.ts';
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
@@ -37,234 +51,6 @@ test.describe("Search page", () => {
       throw error;
     }
   });
-
-  /*
-  * ==================
-  * Helper functions
-  * ==================
-  */
-  async function login(page, username, password) {
-    await page.getByLabel("Username or email").fill(username);
-    await page.getByLabel("Password", { exact: true }).fill(password);
-    await page.getByRole("button", { name: "Sign In" }).click();
-  }
-
-  async function testBarGraphHoverText({
-    page,
-    graphTitle,
-    barIndex,
-    expectedLabel,
-    expectedValue,
-  }) {
-    // Locate the bar based on the graph title and bar index
-    const selectedBar = await page
-      .locator(`text="${graphTitle}"`)
-      .locator("..")
-      .locator(".highcharts-series > path")
-      .nth(barIndex);
-
-    // Hover over the selected bar
-    await selectedBar.hover();
-
-    // Locate the tooltip relative to the graph title
-    const tooltip = await page
-      .locator(`text="${graphTitle}"`)
-      .locator("..")
-      .locator("..")
-      .locator(".highcharts-tooltip")
-      .nth(1);
-
-    // Verify the tooltip text
-    await expect(tooltip).toContainText(expectedLabel);
-    await expect(tooltip).toContainText(expectedValue);
-  }
-
-  async function testStackedBarGraphHoverText({
-    page,
-    graphTitle,
-    barIndex,
-    expectedLabel,
-    expectedValue,
-  }) {
-    // Locate the bar based on the graph title and bar index
-    const selectedBar = await page
-      .locator(`text="${graphTitle}"`)
-      .locator("..")
-      .locator(".highcharts-series > path")
-      .nth(barIndex);
-
-    // Hover over the selected bar
-    await selectedBar.hover();
-
-    // Locate the tooltip relative to the graph title
-    const tooltip = await page
-      .locator(`text="${graphTitle}"`)
-      .locator("..")
-      .locator(".highcharts-tooltip");
-
-    // Verify the tooltip text
-    await expect(tooltip).toContainText(expectedLabel);
-    await expect(tooltip).toContainText(expectedValue);
-  }
-
-  async function fillCheckbox(checkboxSelector, value) {
-    // Fill checkbox in dropdowns
-    try {
-      await page.fill(checkboxSelector, value);
-      await page.getByRole('option', { name: `${value}` }).click();
-    } catch (error) {
-      console.error(`Error filling checkbox with value "${value}":`, error);
-      throw error; // Re-throw the error to fail the test
-    }
-  }
-
-  const verifyPatientDataSection = async (expectedValues) => {
-    const patientDataSection = await page.locator('#counts').locator('..');
-    await expect(patientDataSection).toBeVisible();
-  
-    const expandButton = await patientDataSection.locator('button[type="button"]');
-    await expect(expandButton).toBeVisible();
-    await expandButton.click(); // Click to expand
-  
-    const rows = await page.locator('div.PatientCountSingle-container');
-  
-    for (let i = 0; i < await rows.count(); i++) {
-        await expect(rows.nth(i)).toBeVisible();
-  
-        const row = rows.nth(i);
-        const receivedTextArray = await row.allTextContents();
-        let joinedReceivedText = receivedTextArray.join('').trim(); // Join array and trim any extra whitespace
-        const expectedText = expectedValues[i].full.trim(); // Trim expected value as well
-  
-        // Normalize non-breaking spaces to regular spaces
-        joinedReceivedText = joinedReceivedText.replace(/\u00A0/g, ' ');
-  
-        // Compare the normalized text
-        console.log(row);
-        expect(joinedReceivedText).toEqual(expectedText);
-    }
-    await expandButton.click(); // Click to un-expand
-  };
-
-  async function verifyClinicalTable(clinicalDataRows) {
-    const clinicalTable = await page.getByRole('grid').first();
-    expect(clinicalTable).toBeVisible();
-
-    const tableRowsLocator = clinicalTable.getByRole('row');
-    const rowCount = await tableRowsLocator.count();
-    
-    console.log("Total rows in table:", rowCount);
-    expect(rowCount).toEqual(clinicalDataRows.length+1);
-
-    for (const expected of clinicalDataRows) {
-      // Locate the row based on the submitterDonorId
-      const rowLocator = tableRowsLocator.locator(`text=${expected.submitterDonorId}`).first().locator('..').locator('..').locator('..');
-      
-      await clinicalTable.scrollIntoViewIfNeeded();
-      await expect(rowLocator).toBeVisible();
-
-      // Fields to verify
-      const fields = [
-        { field: "location", value: expected.location },
-        { field: "program_id", value: expected.programId },
-        { field: "deceased", value: expected.deceased },
-        { field: "sex_at_birth", value: expected.sexAtBirth },
-        { field: "date_of_birth", value: expected.dateOfBirth },
-        { field: "date_of_death", value: expected.dateOfDeath }
-      ];
-      
-      for (const { field, value } of fields) {
-        const fieldLocator = rowLocator.locator(`[data-field="${field}"]`).locator(`text=${value}`);
-        await expect(fieldLocator)[value === '' ? 'toBeHidden' : 'toBeVisible']();
-      }
-    }
-  }
-
-  async function verifyGenomicTable(genomicDataRows) {
-    try {
-      // Locate the genomic table and verify visibility
-      const genomicTable = page.getByRole('grid').nth(1);
-      await expect(genomicTable).toBeVisible();
-  
-      // Get the table rows and validate row count
-      const tableRowsLocator = genomicTable.getByRole('row');
-      const rowCount = await tableRowsLocator.count();
-      console.log("Total rows in table:", rowCount);
-      expect(rowCount).toEqual(genomicDataRows.length + 1); // +1 for header row
-  
-      // Iterate over each expected row and verify content
-      for (let index = 0; index < genomicDataRows.length; index++) {
-        const expected = genomicDataRows[index];
-        const rowLocator = tableRowsLocator.nth(index + 1); // Skip header row
-  
-        await genomicTable.scrollIntoViewIfNeeded();
-        await expect(rowLocator).toBeVisible();
-  
-        // Fields to verify
-        const fields = [
-          { field: "location", value: expected.location },
-          { field: "donor_id", value: expected.donor_id },
-          { field: "program_id", value: expected.program_id },
-          { field: "position", value: expected.position },
-          { field: "tumour_normal_designation", value: expected.tumour_normal_designation },
-          { field: "submitter_specimen_id", value: expected.submitter_specimen_id },
-          { field: "genotypeLabel", value: expected.genotype },
-          { field: "zygosityLabel", value: expected.zygosity }
-        ];
-  
-        // Verify each field
-        for (const { field, value } of fields) {
-          const fieldLocator = rowLocator.locator(`[data-field="${field}"]`).locator(`text=${value}`);
-          await expect(fieldLocator)[value === '' ? 'toBeHidden' : 'toBeVisible']();
-        }
-      }
-    } catch (error) {
-      console.error("Error verifying genomic table:", error);
-      throw error;
-    }
-  }
-
-  const clickSearchButton = async () => {
-    const searchButton = page.locator('button:has-text("Search")');
-    await searchButton.click();
-  };
-
-  const clickResetButton = async () => {
-    const resetButton = page.locator('button:has-text("Reset")');
-    await resetButton.click();
-  };
-
-  const verifyPatientData = async (expectedValues) => {
-    await verifyPatientDataSection(expectedValues);
-  };
-
-  const verifyClinicalData = async (clinicalDataRows) => {
-    await verifyClinicalTable(clinicalDataRows);
-  };
-
-  const verifyGenomicData = async (genomicDataRows) => {
-    await verifyGenomicTable(genomicDataRows);
-  };
-
-  const selectPrimarySiteCheckbox = async (label) => {
-    await fillCheckbox('#checkboxes-tags-primary_site', label);
-  };
-
-  const selectTreatmentCheckbox = async (label) => {
-    await fillCheckbox('#checkboxes-tags-treatment', label);
-  };
-
-  const selectTreatmentAndDrug = async (treatment, drug) => {
-    await fillCheckbox('#checkboxes-tags-treatment', treatment);
-    await fillCheckbox('#checkboxes-tags-drug_name', drug);
-  };
-
-  const selectDrugs = async (drugs) => {
-    for (const drug of drugs) {
-      await fillCheckbox('#checkboxes-tags-drug_name', drug);
-    }
-  };
-
 
   /*
   * ==================
@@ -562,8 +348,8 @@ test.describe("Search page", () => {
 
 test.describe('Sidebar Tests', () => {
   test("Tumour Primary Site = Breast", async () => {
-    await selectPrimarySiteCheckbox('Breast');
-    await clickSearchButton();
+    await selectPrimarySiteCheckbox(page, 'Breast');
+    await clickSearchButton(page);
   
     // Expected patient data values after selecting 'Breast'
     const expectedValues = [
@@ -574,7 +360,7 @@ test.describe('Sidebar Tests', () => {
       { name: 'LOCAL-SYNTH_04', firstNumber: '<10', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_04<1020Request Access' }
     ];
   
-    await verifyPatientData(expectedValues);
+    await verifyPatientData(page, expectedValues);
   
     // Expected clinical data rows
     const clinicalDataRows = [
@@ -584,14 +370,14 @@ test.describe('Sidebar Tests', () => {
       { submitterDonorId: 'DONOR_0026', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: 'Male', deceased: 'false', dateOfBirth: '', dateOfDeath: '' }
     ];
   
-    await verifyClinicalData(clinicalDataRows);
+    await verifyClinicalData(page, clinicalDataRows);
 
-    clickResetButton();
+    clickResetButton(page);
   });
 
   test("Treatment = Targeted molecular therapy", async () => {  
-    await selectTreatmentCheckbox('Targeted molecular therapy');
-    await clickSearchButton();
+    await selectTreatmentCheckbox(page, 'Targeted molecular therapy');
+    await clickSearchButton(page);
   
     // Expected patient data values after selecting 'Targeted molecular therapy'
     const expectedValues = [
@@ -603,19 +389,19 @@ test.describe('Sidebar Tests', () => {
     ];
   
     // Step 3: Verify the patient data section
-    await verifyPatientData(expectedValues);
+    await verifyPatientData(page, expectedValues);
   
     // TODO: Add clinical data rows
     /*
     *  More than 10 patients unpredictability in the data
     */
 
-    clickResetButton();
+    clickResetButton(page);
   });
 
   test("Treatment = Systemic therapy & Drug name = Carboplatin", async () => {
-    await selectTreatmentAndDrug('Systemic therapy', 'Carboplatin');
-    await clickSearchButton();
+    await selectTreatmentAndDrug(page, 'Systemic therapy', 'Carboplatin');
+    await clickSearchButton(page);
   
     // Expected patient data values after applying filters
     const expectedValues = [
@@ -626,7 +412,7 @@ test.describe('Sidebar Tests', () => {
       { name: 'LOCAL-SYNTH_04', firstNumber: '<10', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_04<1020Request Access' }
     ];
   
-    await verifyPatientData(expectedValues);
+    await verifyPatientData(page, expectedValues);
   
     // Clinical data rows to verify
     const clinicalDataRows = [
@@ -639,14 +425,14 @@ test.describe('Sidebar Tests', () => {
       { submitterDonorId: 'DONOR_0031', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: 'Other', deceased: 'true', dateOfBirth: '', dateOfDeath: '' }
     ];
   
-    await verifyClinicalData(clinicalDataRows);
+    await verifyClinicalData(page, clinicalDataRows);
 
-    clickResetButton();
+    clickResetButton(page);
   });
 
   test("Systemic therapy drug names = 'Durvalumab', 'Atezolizumab', 'Tamoxifen'", async () => {
-    await selectDrugs(['Durvalumab', 'Atezolizumab', 'Tamoxifen']);
-    await clickSearchButton();
+    await selectDrugs(page, ['Durvalumab', 'Atezolizumab', 'Tamoxifen']);
+    await clickSearchButton(page);
   
     // Expected patient data values after applying filters
     const expectedValues = [
@@ -657,7 +443,7 @@ test.describe('Sidebar Tests', () => {
       { name: 'LOCAL-SYNTH_04', firstNumber: '11', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_041120Request Access' }
     ];
   
-    await verifyPatientData(expectedValues);
+    await verifyPatientData(page, expectedValues);
   
     // Clinical data rows to verify
     const clinicalDataRows = [
@@ -672,9 +458,9 @@ test.describe('Sidebar Tests', () => {
       { submitterDonorId: 'DONOR_0036', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: '', deceased: 'true', dateOfBirth: '38', dateOfDeath: '53' }
     ];
   
-    await verifyClinicalData(clinicalDataRows);
+    await verifyClinicalData(page, clinicalDataRows);
 
-    clickResetButton();
+    clickResetButton(page);
   });
     
   // Genomic test: SLC2A5, LOC102723996, and SLX9. Positional test: chr=21, start=5030000, end=5030847
@@ -688,7 +474,7 @@ test.describe('Sidebar Tests', () => {
     await page.keyboard.press('Enter');
     await page.waitForTimeout(2000); 
     
-    await clickSearchButton();
+    await clickSearchButton(page);
     
     await page.waitForLoadState('networkidle');
 
@@ -703,13 +489,13 @@ test.describe('Sidebar Tests', () => {
         { name: 'LOCAL-SYNTH_04', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_04020Request Access' }
     ];
 
-    await verifyPatientDataSection(expectedValues);
+    await verifyPatientData(page, expectedValues);
 
     const clinicalDataRows = [
       { submitterDonorId: 'DONOR_0021', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: 'Other', deceased: 'true', dateOfBirth: '42', dateOfDeath: '77' }
     ];
 
-    await verifyClinicalData(clinicalDataRows);
+    await verifyClinicalData(page, clinicalDataRows);
 
     const genomicDataRows = [
       { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
@@ -723,9 +509,9 @@ test.describe('Sidebar Tests', () => {
       { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030847=)', zygosity: 'simple heterozygous' }
     ];
 
-    await verifyGenomicData(genomicDataRows);
+    await verifyGenomicData(page, genomicDataRows);
 
-    clickResetButton();
+    clickResetButton(page);
   });
   
   test("Gene search=SLX9", async () => {
@@ -737,7 +523,7 @@ test.describe('Sidebar Tests', () => {
     await page.keyboard.press('Enter');
     await page.waitForTimeout(2000); 
 
-    await clickSearchButton();
+    await clickSearchButton(page);
   
       const expectedValues = [
           { name: 'LOCAL', firstNumber: '0', secondNumber: '84', thirdNumber: '4', full: 'LLOCAL0-10844' },
@@ -747,17 +533,17 @@ test.describe('Sidebar Tests', () => {
           { name: 'LOCAL-SYNTH_04', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_04020Request Access' }
       ];
   
-      await verifyPatientDataSection(expectedValues);
+      await verifyPatientData(page, expectedValues);
 
       const clinicalDataRows = [];
 
-      await verifyClinicalData(clinicalDataRows);
+      await verifyClinicalData(page, clinicalDataRows);
 
       const genomicDataRows = [];
 
-      await verifyGenomicData(genomicDataRows);
+      await verifyGenomicData(page, genomicDataRows);
 
-      clickResetButton();
+      clickResetButton(page);
   });
     
   test("Positional search: chr=21, start=5030000, end=5030847", async () => {
@@ -780,7 +566,7 @@ test.describe('Sidebar Tests', () => {
     await page.waitForTimeout(2000); 
 
     
-    await clickSearchButton();
+    await clickSearchButton(page);
   
       const expectedValues = [
           { name: 'LOCAL', firstNumber: '1-11', secondNumber: '84', thirdNumber: '4', full: 'LLOCAL1-11844' },
@@ -790,13 +576,13 @@ test.describe('Sidebar Tests', () => {
           { name: 'LOCAL-SYNTH_04', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_04020Request Access' }
       ];
   
-      await verifyPatientDataSection(expectedValues);
+      await verifyPatientData(page, expectedValues);
 
       const clinicalDataRows = [
         { submitterDonorId: 'DONOR_0021', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: 'Other', deceased: 'true', dateOfBirth: '42', dateOfDeath: '77' }
       ];
 
-      await verifyClinicalData(clinicalDataRows);
+      await verifyClinicalData(page, clinicalDataRows);
 
       const genomicDataRows = [
         { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
@@ -810,9 +596,9 @@ test.describe('Sidebar Tests', () => {
         { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030847=)', zygosity: 'simple heterozygous' }
       ];
 
-      await verifyGenomicData(genomicDataRows);
+      await verifyGenomicData(page, genomicDataRows);
 
-      clickResetButton();
+      clickResetButton(page);
   });
     
   test("Node selection", async () => {
@@ -834,7 +620,7 @@ test.describe('Sidebar Tests', () => {
     ];
 
     // Verify patient data
-    await verifyPatientDataSection(expectedValues);
+    await verifyPatientData(page, expectedValues);
 
     // Check LOCAL Node
     await fieldset.locator('label:has-text("LOCAL") input[type="checkbox"]').check();
@@ -851,9 +637,9 @@ test.describe('Sidebar Tests', () => {
     ];
 
     // Verify updated patient data
-    await verifyPatientDataSection(expectedValuesCheck);
+    await verifyPatientData(page, expectedValuesCheck);
 
-    clickResetButton();
+    clickResetButton(page);
 });
   });
 
