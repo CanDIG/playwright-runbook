@@ -4,7 +4,6 @@ import path from "path";
 import { VIEWPORT } from './constants';
 import {
   login,
-  testBarGraphHoverText,
 } from './helpers.ui.ts';
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
@@ -29,8 +28,7 @@ test.describe("Patient Info Page", () => {
     try {
         await page.goto(config.url);
         await login(page, config.username, config.password);
-        await page.goto("http://candig.docker.internal:5080/patientView?patientId=LOCAL-DONOR_0021&programId=LOCAL-SYNTH_02&location=LOCAL");
-    
+        await page.goto(`${config.url}patientView?patientId=LOCAL-DONOR_0021&programId=LOCAL-SYNTH_02&location=LOCAL`);
     } catch (error) {
       console.error("Error during test setup:", error);
       throw error;
