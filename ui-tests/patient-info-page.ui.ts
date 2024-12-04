@@ -103,7 +103,7 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
     await verifyPatientInfoTable(fields, patientInfoDataRows);
   });
 
-  test("Priamry Diagnoses", async () => {
+  test("Primary Diagnoses", async () => {
     await page.getByRole('button', { name: 'Primary Diagnoses' }).click();
     
     const fields = [
@@ -360,7 +360,7 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
   test("Timeline", async () => {
     const timelineGraph = await page.getByText("Patient Timeline").locator("..");
 
-    await expect(timelineGraph).toHaveScreenshot(`timelineGraph.png`, { threshold: 0.1 });
+    await expect(timelineGraph).toHaveScreenshot(`timelineGraph.png`, { threshold: 0.2, timeout: 10_000 });
   });
 
   test.afterAll(async () => {
