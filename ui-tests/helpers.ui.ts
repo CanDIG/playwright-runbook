@@ -125,7 +125,7 @@ export async function verifyClinicalTable(page, clinicalDataRows) {
         await clinicalTable.scrollIntoViewIfNeeded();
         await expect(rowLocator).toBeVisible();
 
-        // Fields to verify
+        
         const fields = [
         { field: "location", value: expected.location },
         { field: "program_id", value: expected.programId },
@@ -162,7 +162,7 @@ export async function verifyGenomicTable(page, genomicDataRows) {
         await genomicTable.scrollIntoViewIfNeeded();
         await expect(rowLocator).toBeVisible();
 
-        // Fields to verify
+        
         const fields = [
             { field: "location", value: expected.location },
             { field: "donor_id", value: expected.donor_id },

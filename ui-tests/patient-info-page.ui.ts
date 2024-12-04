@@ -41,13 +41,13 @@ test.describe("Patient Info Page", () => {
 async function verifyPatientInfoTable(fields, patientInfoDataRows) {
     await page.waitForTimeout(2000); 
     const patientInfoTable = await page.getByRole('grid').first();
-    expect(patientInfoTable).toBeVisible();
+    await expect(patientInfoTable).toBeVisible();
 
     const tableRowsLocator = patientInfoTable.getByRole('row');
     const rowCount = await tableRowsLocator.count();
 
     console.log("Total rows in table:", rowCount);
-    expect(rowCount).toEqual(patientInfoDataRows.length + 1);
+    await expect(rowCount).toEqual(patientInfoDataRows.length + 1);
 
     for (const expected of patientInfoDataRows) {
         // Locate the row based on the first field in the expected object
@@ -77,7 +77,7 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
 
 
   test("Landing Page", async () => {
-    // Fields to verify
+    
     const fields = [
         { field: "cea" },
         { field: "er_status" },
@@ -107,7 +107,7 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
 
   test("Priamry Site", async () => {
     await page.getByRole('button', { name: 'Primary Diagnoses' }).click();
-    // Fields to verify
+    
     const fields = [
       { field: "submitter_primary_diagnosis_id" },
       { field: "cancer_type_code" },
@@ -135,8 +135,8 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
   });
 
   test("Specimens", async () => {
-    await page.getByText('Specimens').click();
-    // Fields to verify
+    await page.getByText('Specimens').first().click();
+    
     const fields = [
       { field: "submitter_specimen_id" },
       { field: "submitter_primary_diagnosis_id" },
@@ -163,12 +163,13 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
     ];
 
     await verifyPatientInfoTable(fields, patientInfoDataRows);
+    await page.getByText('Specimens').first().click();
   });
 
   test("Sample Registrations", async () => {
-    await page.getByText('Specimens').click();
+    await page.getByText('Specimens').first().click();
     await page.getByText('Sample Registrations').click();
-    // Fields to verify
+    
     const fields = [
       { field: "submitter_sample_id" },
       { field: "submitter_specimen_id" },
@@ -205,11 +206,12 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
     ];
 
     await verifyPatientInfoTable(fields, patientInfoDataRows);
+    await page.getByText('Specimens').first().click();
   });
 
   test("Treatments", async () => {
     await page.getByText('Treatments').first().click();
-    // Fields to verify
+    
     const fields = [
       { field: "submitter_treatment_id" },
       { field: "submitter_primary_diagnosis_id" },
@@ -244,12 +246,13 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
     ];
 
     await verifyPatientInfoTable(fields, patientInfoDataRows);
+    await page.getByText('Treatments').first().click();
   });
 
   test("Followups", async () => {
     await page.getByText('Treatments').first().click();
     await page.getByText('Followups').click();
-    // Fields to verify
+    
     const fields = [
       { field: "submitter_follow_up_id" },
       { field: "submitter_treatment_id" },
@@ -268,12 +271,13 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
     ];
 
     await verifyPatientInfoTable(fields, patientInfoDataRows);
+    await page.getByText('Treatments').first().click();
   });
 
   test("Surgeries", async () => {
     await page.getByText('Treatments').first().click();
     await page.getByText('Surgeries').click();
-    // Fields to verify
+
     const fields = [
       { field: "submitter_treatment_id" },
       { field: "submitter_primary_diagnosis_id" },
@@ -296,12 +300,13 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
     ];
 
     await verifyPatientInfoTable(fields, patientInfoDataRows);
+    await page.getByText('Treatments').first().click();
   });
 
   test("Systemic Therapies", async () => {
     await page.getByText('Treatments').first().click();
     await page.getByText('Systemic Therapies').click();
-    // Fields to verify
+    
     const fields = [
       { field: "submitter_treatment_id" },
       { field: "submitter_primary_diagnosis_id" }
@@ -326,12 +331,13 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
     ];
 
     await verifyPatientInfoTable(fields, patientInfoDataRows);
+    await page.getByText('Treatments').first().click();
   });
 
   test("Radiations", async () => {
     await page.getByText('Treatments').first().click();
     await page.getByText('Radiations').click();
-    // Fields to verify
+    
     const fields = [
       { field: "submitter_treatment_id" },
       { field: "submitter_primary_diagnosis_id" },
@@ -350,6 +356,7 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
     ];
 
     await verifyPatientInfoTable(fields, patientInfoDataRows);
+    await page.getByText('Treatments').first().click();
   });
 
   test.afterAll(async () => {
