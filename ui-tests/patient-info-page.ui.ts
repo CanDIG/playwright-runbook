@@ -357,6 +357,12 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
     await page.getByText('Treatments').first().click();
   });
 
+  test("Timeline", async () => {
+    const timelineGraph = await page.getByText("Patient Timeline").locator("..");
+
+    await expect(timelineGraph).toHaveScreenshot(`timelineGraph.png`, { threshold: 0.1 });
+  });
+
   test.afterAll(async () => {
       // Cleanup after all tests
       await page.close();
