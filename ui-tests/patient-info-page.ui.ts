@@ -1,11 +1,10 @@
 import { test, expect } from "@playwright/test";
 import dotenv from "dotenv";
 import path from "path";
-import { VIEWPORT, TIMEOUTS, DEBUG, FILE_PATHS } from './constants';
+import { VIEWPORT } from './constants';
 import {
   login,
-  clickSearchButton,
-  selectPrimarySiteCheckbox,
+  testBarGraphHoverText,
 } from './helpers.ui.ts';
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
@@ -69,6 +68,7 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
     }
 }
 
+  
   /*
   * ==================
   * Tests
