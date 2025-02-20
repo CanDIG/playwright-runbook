@@ -4,7 +4,7 @@ import path from "path";
 import { VIEWPORT } from './constants';
 import {
   login,
-} from './helpers.ui.ts';
+} from './helpers.ts';
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
