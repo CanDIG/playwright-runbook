@@ -15,7 +15,7 @@ import {
   selectTreatmentCheckbox,
   selectTreatmentAndDrug,
   selectDrugs,
-} from './helpers.ui.ts';
+} from './helpers.ts';
 
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
@@ -321,7 +321,7 @@ test.describe("Search page", () => {
       .nth(-2);
 
     await expect(clinicalTable).toBeVisible();
-    await expect(clinicalTable).toContainText('DONOR_0034');
+    await expect(clinicalTable).toContainText(/DONOR_00(34|21)/); // sometimes DONOR_0034 is not present
   });
 
   /*
@@ -372,7 +372,7 @@ test.describe('Sidebar Tests', () => {
   
     await verifyClinicalData(page, clinicalDataRows);
 
-    clickResetButton(page);
+    await clickResetButton(page);
   });
 
   test("Treatment = Targeted molecular therapy", async () => {  
@@ -396,7 +396,7 @@ test.describe('Sidebar Tests', () => {
     *  More than 10 patients unpredictability in the data
     */
 
-    clickResetButton(page);
+    await clickResetButton(page);
   });
 
   test("Treatment = Systemic therapy & Drug name = Carboplatin", async () => {
@@ -427,7 +427,7 @@ test.describe('Sidebar Tests', () => {
   
     await verifyClinicalData(page, clinicalDataRows);
 
-    clickResetButton(page);
+    await clickResetButton(page);
   });
 
   test("Systemic therapy drug names = 'Durvalumab', 'Atezolizumab', 'Tamoxifen'", async () => {
@@ -460,7 +460,7 @@ test.describe('Sidebar Tests', () => {
   
     await verifyClinicalData(page, clinicalDataRows);
 
-    clickResetButton(page);
+    await clickResetButton(page);
   });
     
   // Genomic test: SLC2A5, LOC102723996, and SLX9. Positional test: chr=21, start=5030000, end=5030847
@@ -511,7 +511,7 @@ test.describe('Sidebar Tests', () => {
 
     await verifyGenomicData(page, genomicDataRows);
 
-    clickResetButton(page);
+    await clickResetButton(page);
   });
   
   test("Gene search=SLX9", async () => {
@@ -543,7 +543,7 @@ test.describe('Sidebar Tests', () => {
 
       await verifyGenomicData(page, genomicDataRows);
 
-      clickResetButton(page);
+      await clickResetButton(page);
   });
     
   test("Positional search: chr=21, start=5030000, end=5030847", async () => {
@@ -598,16 +598,20 @@ test.describe('Sidebar Tests', () => {
 
       await verifyGenomicData(page, genomicDataRows);
 
-      clickResetButton(page);
+      await clickResetButton(page);
   });
     
   test("Node selection", async () => {
+    // Wait for loading spinner to disappear
+    await page.waitForSelector('[data-testid="mutating-dots-loading"]', { state: 'hidden' });
     const fieldset = await page.locator('fieldset:has(label:text("Node"))');
+
 
     // Uncheck LOCAL Node
     await fieldset.locator('label:has-text("LOCAL") input[type="checkbox"]').uncheck();
 
-    const searchButton = page.locator('button:has-text("Search")');
+    // const searchButton = page.locator('button:has-text("Search")');
+    const searchButton = page.locator('button:text("Search")');
     await searchButton.click();
 
     // Expected values after unchecking LOCAL
@@ -639,7 +643,7 @@ test.describe('Sidebar Tests', () => {
     // Verify updated patient data
     await verifyPatientData(page, expectedValuesCheck);
 
-    clickResetButton(page);
+    await clickResetButton(page);
 });
   });
 

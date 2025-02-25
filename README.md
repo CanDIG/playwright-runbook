@@ -39,8 +39,8 @@ It is recommended to run UI or API tests separately with specific settings. Make
 ### For UI
 
 ```bash
-npx playwright test --project=ui --workers=1          # Run all tests with a single worker
-npx playwright test --project=ui --ui                 # Run interactive mode
+npx playwright test --project=ui                      # Recommend way to run all UI tests
+npx playwright test --project=ui --ui                 # Run interactive mode, should be used for debug only
 npx playwright test summary                           # Run a specific file
 npx playwright test summary -g "diagnosis graph"      # Run a single test
 ```

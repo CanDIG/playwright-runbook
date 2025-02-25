@@ -187,12 +187,14 @@ export async function verifyGenomicTable(page, genomicDataRows) {
 }
 
 export const clickSearchButton = async (page) => {
-    const searchButton = page.locator('button:has-text("Search")');
+    // const searchButton = page.locator('button:has-text("Search")');
+    const searchButton = page.locator('button:text("Search")');
     await searchButton.click();
 };
 
 export const clickResetButton = async (page) => {
-    const resetButton = page.locator('button:has-text("Reset")');
+    // const resetButton = page.locator('button:has-text("Reset")');
+    const resetButton = page.locator('button:text("Reset")');
     await resetButton.click();
 };
 
