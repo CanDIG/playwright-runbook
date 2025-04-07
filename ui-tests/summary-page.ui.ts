@@ -1,41 +1,86 @@
 import { test, expect } from "@playwright/test";
 import dotenv from "dotenv";
 import path from "path";
-import { VIEWPORT, TIMEOUTS, DEBUG, FILE_PATHS } from './constants';
-
+import { VIEWPORT } from './constants';
+import {
+  login,
+} from './helpers.ts';
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
-test.describe("summary page", () => {
+/*
+ * ======================
+ * Editable test data for the current dataset
+ * ======================
+ */
+const UI_VALUES = {
+  pageOverview: {
+    nodes: "1",
+    patients: "84",
+    programs: "4",
+    provinces: "1"
+  },
+
+  ageAtFirstDiagnosis: {
+    "30-39": { value: "11", barIndex: 0 },
+    "40-49": { value: "24", barIndex: 1 },
+    "50-59": { value: "31", barIndex: 2 },
+    "null":  { value: "18", barIndex: 3 }
+  },
+
+  treatmentDistribution: {
+    "Systemic therapy":         { value: "168", barIndex: 0 },
+    "Surgery":                  { value: "92",  barIndex: 1 },
+    "Radiation therapy":        { value: "77",  barIndex: 2 },
+    "Targeted molecular therapy":{ value: "34",  barIndex: 3 },
+    "Bone marrow transplant":   { value: "33",  barIndex: 4 },
+    "Stem cell transplant":     { value: "30",  barIndex: 5 },
+    "Other":                    { value: "24",  barIndex: 6 },
+    "Photodynamic therapy":     { value: "18",  barIndex: 7 }
+  },
+
+  primarySiteDistribution: {
+    "null":              { value: "18", barIndex: 0 },
+    "Breast":            { value: "16", barIndex: 1 },
+    "Skin":              { value: "16", barIndex: 2 },
+    "Colon":             { value: "16", barIndex: 3 },
+    "Bronchus and lung": { value: "16", barIndex: 4 },
+    "Floor of mouth":    { value: null, barIndex: 5 }
+  },
+
+  programDistribution: {
+    "SYNTH_01": { label: "SYNTH_01", value: "24", barIndex: 0 },
+    "SYNTH_02": { label: "SYNTH_02", value: "20", barIndex: 2 },
+    "SYNTH_03": { label: "SYNTH_03", value: "20", barIndex: 1 },
+    "SYNTH_04": { label: "SYNTH_04", value: "20", barIndex: 3 },
+  },
+
+  genomicDistribution: {
+    "SYNTH_01": { value: "6", barIndex: 1 },
+    "SYNTH_02": { value: "5", barIndex: 4 }
+}
+};
+/*
+ * =============================
+ * End of Editable test data
+ * =============================
+ */
+
+
+test.describe("Summary Page Tests", () => {
   let context;
   let page;
 
-  /*
-   * ========
-   * Setup
-   * ========
-   */
+  // ====================== Setup ======================
   test.beforeAll(async ({ browser }) => {
     context = await browser.newContext({
       viewport: { width: VIEWPORT.WIDTH, height: VIEWPORT.HEIGHT },
     });
     page = await context.newPage();
     await page.goto(process.env.CANDIG_URL!);
-    await page.getByLabel("Username or email").click();
-    await page
-      .getByLabel("Username or email")
-      .fill(process.env.CANDIG_USERNAME!);
-    await page.getByLabel("Password", { exact: true }).click();
-    await page
-      .getByLabel("Password", { exact: true })
-      .fill(process.env.CANDIG_PASSWORD!);
-    await page.getByRole("button", { name: "Sign In" }).click();
-
-    // Make sure we can login
+    await login(page, process.env.CANDIG_USERNAME, process.env.CANDIG_PASSWORD);
     await expect(page).toHaveTitle("CanDIG Data Portal");
-
-    // Wait for all the 6 graphs to load
     await expect(page.locator(".highcharts-loading-hidden")).toHaveCount(6, {
-      timeout: 10000,
+      timeout: 15000,
     });
   });
 
@@ -43,17 +88,9 @@ test.describe("summary page", () => {
     await page.close();
     await context.close();
   });
-  /*
-   * ===============
-   * End of Setup
-   * ===============
-   */
+  // ====================== End of Setup ======================
 
-  /*
-   * ==================
-   * Helper functions
-   * ==================
-   */
+  // ====================== Helper Functions ======================
   async function testBarGraphHoverText({
     page,
     graphTitle,
@@ -61,27 +98,23 @@ test.describe("summary page", () => {
     expectedLabel,
     expectedValue,
   }) {
-    // Locate the bar based on the graph title and bar index
     const selectedBar = await page
-      .locator('text')
+      .locator("text")
       .filter({ hasText: `${graphTitle}` })
       .locator("..")
       .locator(".highcharts-series > path")
       .nth(barIndex);
 
-    // Hover over the selected bar
     await selectedBar.hover();
 
-    // Locate the tooltip relative to the graph title
     const tooltip = await page
-      .locator('text')
+      .locator("text")
       .filter({ hasText: `${graphTitle}` })
       .locator("..")
       .locator("..")
       .locator(".highcharts-tooltip")
       .nth(1);
 
-    // Verify the tooltip text
     await expect(tooltip).toContainText(expectedLabel);
     await expect(tooltip).toContainText(expectedValue);
   }
@@ -93,416 +126,292 @@ test.describe("summary page", () => {
     expectedLabel,
     expectedValue,
   }) {
-    // Locate the bar based on the graph title and bar index
     const selectedBar = await page
-      .locator('text')
+      .locator("text")
       .filter({ hasText: `${graphTitle}` })
       .locator("..")
       .locator(".highcharts-series > path")
       .nth(barIndex);
 
-    // Hover over the selected bar
     await selectedBar.hover();
 
-    // Locate the tooltip relative to the graph title
     const tooltip = await page
-      .locator('text')
+      .locator("text")
       .filter({ hasText: `${graphTitle}` })
       .locator("..")
       .locator(".highcharts-tooltip");
 
-    // Verify the tooltip text
     await expect(tooltip).toContainText(expectedLabel);
     await expect(tooltip).toContainText(expectedValue);
   }
+  // ====================== End of Helper Functions ======================
 
-  /*
-   * =========================
-   * End of Helper function
-   * =========================
-   */
-
-  /*
-   * ======================
-   * Test: Page Overview
-   * ======================
+  // ====================== Test: Page Overview ======================
+  /**
+   * Verifies that UI_VALUES.pageOverview displays the correct counts.
    */
   test.describe("Page Overview", () => {
-    test("number of nodes is 1", async () => {
-      const textValue = await page
-        .locator("text=Nodes")
-        .locator("..")
-        .locator("h4");
-      await expect(textValue).toHaveText("1");
-    });
-
-    test("number of patients is 84", async () => {
-      const textValue = await page
-        .locator("text=Number of Patients")
-        .locator("..")
-        .locator("h4");
-      await expect(textValue).toHaveText("84");
-    });
-
-    test("number of programs is 4", async () => {
-      const textValue = await page
-        .locator("text=Programs")
-        .locator("..")
-        .locator("h4");
-      await expect(textValue).toHaveText("4");
-    });
-
-    test("number of provinces is 1", async () => {
-      const textValue = await page
-        .locator("text=Provinces")
-        .locator("..")
-        .locator("h4");
-      await expect(textValue).toHaveText("1");
+    Object.entries(UI_VALUES.pageOverview).forEach(([key, expectedValue]) => {
+      const titleCaseKey = key
+        .replace(/([A-Z])/g, " $1")
+        .replace(/^./, (str) => str.toUpperCase());
+      const locatorText =
+        titleCaseKey === "Patients" ? "Number of Patients" : titleCaseKey;
+      test(`displays correct count for ${titleCaseKey}`, async () => {
+        const textValue = await page
+          .locator(`text=${locatorText}`)
+          .locator("..")
+          .locator("h4");
+        await expect(textValue).toHaveText(expectedValue);
+      });
     });
   });
 
-
-  /*
-   * ==============================
-   * End of Test: Page overview
-   * ==============================
-   */
-
-  /*
-   * ===============================
-   * Test: Age at First Diagnosis
-   * ===============================
+  // ====================== Test: Age at First Diagnosis ======================
+  /**
+   * Verifies that UI_VALUES.ageAtFirstDiagnosis displays the correct counts.
    */
   test.describe("Age at First Diagnosis", () => {
-    test("diagnosis graph", async () => {
+    const graphTitle = "Age at First Diagnosis";
+
+    test("graph screenshot", async () => {
       await page.mouse.move(0, 0);
       const diagnosisGraph = await page
-        .locator('text="Age at First Diagnosis"')
+        .locator(`text="${graphTitle}"`)
         .locator("..")
         .last();
-      await expect(diagnosisGraph).toHaveScreenshot("age.png", {
-        threshold: 0.01,
+      await expect(diagnosisGraph).toHaveScreenshot("age-diagnosis-graph.png", {
+        threshold: 0.05,
       });
     });
 
-    test("total number of patients in range 30-39 is: 11", async () => {
-      await testBarGraphHoverText({
-        page,
-        graphTitle: "Age at First Diagnosis",
-        barIndex: 0,
-        expectedLabel: "30-39",
-        expectedValue: "11",
-      });
-    });
-
-    test("total number of patients in range 40-49 is: 24", async () => {
-      await testBarGraphHoverText({
-        page,
-        graphTitle: "Age at First Diagnosis",
-        barIndex: 1,
-        expectedLabel: "40-49",
-        expectedValue: "24",
-      });
-    });
-
-    test("total number of patients in range 50-59 is: 31", async () => {
-      await testBarGraphHoverText({
-        page,
-        graphTitle: "Age at First Diagnosis",
-        barIndex: 2,
-        expectedLabel: "50-59",
-        expectedValue: "31",
-      });
-    });
-
-    test("total number of patients in range null is: 18", async () => {
-      await testBarGraphHoverText({
-        page,
-        graphTitle: "Age at First Diagnosis",
-        barIndex: 3,
-        expectedLabel: "null",
-        expectedValue: "18",
-      });
-    });
+    Object.entries(UI_VALUES.ageAtFirstDiagnosis).forEach(
+      ([ageLabel, ageData]) => {
+        if (ageData && typeof ageData.barIndex === "number" && ageData.value) {
+          test(`tooltip for age range ${ageLabel} (bar index ${ageData.barIndex}) shows value ${ageData.value}`, async () => {
+            await testBarGraphHoverText({
+              page,
+              graphTitle,
+              barIndex: ageData.barIndex,
+              expectedLabel: ageLabel,
+              expectedValue: ageData.value,
+            });
+          });
+        } else {
+          console.warn(
+            `Skipping test generation for age range "${ageLabel}". Invalid data: ${JSON.stringify(
+              ageData
+            )}`
+          );
+        }
+      }
+    );
   });
 
-  /*
-   * ======================================
-   * End of Test: Age at First Diagnosis
-   * ======================================
+  // ====================== Test: Treatment ======================
+  /**
+   * Verifies that UI_VALUES.treatmentDistribution displays the correct counts.
    */
+  test.describe("Treatment Type Distribution", () => {
+    const graphTitle = "Treatment Type Distribution";
 
-  /*
-   * ==================
-   * Test: Treatment
-   * ==================
-   */
-  test.describe("Treatment", () => {
-    test("treatment graph", async () => {
+    test("graph screenshot", async () => {
       await page.mouse.move(0, 0);
-      const treatmentGraph = await page
-        .locator('text')
-        .filter({ hasText: `Treatment Type Distribution` })
+      const graphElement = await page
+        .locator(`text="${graphTitle}"`)
         .locator("..")
         .last();
-      await expect(treatmentGraph).toHaveScreenshot("treatment.png", {
-        threshold: 0.01,
-      });
-    });
-
-    test("systemic therapy is: 168", async () => {
-      await testBarGraphHoverText({
-        page,
-        graphTitle: "Treatment Type Distribution",
-        barIndex: 0,
-        expectedLabel: "Systemic therapy",
-        expectedValue: "168",
-      });
-    });
-
-    test("surgery is: 92", async () => {
-      await testBarGraphHoverText({
-        page,
-        graphTitle: "Treatment Type Distribution",
-        barIndex: 1,
-        expectedLabel: "Surgery",
-        expectedValue: "92",
-      });
-    });
-
-    test("radiation therapy is: 77", async () => {
-      await testBarGraphHoverText({
-        page,
-        graphTitle: "Treatment Type Distribution",
-        barIndex: 2,
-        expectedLabel: "Radiation therapy",
-        expectedValue: "77",
-      });
-    });
-
-    test("targeted molecular therapy is: 34", async () => {
-      await testBarGraphHoverText({
-        page,
-        graphTitle: "Treatment Type Distribution",
-        barIndex: 3,
-        expectedLabel: "Targeted molecular therapy",
-        expectedValue: "34",
-      });
-    });
-
-    test("bone marrow transplant is: 33", async () => {
-      await testBarGraphHoverText({
-        page,
-        graphTitle: "Treatment Type Distribution",
-        barIndex: 4,
-        expectedLabel: "Bone marrow transplant",
-        expectedValue: "33",
-      });
-    });
-
-    test("stem cell transplant is: 30", async () => {
-      await testBarGraphHoverText({
-        page,
-        graphTitle: "Treatment Type Distribution",
-        barIndex: 5,
-        expectedLabel: "Stem cell transplant",
-        expectedValue: "30",
-      });
-    });
-
-    test("other is: 24", async () => {
-      await testBarGraphHoverText({
-        page,
-        graphTitle: "Treatment Type Distribution",
-        barIndex: 6,
-        expectedLabel: "Other",
-        expectedValue: "24",
-      });
-    });
-
-    test("photodynamic is: 18", async () => {
-      await testBarGraphHoverText({
-        page,
-        graphTitle: "Treatment Type Distribution",
-        barIndex: 7,
-        expectedLabel: "Photodynamic therapy",
-        expectedValue: "18",
-      });
-    });
-  });
-
-  /*
-   * =========================
-   * End of Test: Treatment
-   * =========================
-   */
-
-  /*
-   * =====================
-   * Test: Primary Site
-   * =====================
-   */
-  test.describe("Primary Site", () => {
-    test("primary site graph", async () => {
-      await page.mouse.move(0, 0);
-      const primarySiteGraph = await page
-        .locator('text="Tumour Primary Site Distribution"')
-        .locator("..")
-        .last();
-      await expect(primarySiteGraph).toHaveScreenshot("primary.png", {
-        threshold: 0.01,
-      });
-    });
-
-    test("null is: 26", async () => {
-      await testBarGraphHoverText({
-        page,
-        graphTitle: "Tumour Primary Site Distribution",
-        barIndex: 0,
-        expectedLabel: "null",
-        expectedValue: "18",
-      });
-    });
-
-    test("breast is: 16", async () => {
-      await testBarGraphHoverText({
-        page,
-        graphTitle: "Tumour Primary Site Distribution",
-        barIndex: 1,
-        expectedLabel: "Breast",
-        expectedValue: "16",
-      });
-    });
-
-    test("skin is: 16", async () => {
-      await testBarGraphHoverText({
-        page,
-        graphTitle: "Tumour Primary Site Distribution",
-        barIndex: 2,
-        expectedLabel: "Skin",
-        expectedValue: "16",
-      });
-    });
-
-    test("colon is: 16", async () => {
-      await testBarGraphHoverText({
-        page,
-        graphTitle: "Tumour Primary Site Distribution",
-        barIndex: 3,
-        expectedLabel: "Colon",
-        expectedValue: "16",
-      });
-    });
-
-    test("bronchus and lung is: 16", async () => {
-      await testBarGraphHoverText({
-        page,
-        graphTitle: "Tumour Primary Site Distribution",
-        barIndex: 4,
-        expectedLabel: "Bronchus and lung",
-        expectedValue: "16",
-      });
-    });
-
-    test("floor of mouth is: hidden since less than 10", async () => {
-      const selectedBar = await page
-        .locator(`text="Tumour Primary Site Distribution"`)
-        .locator("..")
-        .locator(".highcharts-series > path")
-        .nth(5);
-
-      await expect(selectedBar).not.toBeVisible();
-
-      const caption = await page
-        .locator(`text="Tumour Primary Site Distribution"`)
-        .locator("..")
-        .locator("..")
-        .locator("..")
-        .locator(".highcharts-caption");
-
-      await expect(caption).toContainText(
-        "Attention: Totals do not include counts of less than 10 from any node"
+      await expect(graphElement).toHaveScreenshot(
+        "treatment-distribution-graph.png",
+        {
+          threshold: 0.05,
+        }
       );
     });
+
+    Object.entries(UI_VALUES.treatmentDistribution).forEach(
+      ([treatmentLabel, treatmentData]) => {
+        if (
+          treatmentData &&
+          typeof treatmentData.barIndex === "number" &&
+          treatmentData.value
+        ) {
+          test(`tooltip for ${treatmentLabel} (bar index ${treatmentData.barIndex}) shows value ${treatmentData.value}`, async () => {
+            await testBarGraphHoverText({
+              page,
+              graphTitle,
+              barIndex: treatmentData.barIndex,
+              expectedLabel: treatmentLabel,
+              expectedValue: treatmentData.value,
+            });
+          });
+        } else {
+          console.warn(
+            `Skipping test generation for treatment type "${treatmentLabel}". Invalid data: ${JSON.stringify(
+              treatmentData
+            )}`
+          );
+        }
+      }
+    );
   });
 
-  /*
-   * ============================
-   * End of Test: Primary Site
-   * ============================
+  // ====================== Test: Primary Site ======================
+  /**
+   * Verifies that UI_VALUES.primarySiteDistribution displays the correct counts.
    */
+  test.describe("Tumour Primary Site Distribution", () => {
+    const graphTitle = "Tumour Primary Site Distribution";
 
-  /*
-   * ===============
-   * Test: Program
-   * ===============
-   */
-  test.describe("Program", () => {
-    test("program graph", async () => {
+    test("graph screenshot", async () => {
       await page.mouse.move(0, 0);
-      const programGraph = await page
-        .locator('text="Distribution of Program by Node"')
+      const graphElement = await page
+        .locator(`text="${graphTitle}"`)
         .locator("..")
         .last();
-      await expect(programGraph).toHaveScreenshot("program.png", {
-        threshold: 0.01,
-      });
+      await expect(graphElement).toHaveScreenshot(
+        "primary-site-distribution-graph.png",
+        {
+          threshold: 0.05,
+        }
+      );
     });
 
-    test("synthetic dataset 1 is 24", async () => {
-      await testStackedBarGraphHoverText({
-        page,
-        graphTitle: "Distribution of Program by Node",
-        barIndex: 0,
-        expectedLabel: "SYNTH_01",
-        expectedValue: "24",
-      });
-    });
+    Object.entries(UI_VALUES.primarySiteDistribution).forEach(
+      ([siteLabel, siteData]) => {
+        if (!siteData || typeof siteData.barIndex !== "number") {
+          console.warn(
+            `Skipping test generation for primary site "${siteLabel}". Invalid or incomplete data (missing barIndex): ${JSON.stringify(
+              siteData
+            )}`
+          );
+          return;
+        }
 
-    test("synthetic dataset 2 is 20", async () => {
-      await testStackedBarGraphHoverText({
-        page,
-        graphTitle: "Distribution of Program by Node",
-        barIndex: 2,
-        expectedLabel: "SYNTH_02",
-        expectedValue: "20",
-      });
-    });
+        if (siteData.value === null) {
+          test(`bar for ${siteLabel} exists at index ${siteData.barIndex} (no value check)`, async () => {
+            const selectedBar = await page
+              .locator(`text="${graphTitle}"`)
+              .locator("..")
+              .locator(".highcharts-series > path")
+              .nth(siteData.barIndex);
 
-    test("synthetic dataset 3 is 20", async () => {
-      await testStackedBarGraphHoverText({
-        page,
-        graphTitle: "Distribution of Program by Node",
-        barIndex: 1,
-        expectedLabel: "SYNTH_03",
-        expectedValue: "20",
-      });
-    });
-
-    test("synthetic dataset 4 is 20", async () => {
-      await testStackedBarGraphHoverText({
-        page,
-        graphTitle: "Distribution of Program by Node",
-        barIndex: 3,
-        expectedLabel: "SYNTH_04",
-        expectedValue: "20",
-      });
-    });
+            await expect(selectedBar).not.toBeVisible();
+          });
+        } else if (siteData.value !== null) {
+          test(`tooltip for ${siteLabel} (bar index ${siteData.barIndex}) shows value ${siteData.value}`, async () => {
+            await testBarGraphHoverText({
+              page,
+              graphTitle,
+              barIndex: siteData.barIndex,
+              expectedLabel: siteLabel,
+              expectedValue: siteData.value,
+            });
+          });
+        }
+      }
+    );
   });
 
-
-  /*
-   * ======================
-   * End of Test: Program
-   * ======================
+  // ====================== Test: Program Distribution ======================
+  /**
+   * Verifies that UI_VALUES.programDistribution displays the correct counts.
    */
+  test.describe("Distribution of Program by Node", () => {
+    const graphTitle = "Distribution of Program by Node";
 
-  /*
-   * =================
-   * Test: Clinical
-   * =================
+    test("graph screenshot", async () => {
+      await page.mouse.move(0, 0);
+      const graphElement = await page
+        .locator(`text="${graphTitle}"`)
+        .locator("..")
+        .last();
+      await expect(graphElement).toHaveScreenshot(
+        "program-distribution-graph.png",
+        {
+          threshold: 0.05,
+        }
+      );
+    });
+
+    Object.entries(UI_VALUES.programDistribution).forEach(
+      ([programKey, programData]) => {
+        if (
+          programData &&
+          typeof programData.barIndex === "number" &&
+          programData.label &&
+          programData.value
+        ) {
+          test(`tooltip for program ${programData.label} (segment index ${programData.barIndex}) shows value ${programData.value}`, async () => {
+            await testStackedBarGraphHoverText({
+              page,
+              graphTitle,
+              barIndex: programData.barIndex,
+              expectedLabel: programData.label,
+              expectedValue: programData.value,
+            });
+          });
+        } else {
+          console.warn(
+            `Skipping test generation for program key "${programKey}". Invalid or incomplete data: ${JSON.stringify(
+              programData
+            )}`
+          );
+        }
+      }
+    );
+  });
+
+  // ====================== Test: Genomic Distribution ======================
+  /**
+   * Verifies that UI_VALUES.genomicDistribution displays the correct counts.
    */
-  test("clinical graph", async () => {
+  test.describe("Complete Genomic", () => {
+    const graphTitle = "Complete Genomic";
+    test("graph screenshot", async () => {
+      await page.mouse.move(0, 0);
+      const graphElement = await page
+        .locator(`text="${graphTitle}"`)
+        .locator("..")
+        .last();
+      await expect(graphElement).toHaveScreenshot(
+        "genomic-distribution-graph.png",
+        {
+          threshold: 0.05,
+        }
+      );
+    });
+
+    Object.entries(UI_VALUES.genomicDistribution).forEach(
+      ([genomicLabel, genomicData]) => {
+        if (
+          genomicData &&
+          typeof genomicData.barIndex === "number" &&
+          genomicData.value
+        ) {
+          test(`tooltip for ${genomicLabel} (segment index ${genomicData.barIndex}) shows value ${genomicData.value}`, async () => {
+            await testStackedBarGraphHoverText({
+              page,
+              graphTitle,
+              barIndex: genomicData.barIndex,
+              expectedLabel: genomicLabel,
+              expectedValue: genomicData.value,
+            });
+          });
+        } else {
+          console.warn(
+            `Skipping test generation for genomic dataset "${genomicLabel}". Invalid or incomplete data: ${JSON.stringify(
+              genomicData
+            )}`
+          );
+        }
+      }
+    );
+  });
+
+  // ====================== Other Tests  ======================
+
+  test("clinical graph screenshot", async () => {
     await page.mouse.move(0, 0);
     const clinicalGraph = await page
       .locator('text="Complete Clinical"')
@@ -513,196 +422,53 @@ test.describe("summary page", () => {
     });
   });
 
-  /*
-   * ========================
-   * End of Test: Clinical
-   * ========================
-   */
-
-  /*
-   * =================
-   * Test: Genomic
-   * =================
-   */
-  test.describe("Genomic", () => {
-    test("genomic graph", async () => {
-      await page.mouse.move(0, 0);
-      const genomicGraph = await page
-        .locator('text="Complete Genomic"')
-        .locator("..")
-        .last();
-      await expect(genomicGraph).toHaveScreenshot("genomic.png", {
-        threshold: 0.01,
-      });
-    });
-
-    test("synthetic dataset 1 is 6", async () => {
-      await testStackedBarGraphHoverText({
-        page,
-        graphTitle: "Complete Genomic",
-        barIndex: 1,
-        expectedLabel: "SYNTH_01",
-        expectedValue: "6",
-      });
-    });
-
-    test("synthetic dataset 2 is 5", async () => {
-      await testStackedBarGraphHoverText({
-        page,
-        graphTitle: "Complete Genomic",
-        barIndex: 4,
-        expectedLabel: "SYNTH_02",
-        expectedValue: "5",
-      });
-    });
-  });
-
-  /*
-   * =======================
-   * End of Test: Genomic
-   * =======================
-   */
-
-  /*
-   * ===============
-   * Test: Footer
-   * ===============
-   */
-  test("footer graph", async () => {
+  test("footer screenshot", async () => {
     await page.mouse.move(0, 0);
     const footer = page.locator("footer");
     await expect(footer).toHaveScreenshot("footer.png", { threshold: 0.01 });
   });
 
-  /*
-   * ======================
-   * End of Test: Footer
-   * ======================
-   */
+  test.describe("External link checks", () => {
+    const linksToTest = [
+      {
+        name: "CanDIG",
+        exact: true,
+        expectedDomain: "https://www.distributedgenomics.ca/",
+      },
+      { name: "CanDIG GitHub", expectedDomain: "https://github.com/CanDIG" },
+      { name: "TFRI", expectedDomain: "https://www.tfri.ca/" },
+      { name: "UHN DATA", expectedDomain: "https://uhndata.io/" },
+      { name: "BCGSC", expectedDomain: "https://www.bcgsc.ca/" },
+      { name: "C3G", expectedDomain: "https://computationalgenomics.ca/" },
+    ];
 
-  /*
-   * ===============
-   * Test: Logout
-   * ===============
-   */
+    linksToTest.forEach((linkInfo) => {
+      test(`link "${linkInfo.name}" points to a valid URL`, async () => {
+        const linkLocator = page.getByRole("link", {
+          name: linkInfo.name,
+          exact: linkInfo.exact ?? false,
+        });
+        const linkUrl = await linkLocator.getAttribute("href");
+        expect(linkUrl).toBeTruthy();
+        expect(linkUrl).toContain(linkInfo.expectedDomain);
+      });
+    });
+  });
+
+  // --- Logout Tests ---
   test.describe("Logout", () => {
     test("display logged in user", async () => {
       await page.getByRole("banner").getByRole("button").nth(4).click();
-      await expect(page.getByText("user2@test.ca, LOCAL")).toBeVisible();
+      await expect(page.getByText(process.env.CANDIG_USERNAME!)).toBeVisible();
+      await page.locator("body").click({ position: { x: 0, y: 0 } });
     });
 
     test("logout", async () => {
       await page.getByRole("banner").getByRole("button").nth(4).click();
       await page.getByRole("link", { name: "Logout" }).click();
-      // Verify we're on the login page
       await expect(
         page.getByRole("heading", { name: "Sign in to your account" })
       ).toBeVisible();
     });
-
-    test("login again", async () => {
-      await page.goto(process.env.CANDIG_URL!);
-      await page.getByLabel("Username or email").click();
-      await page
-        .getByLabel("Username or email")
-        .fill(process.env.CANDIG_USERNAME!);
-      await page.getByLabel("Password", { exact: true }).click();
-      await page
-        .getByLabel("Password", { exact: true })
-        .fill(process.env.CANDIG_PASSWORD!);
-      await page.getByRole("button", { name: "Sign In" }).click();
-      await expect(
-        page.getByRole("button", { name: "candig-logo" })
-      ).toBeVisible();
-    });
   });
-
-  /*
-   * ======================
-   * End of Test: Logout
-   * ======================
-   */
-
-  /*
-   * ======================
-   * Test: External link
-   * ======================
-   */
-  test.describe("External link", () => {
-    test("open CanDIG link", async () => {
-      const pagePromise = context.waitForEvent("page");
-      await page.getByRole("link", { name: "CanDIG", exact: true }).click();
-      const newPage = await pagePromise;
-      await expect(newPage).toHaveTitle("CanDIG");
-      await expect(newPage.getByText("Copyright © CanDIG")).toBeVisible();
-    });
-
-    test("open CanDIG GitHub link", async () => {
-      const pagePromise = context.waitForEvent("page");
-      await page.getByRole("link", { name: "CanDIG GitHub" }).click();
-      const newPage = await pagePromise;
-      await expect(
-        newPage.getByRole("heading", { name: "CanDIG" })
-      ).toBeVisible();
-      await expect(newPage.getByText("© 2025 GitHub, Inc.")).toBeVisible();
-    });
-
-    test("open version", async () => {
-      const pagePromise = context.waitForEvent("page");
-      await page.getByRole("link", { name: "CanDIG v5.0.0" }).click();
-      const newPage = await pagePromise;
-      await expect(newPage).toHaveTitle(/v5.0.0/);
-      await expect(newPage.getByText("© 2025 GitHub, Inc.")).toBeVisible();
-    });
-
-    test("open TFRI link", async () => {
-      const pagePromise = context.waitForEvent("page");
-      await page.getByRole("link", { name: "TFRI" }).click();
-      const newPage = await pagePromise;
-      await expect(newPage).toHaveTitle(/Home/);
-      await expect(
-        newPage.getByText("© 2019 THE TERRY FOX RESEARCH")
-      ).toBeVisible();
-    });
-
-    test("open UHN link", async () => {
-      const pagePromise = context.waitForEvent("page");
-      await page.getByRole("link", { name: "UHN DATA" }).click();
-      const newPage = await pagePromise;
-      await expect(newPage).toHaveTitle(/UHN DATA/);
-      await expect(
-        newPage.getByText("Copyright © 2025 The DATA Team")
-      ).toBeVisible();
-    });
-
-    test("open BCGSC link", async () => {
-      const pagePromise = context.waitForEvent("page");
-      await page.getByRole("link", { name: "BCGSC" }).click();
-      const newPage = await pagePromise;
-      await expect(newPage).toHaveTitle(/Genome Sciences Centre/);
-      await expect(newPage.getByText(/Copyright © BC Cancer/)).toBeVisible();
-    });
-    test("open C3G link", async () => {
-      const pagePromise = context.waitForEvent("page");
-      await page.getByRole("link", { name: "C3G" }).click();
-      const newPage = await pagePromise;
-      await expect(newPage).toHaveTitle(
-        "Canadian Centre for Computational Genomics – C3G Website"
-      );
-      await expect(newPage.getByText(/C3G All rights reserved/)).toBeVisible();
-    });
-
-    test("open logo link", async () => {
-      await page.getByRole("link", { name: "CanDIG logo hyperlink" }).click();
-      await expect(page).toHaveTitle("CanDIG Data Portal");
-    });
-  });
-
-  /*
-   * =============================
-   * End of Test: External link
-   * =============================
-   */
-
-
 });

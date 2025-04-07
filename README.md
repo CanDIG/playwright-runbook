@@ -16,21 +16,19 @@ npx playwright install
 
 ## Configuring Environment Variables
 
-Rename `.env.sample` to `.env`, and update the environment values. Credentials can be found in the `CanDIGv2/tmp/keycloak` folder.
+Rename `.env.ui.sample` to `.env`, and update the environment values. Credentials can be found in the `CanDIGv2/tmp/keycloak` folder.
 
 For local testing:
 
-- Set the URL to `localhost` or `candig.docker.internal`.
+- Set the URL to `http://candig.docker.internal:5080/`.
 
 For dev testing:
 
-- Set the URL to your dev server (e.g., `candig-dev.hpc4health.local`)
+- Set the URL to your dev server (e.g., `https://candig-demo.uhndata.io/`)
 
 For prod testing:
 
-- Set the URL to your production server (e.g., `candig.uhnresearch.ca`).
-
-Note: The `QUERY_SERVICE_TOKEN` can be ignored unless you want to run katsu explorer api.
+- Set the URL to your production server (e.g., `https://candig.uhnresearch.ca/`).
 
 ## Running Tests
 
@@ -69,7 +67,7 @@ The `ui-tests` folder contains tests that simulate user interactions with the da
 
 All UI tests should be placed in the `ui-tests` folder and use the `.ui.ts` extension for proper test matching.
 
-### API Tests
+### API Tests (needs update)
 
 The `api-tests` folder contains a series of API calls to assess service performance, primarily focusing on API response times. It is recommended to run API tests only with parallel workers and repeat tests multiple times to gather sufficient data for later [analysis](https://github.com/CanDIG/playwright-notebook).
 
@@ -79,7 +77,7 @@ Note: Only the Tyk API test is needed for general performance.
 
 ## Checklist
 
-The test results assumed using a small dataset and login as user2.
+The default test results assumed using a small dataset and login as user2.
 
 Below is a list of the tests covered on the Summary page:
 
