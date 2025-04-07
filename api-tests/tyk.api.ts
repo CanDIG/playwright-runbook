@@ -93,10 +93,10 @@ test("summary page katsu v3/discovery/overview/primary_site_count/", async ({ pa
   expect(response.status()).toBe(200);
 });
 
-test("summary page katsu v3/discovery/overview/cohort_count/", async ({ page, request }) => {
+test("summary page katsu v3/discovery/overview/program_count/", async ({ page, request }) => {
   const data = {
     method: "GET",
-    path: "v3/discovery/overview/cohort_count/",
+    path: "v3/discovery/overview/program_count/",
     payload: {},
     service: "katsu",
   };
@@ -104,10 +104,10 @@ test("summary page katsu v3/discovery/overview/cohort_count/", async ({ page, re
   expect(response.status()).toBe(200);
 });
 
-test("summary page katsu v3/discovery/overview/patients_per_cohort/", async ({ page, request }) => {
+test("summary page katsu v3/discovery/overview/patients_per_program/", async ({ page, request }) => {
   const data = {
     method: "GET",
-    path: "v3/discovery/overview/patients_per_cohort/",
+    path: "v3/discovery/overview/patients_per_program/",
     payload: {},
     service: "katsu",
   };
@@ -192,10 +192,10 @@ test("search page katsu v3/discovery/sidebar_list/", async ({ page, request }) =
   expect(response.status()).toBe(200);
 });
 
-test("search page katsu v3/discovery/overview/patients_per_cohort/", async ({ page, request }) => {
+test("search page katsu v3/discovery/overview/patients_per_program/", async ({ page, request }) => {
   const data = {
     method: "GET",
-    path: "v3/discovery/overview/patients_per_cohort/",
+    path: "v3/discovery/overview/patients_per_program/",
     payload: {},
     service: "katsu",
   };

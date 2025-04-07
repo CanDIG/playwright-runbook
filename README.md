@@ -16,21 +16,19 @@ npx playwright install
 
 ## Configuring Environment Variables
 
-Rename `.env.sample` to `.env`, and update the environment values. Credentials can be found in the `CanDIGv2/tmp/keycloak` folder.
+Rename `.env.ui.sample` to `.env`, and update the environment values. Credentials can be found in the `CanDIGv2/tmp/keycloak` folder.
 
 For local testing:
 
-- Set the URL to `localhost` or `candig.docker.internal`.
+- Set the URL to `http://candig.docker.internal:5080/`.
 
 For dev testing:
 
-- Set the URL to your dev server (e.g., `candig-dev.hpc4health.local`)
+- Set the URL to your dev server (e.g., `https://candig-demo.uhndata.io/`)
 
 For prod testing:
 
-- Set the URL to your production server (e.g., `candig.uhnresearch.ca`).
-
-Note: The `QUERY_SERVICE_TOKEN` can be ignored unless you want to run katsu explorer api.
+- Set the URL to your production server (e.g., `https://candig.uhnresearch.ca/`).
 
 ## Running Tests
 
@@ -39,8 +37,8 @@ It is recommended to run UI or API tests separately with specific settings. Make
 ### For UI
 
 ```bash
-npx playwright test --project=ui --workers=1          # Run all tests with a single worker
-npx playwright test --project=ui --ui                 # Run interactive mode
+npx playwright test --project=ui                      # Recommend way to run all UI tests
+npx playwright test --project=ui --ui                 # Run interactive mode, should be used for debug only
 npx playwright test summary                           # Run a specific file
 npx playwright test summary -g "diagnosis graph"      # Run a single test
 ```
@@ -65,11 +63,11 @@ The `ui-tests` folder contains tests that simulate user interactions with the da
 - Component rendering
 - Button clicks
 - URL redirection
-- Display of expected results (e.g., number of cohorts, patients)
+- Display of expected results (e.g., number of programs, patients)
 
 All UI tests should be placed in the `ui-tests` folder and use the `.ui.ts` extension for proper test matching.
 
-### API Tests
+### API Tests (needs update)
 
 The `api-tests` folder contains a series of API calls to assess service performance, primarily focusing on API response times. It is recommended to run API tests only with parallel workers and repeat tests multiple times to gather sufficient data for later [analysis](https://github.com/CanDIG/playwright-notebook).
 
@@ -79,14 +77,14 @@ Note: Only the Tyk API test is needed for general performance.
 
 ## Checklist
 
-The test results assumed using a small dataset and login as user2.
+The default test results assumed using a small dataset and login as user2.
 
 Below is a list of the tests covered on the Summary page:
 
 | **Category**                     | **Subcategory**                       | **Expected Value**                            |
 |----------------------------------|---------------------------------------|--------------------------------------|
 | **Overview**                     | Number of patients                    | 84                                   |
-|                                  | Number of cohorts                     | 4                                    |
+|                                  | Number of programs                     | 4                                    |
 |                                  | Number of nodes                       | 1                                    |
 |                                  | Number of provinces                   | 1                                    |
 | **Diagnosis**                    | Graph                                 | ![Diagnosis Graph](https://github.com/user-attachments/assets/0b0f4dc3-4ead-4368-bb20-361afd59f7c4)                                   |
@@ -110,7 +108,7 @@ Below is a list of the tests covered on the Summary page:
 |                                  | Colon                                 | 16                                   |
 |                                  | Bronchus and lung                     | 16                                   |
 |                                  | Floor of mouth                        | Hidden (less than 10)                 |
-| **Cohort**                       | Graph                                 | ![Diagnosis Graph](https://github.com/user-attachments/assets/9f8ab2c6-11bd-4edd-b436-483faf174f12)  |
+| **Program**                       | Graph                                 | ![Diagnosis Graph](https://github.com/user-attachments/assets/9f8ab2c6-11bd-4edd-b436-483faf174f12)  |
 |                                  | Synthetic dataset 1                   | 24                                   |
 |                                  | Synthetic dataset 2                   | 20                                   |
 |                                  | Synthetic dataset 3                   | 20                                   |
