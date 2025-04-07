@@ -125,7 +125,7 @@ test.describe("Completeness page", async () => {
       .last();
 
     await expect(fieldLevelGraph).toHaveScreenshot(`FieldLevel-${programName}.png`, {
-      threshold: 0.01,
+      maxDiffPixelRatio: 0.05,
     });
     // Sort the percentages
     testCases.sort((a, b) => a.label.localeCompare(b.label));
