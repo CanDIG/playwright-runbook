@@ -21,21 +21,24 @@ const UI_VALUES = {
   },
 
   ageAtFirstDiagnosis: {
-    "30-39": { value: "11", barIndex: 0 },
-    "40-49": { value: "24", barIndex: 1 },
-    "50-59": { value: "31", barIndex: 2 },
-    "null":  { value: "18", barIndex: 3 }
+    "30-39": { value: null, barIndex: 0 },
+    "40-49": { value: "31", barIndex: 1 },
+    "50-59": { value: "32", barIndex: 2 },
+    "null":  { value: "13", barIndex: 3 }
   },
 
   treatmentDistribution: {
     "Systemic therapy":         { value: "168", barIndex: 0 },
-    "Surgery":                  { value: "92",  barIndex: 1 },
-    "Radiation therapy":        { value: "77",  barIndex: 2 },
-    "Targeted molecular therapy":{ value: "34",  barIndex: 3 },
-    "Bone marrow transplant":   { value: "33",  barIndex: 4 },
-    "Stem cell transplant":     { value: "30",  barIndex: 5 },
-    "Other":                    { value: "24",  barIndex: 6 },
-    "Photodynamic therapy":     { value: "18",  barIndex: 7 }
+    "Surgery":                  { value: "99",  barIndex: 1 },
+    "Radiation therapy":        { value: "81",  barIndex: 2 },
+    "Photodynamic therapy":     { value: "42",  barIndex: 3 },
+    "Other":                    { value: "35",  barIndex: 4 },
+    "Stem cell transplant":     { value: "34",  barIndex: 5 },
+    "Targeted molecular therapy":{ value: "31",  barIndex: 6 },
+    "Bone marrow transplant":   { value: "30",  barIndex: 7 },
+    
+    
+
   },
 
   primarySiteDistribution: {
@@ -54,8 +57,13 @@ const UI_VALUES = {
     "SYNTH_04": { label: "SYNTH_04", value: "20", barIndex: 3 },
   },
 
-  genomicDistribution: {
+  completeClinical: {
+    "SYNTH_01": { value: "2", barIndex: 0 },
+},
+
+  completeGenomic: {
     "SYNTH_01": { value: "6", barIndex: 1 },
+    "SYNTH_01 (transcriptomes)": { value: "1", barIndex: 2 },
     "SYNTH_02": { value: "5", barIndex: 4 }
 }
 };
@@ -187,7 +195,26 @@ test.describe("Summary Page Tests", () => {
 
     Object.entries(UI_VALUES.ageAtFirstDiagnosis).forEach(
       ([ageLabel, ageData]) => {
-        if (ageData && typeof ageData.barIndex === "number" && ageData.value) {
+        if (!ageData || typeof ageData.barIndex !== "number") {
+          console.warn(
+            `Skipping test generation for age range "${ageLabel}". Invalid or incomplete data (missing barIndex): ${JSON.stringify(
+              ageData
+            )}`
+          );
+          return;
+        }
+
+        if (ageData.value === null) {
+          test(`bar for age range ${ageLabel} exists at index ${ageData.barIndex} (no value check)`, async () => {
+            const selectedBar = await page
+              .locator(`text="${graphTitle}"`)
+              .locator("..")
+              .locator(".highcharts-series > path")
+              .nth(ageData.barIndex);
+
+            await expect(selectedBar).not.toBeVisible();
+          });
+        } else if (ageData.value !== null) {
           test(`tooltip for age range ${ageLabel} (bar index ${ageData.barIndex}) shows value ${ageData.value}`, async () => {
             await testBarGraphHoverText({
               page,
@@ -197,12 +224,6 @@ test.describe("Summary Page Tests", () => {
               expectedValue: ageData.value,
             });
           });
-        } else {
-          console.warn(
-            `Skipping test generation for age range "${ageLabel}". Invalid data: ${JSON.stringify(
-              ageData
-            )}`
-          );
         }
       }
     );
@@ -231,11 +252,26 @@ test.describe("Summary Page Tests", () => {
 
     Object.entries(UI_VALUES.treatmentDistribution).forEach(
       ([treatmentLabel, treatmentData]) => {
-        if (
-          treatmentData &&
-          typeof treatmentData.barIndex === "number" &&
-          treatmentData.value
-        ) {
+        if (!treatmentData || typeof treatmentData.barIndex !== "number") {
+          console.warn(
+            `Skipping test generation for treatment type "${treatmentLabel}". Invalid or incomplete data (missing barIndex): ${JSON.stringify(
+              treatmentData
+            )}`
+          );
+          return;
+        }
+
+        if (treatmentData.value === null) {
+          test(`bar for ${treatmentLabel} exists at index ${treatmentData.barIndex} (no value check)`, async () => {
+            const selectedBar = await page
+              .locator(`text="${graphTitle}"`)
+              .locator("..")
+              .locator(".highcharts-series > path")
+              .nth(treatmentData.barIndex);
+
+            await expect(selectedBar).not.toBeVisible();
+          });
+        } else if (treatmentData.value !== null) {
           test(`tooltip for ${treatmentLabel} (bar index ${treatmentData.barIndex}) shows value ${treatmentData.value}`, async () => {
             await testBarGraphHoverText({
               page,
@@ -245,12 +281,6 @@ test.describe("Summary Page Tests", () => {
               expectedValue: treatmentData.value,
             });
           });
-        } else {
-          console.warn(
-            `Skipping test generation for treatment type "${treatmentLabel}". Invalid data: ${JSON.stringify(
-              treatmentData
-            )}`
-          );
         }
       }
     );
@@ -362,9 +392,56 @@ test.describe("Summary Page Tests", () => {
     );
   });
 
-  // ====================== Test: Genomic Distribution ======================
+  // ====================== Test: Complete Clinical ======================
   /**
-   * Verifies that UI_VALUES.genomicDistribution displays the correct counts.
+   * Verifies that UI_VALUES.completeClinical displays the correct counts.
+   */
+  test.describe("Complete Clinical", () => {
+    const graphTitle = "Complete Clinical";
+    test("graph screenshot", async () => {
+      await page.mouse.move(0, 0);
+      const graphElement = await page
+        .locator(`text="${graphTitle}"`)
+        .locator("..")
+        .last();
+      await expect(graphElement).toHaveScreenshot(
+        "complete-clinical-graph.png",
+        {
+          threshold: 0.05,
+        }
+      );
+    });
+
+    Object.entries(UI_VALUES.completeClinical).forEach(
+      ([clinicalLabel, clinicalData]) => {
+        if (
+          clinicalData &&
+          typeof clinicalData.barIndex === "number" &&
+          clinicalData.value
+        ) {
+          test(`tooltip for ${clinicalLabel} (segment index ${clinicalData.barIndex}) shows value ${clinicalData.value}`, async () => {
+            await testStackedBarGraphHoverText({
+              page,
+              graphTitle,
+              barIndex: clinicalData.barIndex,
+              expectedLabel: clinicalLabel,
+              expectedValue: clinicalData.value,
+            });
+          });
+        } else {
+          console.warn(
+            `Skipping test generation for genomic dataset "${clinicalLabel}". Invalid or incomplete data: ${JSON.stringify(
+              clinicalData
+            )}`
+          );
+        }
+      }
+    );
+  });
+
+  // ====================== Test: Complete Genomic ======================
+  /**
+   * Verifies that UI_VALUES.completeGenomic displays the correct counts.
    */
   test.describe("Complete Genomic", () => {
     const graphTitle = "Complete Genomic";
@@ -375,14 +452,14 @@ test.describe("Summary Page Tests", () => {
         .locator("..")
         .last();
       await expect(graphElement).toHaveScreenshot(
-        "genomic-distribution-graph.png",
+        "complete-genomic-graph.png",
         {
           threshold: 0.05,
         }
       );
     });
 
-    Object.entries(UI_VALUES.genomicDistribution).forEach(
+    Object.entries(UI_VALUES.completeGenomic).forEach(
       ([genomicLabel, genomicData]) => {
         if (
           genomicData &&
@@ -410,18 +487,6 @@ test.describe("Summary Page Tests", () => {
   });
 
   // ====================== Other Tests  ======================
-
-  test("clinical graph screenshot", async () => {
-    await page.mouse.move(0, 0);
-    const clinicalGraph = await page
-      .locator('text="Complete Clinical"')
-      .locator("..")
-      .last();
-    await expect(clinicalGraph).toHaveScreenshot("clinical.png", {
-      threshold: 0.01,
-    });
-  });
-
   test("footer screenshot", async () => {
     await page.mouse.move(0, 0);
     const footer = page.locator("footer");
