@@ -169,13 +169,12 @@ test.describe("Completeness page", async () => {
       await expect(textValue).toHaveText("84");
     });
 
-    // Should we maybe update the input data so that this isn't 0?
-    test("number of complete patients is 0", async () => {
+    test("number of complete patients is 2", async () => {
       const textValue = await page
         .getByText("Number of Patients With Complete Data")
         .locator("..")
         .locator("h4");
-      await expect(textValue).toHaveText("0");
+      await expect(textValue).toHaveText("2");
     });
 
     test("number of provinces is 1", async () => {
