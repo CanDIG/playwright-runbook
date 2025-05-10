@@ -476,143 +476,143 @@ test.describe('Sidebar Tests', () => {
     
   // Genomic test: SLC2A5, LOC102723996, and SLX9. Positional test: chr=21, start=5030000, end=5030847
 
-  // test("Gene search=LOC102723996", async () => { 
-  //   await page.waitForTimeout(2000); 
-  //   const geneSearchLabel = await page.locator('label:has-text("Gene Search")');
-  //   const inputField = await geneSearchLabel.locator('xpath=./ancestor::fieldset//input[@type="text"]');
-  //   await inputField.fill('LOC102723996');
-  //   await page.keyboard.press('ArrowDown');
-  //   await page.keyboard.press('Enter');
-  //   await page.waitForTimeout(2000); 
+  test("Gene search=LOC102723996", async () => { 
+    await page.waitForTimeout(2000); 
+    const geneSearchLabel = await page.locator('label:has-text("Gene Search")');
+    const inputField = await geneSearchLabel.locator('xpath=./ancestor::fieldset//input[@type="text"]');
+    await inputField.fill('LOC102723996');
+    await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(2000); 
     
-  //   await clickSearchButton(page);
+    await clickSearchButton(page);
     
-  //   await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle');
 
-  //   const searchValue = await inputField.inputValue();
-  //   expect(searchValue).toBe('LOC102723996');
+    const searchValue = await inputField.inputValue();
+    expect(searchValue).toBe('LOC102723996');
 
-  //   const expectedValues = [
-  //       { name: 'LOCAL', firstNumber: '1-11', secondNumber: '84', thirdNumber: '4', full: 'LOCAL1-11844' },
-  //       { name: 'LOCAL-SYNTH_01', firstNumber: '<10', secondNumber: '24', thirdNumber: '', full: 'LOCAL-SYNTH_01<1024Request Access' },
-  //       { name: 'LOCAL-SYNTH_03', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_03020Request Access' },
-  //       { name: 'LOCAL-SYNTH_02', firstNumber: '1', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_02120' }, 
-  //       { name: 'LOCAL-SYNTH_04', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_04020Request Access' }
-  //   ];
+    const expectedValues = [
+        { name: 'LOCAL', firstNumber: '1-11', secondNumber: '84', thirdNumber: '4', full: 'LOCAL1-11844' },
+        { name: 'LOCAL-SYNTH_01', firstNumber: '<10', secondNumber: '24', thirdNumber: '', full: 'LOCAL-SYNTH_01<1024Request Access' },
+        { name: 'LOCAL-SYNTH_03', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_03020Request Access' },
+        { name: 'LOCAL-SYNTH_02', firstNumber: '1', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_02120' }, 
+        { name: 'LOCAL-SYNTH_04', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_04020Request Access' }
+    ];
 
-  //   await verifyPatientData(page, expectedValues);
+    await verifyPatientData(page, expectedValues);
 
-  //   const clinicalDataRows = [
-  //     { submitterDonorId: 'DONOR_0021', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: 'Other', deceased: 'true', dateOfBirth: '42', dateOfDeath: '77' }
-  //   ];
+    const clinicalDataRows = [
+      { submitterDonorId: 'DONOR_0021', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: '', deceased: 'false', dateOfBirth: '39', dateOfDeath: '' }
+    ];
 
-  //   await verifyClinicalData(page, clinicalDataRows);
+    await verifyClinicalData(page, clinicalDataRows);
 
-  //   const genomicDataRows = [
-  //     { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
-  //     { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030551A>C)', zygosity: 'simple heterozygous' },
-  //     { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030551=)', zygosity: 'simple heterozygous' },
-  //     { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030637', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
-  //     { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030637', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030638A>T)', zygosity: 'simple heterozygous' },
-  //     { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030637', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030638=)', zygosity: 'simple heterozygous' },
-  //     { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
-  //     { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030847T>A)', zygosity: 'simple heterozygous' },
-  //     { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030847=)', zygosity: 'simple heterozygous' }
-  //   ];
+    const genomicDataRows = [
+      { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
+      { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030551A>C)', zygosity: 'simple heterozygous' },
+      { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030551=)', zygosity: 'simple heterozygous' },
+      { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030637', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
+      { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030637', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030638A>T)', zygosity: 'simple heterozygous' },
+      { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030637', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030638=)', zygosity: 'simple heterozygous' },
+      { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
+      { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030847T>A)', zygosity: 'simple heterozygous' },
+      { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030847=)', zygosity: 'simple heterozygous' }
+    ];
 
-  //   await verifyGenomicData(page, genomicDataRows);
+    await verifyGenomicData(page, genomicDataRows);
 
-  //   await clickResetButton(page);
-  // });
+    await clickResetButton(page);
+  });
   
-  // test("Gene search=SLX9", async () => {
-  //   await page.waitForTimeout(2000); 
-  //   const geneSearchLabel = await page.locator('label:has-text("Gene Search")');
-  //   const inputField = await geneSearchLabel.locator('xpath=./ancestor::fieldset//input[@type="text"]');
-  //   await inputField.fill('SLX9');
-  //   await page.keyboard.press('ArrowDown');
-  //   await page.keyboard.press('Enter');
-  //   await page.waitForTimeout(2000); 
+  test("Gene search=SLX9", async () => {
+    await page.waitForTimeout(2000); 
+    const geneSearchLabel = await page.locator('label:has-text("Gene Search")');
+    const inputField = await geneSearchLabel.locator('xpath=./ancestor::fieldset//input[@type="text"]');
+    await inputField.fill('SLX9');
+    await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(2000); 
 
-  //   await clickSearchButton(page);
+    await clickSearchButton(page);
   
-  //     const expectedValues = [
-  //         { name: 'LOCAL', firstNumber: '0', secondNumber: '84', thirdNumber: '4', full: 'LOCAL0-10844' },
-  //         { name: 'LOCAL-SYNTH_01', firstNumber: '<10', secondNumber: '24', thirdNumber: '', full: 'LOCAL-SYNTH_01<1024Request Access' },
-  //         { name: 'LOCAL-SYNTH_03', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_03020Request Access' },
-  //         { name: 'LOCAL-SYNTH_02', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_02020' }, 
-  //         { name: 'LOCAL-SYNTH_04', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_04020Request Access' }
-  //     ];
+      const expectedValues = [
+          { name: 'LOCAL', firstNumber: '0', secondNumber: '84', thirdNumber: '4', full: 'LOCAL0-10844' },
+          { name: 'LOCAL-SYNTH_01', firstNumber: '<10', secondNumber: '24', thirdNumber: '', full: 'LOCAL-SYNTH_01<1024Request Access' },
+          { name: 'LOCAL-SYNTH_03', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_03020Request Access' },
+          { name: 'LOCAL-SYNTH_02', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_02020' }, 
+          { name: 'LOCAL-SYNTH_04', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_04020Request Access' }
+      ];
   
-  //     await verifyPatientData(page, expectedValues);
+      await verifyPatientData(page, expectedValues);
 
-  //     const clinicalDataRows = [];
+      const clinicalDataRows = [];
 
-  //     await verifyClinicalData(page, clinicalDataRows);
+      await verifyClinicalData(page, clinicalDataRows);
 
-  //     const genomicDataRows = [];
+      const genomicDataRows = [];
 
-  //     await verifyGenomicData(page, genomicDataRows);
+      await verifyGenomicData(page, genomicDataRows);
 
-  //     await clickResetButton(page);
-  // });
+      await clickResetButton(page);
+  });
     
-  // test("Positional search: chr=21, start=5030000, end=5030847", async () => {
-  //   const chromosomeLabel = await page.locator('label:has-text("Chromosome")');
-  //   const chromosomeInput = chromosomeLabel.locator('xpath=following-sibling::div//input');
-  //   await chromosomeInput.fill('21');
-  //   await page.keyboard.press('ArrowDown');
-  //   await page.keyboard.press('Enter');
+  test("Positional search: chr=21, start=5030000, end=5030847", async () => {
+    const chromosomeLabel = await page.locator('label:has-text("Chromosome")');
+    const chromosomeInput = chromosomeLabel.locator('xpath=following-sibling::div//input');
+    await chromosomeInput.fill('21');
+    await page.keyboard.press('ArrowDown');
+    await page.keyboard.press('Enter');
 
-  //   const startLabel = await page.locator('label:has-text("Start")');
-  //   const startInput = startLabel.locator('xpath=following-sibling::div//input');
-  //   await startInput.fill('5030000');
-  //   await page.keyboard.press('Enter');
+    const startLabel = await page.locator('label:has-text("Start")');
+    const startInput = startLabel.locator('xpath=following-sibling::div//input');
+    await startInput.fill('5030000');
+    await page.keyboard.press('Enter');
 
-  //   const endLabel = await page.locator('label:has-text("End")');
-  //   const endInput = endLabel.locator('xpath=following-sibling::div//input');
-  //   await endInput.fill('5030847');
-  //   await page.keyboard.press('Enter');
+    const endLabel = await page.locator('label:has-text("End")');
+    const endInput = endLabel.locator('xpath=following-sibling::div//input');
+    await endInput.fill('5030847');
+    await page.keyboard.press('Enter');
 
-  //   await page.waitForTimeout(2000); 
+    await page.waitForTimeout(2000); 
 
     
-  //   await clickSearchButton(page);
+    await clickSearchButton(page);
   
-  //     const expectedValues = [
-  //         { name: 'LOCAL', firstNumber: '1-11', secondNumber: '84', thirdNumber: '4', full: 'LOCAL1-11844' },
-  //         { name: 'LOCAL-SYNTH_01', firstNumber: '<10', secondNumber: '24', thirdNumber: '', full: 'LOCAL-SYNTH_01<1024Request Access' },
-  //         { name: 'LOCAL-SYNTH_03', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_03020Request Access' },
-  //         { name: 'LOCAL-SYNTH_02', firstNumber: '1', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_02120' }, 
-  //         { name: 'LOCAL-SYNTH_04', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_04020Request Access' }
-  //     ];
+      const expectedValues = [
+          { name: 'LOCAL', firstNumber: '1-11', secondNumber: '84', thirdNumber: '4', full: 'LOCAL1-11844' },
+          { name: 'LOCAL-SYNTH_01', firstNumber: '<10', secondNumber: '24', thirdNumber: '', full: 'LOCAL-SYNTH_01<1024Request Access' },
+          { name: 'LOCAL-SYNTH_03', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_03020Request Access' },
+          { name: 'LOCAL-SYNTH_02', firstNumber: '1', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_02120' }, 
+          { name: 'LOCAL-SYNTH_04', firstNumber: '0', secondNumber: '20', thirdNumber: '', full: 'LOCAL-SYNTH_04020Request Access' }
+      ];
   
-  //     await verifyPatientData(page, expectedValues);
+      await verifyPatientData(page, expectedValues);
 
-  //     const clinicalDataRows = [
-  //       // { submitterDonorId: 'DONOR_0021', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: 'Other', deceased: 'true', dateOfBirth: '42', dateOfDeath: '77' }
-  //       { submitterDonorId: 'DONOR_0021', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: '', deceased: 'false', dateOfBirth: '', dateOfDeath: '' }
-  //     ];
+      const clinicalDataRows = [
+        // { submitterDonorId: 'DONOR_0021', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: 'Other', deceased: 'true', dateOfBirth: '42', dateOfDeath: '77' }
+        { submitterDonorId: 'DONOR_0021', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: '', deceased: 'false', dateOfBirth: '', dateOfDeath: '' }
+      ];
 
-  //     // TODO: fix this test, it is not working
-  //     // await verifyClinicalData(page, clinicalDataRows);
+      // TODO: fix this test, it is not working
+      // await verifyClinicalData(page, clinicalDataRows);
 
-  //     const genomicDataRows = [
-  //       { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
-  //       { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030551A>C)', zygosity: 'simple heterozygous' },
-  //       { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030551=)', zygosity: 'simple heterozygous' },
-  //       { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030637', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
-  //       { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030637', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030638A>T)', zygosity: 'simple heterozygous' },
-  //       { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030637', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030638=)', zygosity: 'simple heterozygous' },
-  //       { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
-  //       { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030847T>A)', zygosity: 'simple heterozygous' },
-  //       { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030847=)', zygosity: 'simple heterozygous' }
-  //     ];
+      const genomicDataRows = [
+        { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
+        { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030551A>C)', zygosity: 'simple heterozygous' },
+        { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030550', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030551=)', zygosity: 'simple heterozygous' },
+        { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030637', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
+        { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030637', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030638A>T)', zygosity: 'simple heterozygous' },
+        { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030637', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030638=)', zygosity: 'simple heterozygous' },
+        { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Normal', submitter_specimen_id: 'LOCAL-SAMPLE_0061', genotype: '0/0', zygosity: 'homozygous' },
+        { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030847T>A)', zygosity: 'simple heterozygous' },
+        { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', position: '5030846', tumour_normal_designation: 'Tumour', submitter_specimen_id: 'LOCAL-SAMPLE_0062', genotype: '0/1 (NC_000021.9:g.5030847=)', zygosity: 'simple heterozygous' }
+      ];
 
-  //     await verifyGenomicData(page, genomicDataRows);
+      await verifyGenomicData(page, genomicDataRows);
 
-  //     await clickResetButton(page);
-  // });
+      await clickResetButton(page);
+  });
     
   test("Node selection", async () => {
     // Wait for loading spinner to disappear
