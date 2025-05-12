@@ -7,6 +7,8 @@ import {
 } from './helpers.ts';
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
+const BASE_URL = `${process.env.CANDIG_URL}`;
+
 /*
  * ======================
  * Editable test data for the current dataset
@@ -21,21 +23,21 @@ const UI_VALUES = {
   },
 
   ageAtFirstDiagnosis: {
-    "30-39": { value: "11", barIndex: 0 },
-    "40-49": { value: "24", barIndex: 1 },
-    "50-59": { value: "31", barIndex: 2 },
-    "null":  { value: "18", barIndex: 3 }
+    // "30-39": { value: "11", barIndex: 0 }, // Gets censored now
+    "40-49": { value: "31", barIndex: 1 },
+    "50-59": { value: "32", barIndex: 2 },
+    "null":  { value: "13", barIndex: 3 }
   },
 
   treatmentDistribution: {
     "Systemic therapy":         { value: "168", barIndex: 0 },
-    "Surgery":                  { value: "92",  barIndex: 1 },
-    "Radiation therapy":        { value: "77",  barIndex: 2 },
-    "Targeted molecular therapy":{ value: "34",  barIndex: 3 },
-    "Bone marrow transplant":   { value: "33",  barIndex: 4 },
-    "Stem cell transplant":     { value: "30",  barIndex: 5 },
-    "Other":                    { value: "24",  barIndex: 6 },
-    "Photodynamic therapy":     { value: "18",  barIndex: 7 }
+    "Surgery":                  { value: "99",  barIndex: 1 },
+    "Radiation therapy":        { value: "81",  barIndex: 2 },
+    "Photodynamic therapy":     { value: "42",  barIndex: 3 },
+    "Other":                    { value: "35",  barIndex: 4 },
+    "Stem cell transplant":     { value: "34",  barIndex: 5 },
+    "Targeted molecular therapy":{ value: "31",  barIndex: 6 },
+    "Bone marrow transplant":   { value: "30",  barIndex: 7 }
   },
 
   primarySiteDistribution: {
@@ -79,7 +81,7 @@ test.describe("Summary Page Tests", () => {
     await page.goto(process.env.CANDIG_URL!);
     await login(page, process.env.CANDIG_USERNAME, process.env.CANDIG_PASSWORD);
     await expect(page).toHaveTitle("CanDIG Data Portal");
-    await expect(page.locator(".highcharts-loading-hidden")).toHaveCount(6, {
+    await expect(page.locator(".highcharts-loading-hidden")).toHaveCount(5, {
       timeout: 15000,
     });
   });
@@ -362,63 +364,150 @@ test.describe("Summary Page Tests", () => {
     );
   });
 
-  // ====================== Test: Genomic Distribution ======================
-  /**
-   * Verifies that UI_VALUES.genomicDistribution displays the correct counts.
-   */
-  test.describe("Complete Genomic", () => {
-    const graphTitle = "Complete Genomic";
-    test("graph screenshot", async () => {
-      await page.mouse.move(0, 0);
-      const graphElement = await page
-        .locator(`text="${graphTitle}"`)
-        .locator("..")
-        .last();
-      await expect(graphElement).toHaveScreenshot(
-        "genomic-distribution-graph.png",
-        {
-          threshold: 0.05,
-        }
-      );
-    });
-
-    Object.entries(UI_VALUES.genomicDistribution).forEach(
-      ([genomicLabel, genomicData]) => {
-        if (
-          genomicData &&
-          typeof genomicData.barIndex === "number" &&
-          genomicData.value
-        ) {
-          test(`tooltip for ${genomicLabel} (segment index ${genomicData.barIndex}) shows value ${genomicData.value}`, async () => {
-            await testStackedBarGraphHoverText({
-              page,
-              graphTitle,
-              barIndex: genomicData.barIndex,
-              expectedLabel: genomicLabel,
-              expectedValue: genomicData.value,
-            });
-          });
-        } else {
-          console.warn(
-            `Skipping test generation for genomic dataset "${genomicLabel}". Invalid or incomplete data: ${JSON.stringify(
-              genomicData
-            )}`
-          );
-        }
-      }
-    );
-  });
-
   // ====================== Other Tests  ======================
+  async function testFieldLevelHoverText({
+    page,
+    graphTitle,
+    barIndex,
+    expectedLabel,
+    expectedValue,
+  }) {
+    // Locate the bar based on the graph title and bar index
+    const selectedBar = await page
+      .getByText(graphTitle)
+      .locator("..")
+      .locator("..")
+      .locator('.highcharts-root > .highcharts-series-group > .highcharts-series > path')
+      .nth(barIndex)
 
-  test("clinical graph screenshot", async () => {
-    await page.mouse.move(0, 0);
-    const clinicalGraph = await page
-      .locator('text="Complete Clinical"')
+    // Hover over the selected bar
+    await expect(selectedBar).toBeVisible();
+    // Doesn't seem to work under any circumstances with Highcharts
+    /* if (barIndex > 5) {
+      // Scroll the scrollbar a bit down
+      await page.locator('.highcharts-scrollbar-thumb').hover({ force: true });
+      await page.mouse.down();
+      await page.mouse.move(page.mouse._x, page.mouse._y + 100);
+      await page.mouse.up();
+    } */
+    // NOTE: force: true is needed because highcharts intercepts the normal hover event
+    await selectedBar.hover({ force: true });
+
+    // Locate the tooltip relative to the graph title
+    const tooltip = await page
+      .getByText(graphTitle)
+      .locator("..")
+      .locator("..")
+      .locator(".highcharts-tooltip")
+      .nth(0);
+
+    // Verify the tooltip text
+    await expect(tooltip).toContainText(expectedLabel);
+    await expect(tooltip).toContainText(expectedValue);
+  }
+
+  async function testFieldLevel(page, testCases, programName) {
+
+    const fieldLevelGraph = await page
+      .getByText("Field Level")
+      .locator("..")
       .locator("..")
       .last();
-    await expect(clinicalGraph).toHaveScreenshot("clinical.png", {
-      threshold: 0.01,
+
+    await expect(fieldLevelGraph).toHaveScreenshot(`FieldLevel-${programName}.png`, {
+      maxDiffPixelRatio: 0.05,
+    });
+    // Sort the percentages
+    testCases.sort((a, b) => a.label.localeCompare(b.label));
+    testCases.sort((a, b) => a.pct - b.pct);
+    testCases.forEach((datum, index) => {
+      datum.value = `${datum.pct}%`;
+      datum.barIndex = index;
+    });
+    for (const {label, value, barIndex } of testCases) {
+      // DEBUG: Currently there is no way to scroll this particular graph
+      // So, we'll do only one page of results
+      if (barIndex > 10) {
+        break;
+      }
+      await testFieldLevelHoverText({
+        page,
+        graphTitle: "Field Level",
+        barIndex,
+        expectedLabel: label,
+        expectedValue: value,
+      });
+    }
+  }
+
+  test('Field-level Completeness', async ({ request }) => {
+    async function getEndpoint(page, endpoint) {
+      const { cookies } = await page.context().storageState();
+      const sessionCookie = cookies.find(cookie => cookie.name === "session_id");
+      let headers = {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${sessionCookie.value}`,
+      };
+      const url = `${BASE_URL}/${endpoint}`;
+      return fetch(url, { headers });
+    }
+
+    // Wait for the page to finish loading the field level completeness
+    await expect(page.getByText("Field Level")
+      .locator("..")
+      .locator(".."))
+      .toHaveText(/.+Radiations.+/i);
+
+    // Query the discovery/programs endpoint
+    const response = await getEndpoint(page, "query/discovery/programs");
+    await response.json().then(async (data) => {
+      let lastButtonText = /All programs/;
+      const allCases = {};
+      for (const program of data.programs) {
+        const programButton = await page.getByText(lastButtonText).first();
+        // 1: Switch the display to being this particular program
+        await programButton.click();
+        lastButtonText = new RegExp(`.+ ${program.program_id}`, "i");
+        await page.getByRole('option', { name: lastButtonText }).click();
+
+        const completenessData = program.metadata.required_but_missing;
+        const categories = Object.keys(completenessData);
+        const testCases = categories.map((category) => {
+          return Object.keys(completenessData[category]).map((key) => {
+            const label = `${category}/${key}`;
+            const pct = Math.round((1 - (completenessData[category][key]['missing'] / completenessData[category][key]['total'])) * 100);
+
+            // Fill out the allCases for the final round
+            if (label in allCases) {
+              allCases[label]['missing'] += completenessData[category][key]['missing'];
+              allCases[label]['total'] += completenessData[category][key]['total'];
+            } else {
+              allCases[label] = {
+                'missing': completenessData[category][key]['missing'],
+                'total': completenessData[category][key]['total']
+              }
+            }
+            return { label, pct, value: 'NA', barIndex: 0 };
+          });
+        }).flat(1);
+
+        await testFieldLevel(page, testCases, program.program_id);
+      }
+
+      // Do one final round for the "all programs" option
+      await page.getByText(lastButtonText).first().click();
+      await page.getByRole('option', { name: "All programs" }).click();
+      await page.waitForTimeout(1000);
+
+      const allCasesList = Object.keys(allCases).map((thisCase) => {
+        return ({
+          label: thisCase,
+          pct: Math.round((1 - (allCases[thisCase].missing / allCases[thisCase].total)) * 100),
+          value: 'NA',
+          barIndex: 0
+        });
+      });
+      await testFieldLevel(page, allCasesList, 'allprograms');
     });
   });
 
