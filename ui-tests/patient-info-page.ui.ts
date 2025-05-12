@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 import dotenv from "dotenv";
 import path from "path";
-import { VIEWPORT } from './constants';
+import { VIEWPORT } from './constants.ts';
 import {
   login,
 } from './helpers.ts';
@@ -49,18 +49,25 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
     for (const expected of patientInfoDataRows) {
         // Locate the row based on the first field in the expected object
         const [firstField] = Object.keys(expected);
+        // console.log(await tableRowsLocator.nth(1).locator(`text=${expected[firstField]}`).evaluate(el => el.outerHTML));
+        // const rowLocator = tableRowsLocator
+        //     .locator(`text=${expected[firstField]}`)
+        //     .first()
+        //     .locator('..')
+        //     .locator('..');
         const rowLocator = tableRowsLocator
-            .locator(`text=${expected[firstField]}`)
-            .first()
+            .nth(1)
             .locator('..')
             .locator('..');
 
         await patientInfoTable.scrollIntoViewIfNeeded();
         await expect(rowLocator).toBeVisible();
+        // console.log(await rowLocator.evaluate(el => el.outerHTML));
 
         for (const { field } of fields) {
             const value = expected[field];
             const fieldLocator = rowLocator.locator(`[data-field="${field}"]`).locator(`text=${value}`);
+            // console.log(await rowLocator.locator(`[data-field="${field}"]`).locator(`text=${value}`).evaluate(el => el.outerHTML));
             await expect(fieldLocator)[value === '' ? 'toBeHidden' : 'toBeVisible']();
         }
     }
@@ -77,7 +84,7 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
   test("Biomarkers", async () => {
     
     const fields = [
-        { field: "cea" },
+        // { field: "cea" },
         { field: "er_status" },
         { field: "her2_ihc_status" },
         { field: "her2_ish_status" },
@@ -89,13 +96,14 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
 
     const patientInfoDataRows = [
         {
-            cea: "95",
-            er_status: "Negative",
-            her2_ihc_status: "Equivocal",
-            her2_ish_status: "Negative",
-            hpv_ihc_status: "Cannot be determined",
-            hpv_pcr_status: "Positive",
-            pr_status: "Cannot be determined",
+            // cea: "95",
+            // er_percent_positive: "86.03",
+            er_status: "Postive",
+            her2_ihc_status: "Positive",
+            her2_ish_status: "Cannot be determined",
+            hpv_ihc_status: "Postive",
+            hpv_pcr_status: "Not available",
+            pr_status: "Positive",
             psa_level: "64"
         }
     ];

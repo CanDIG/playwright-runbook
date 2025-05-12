@@ -441,6 +441,9 @@ test.describe('Sidebar Tests', () => {
     await clickResetButton(page);
   });
 
+  // This test is commented out because it return turn more than 1 page of data and 
+  // the list of patients is not always the same.
+
   // test("Systemic therapy drug names = 'Durvalumab', 'Atezolizumab', 'Tamoxifen'", async () => {
   //   await selectDrugs(page, ['Durvalumab', 'Atezolizumab', 'Tamoxifen']);
   //   await clickSearchButton(page);
