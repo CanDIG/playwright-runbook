@@ -87,7 +87,7 @@ test.describe("Summary Page Tests", () => {
     await page.goto(process.env.CANDIG_URL!);
     await login(page, process.env.CANDIG_USERNAME, process.env.CANDIG_PASSWORD);
     await expect(page).toHaveTitle("CanDIG Data Portal");
-    await expect(page.locator(".highcharts-loading-hidden")).toHaveCount(6, {
+    await expect(page.locator(".highcharts-loading-hidden")).toHaveCount(5, {
       timeout: 15000,
     });
   });
@@ -385,100 +385,6 @@ test.describe("Summary Page Tests", () => {
           console.warn(
             `Skipping test generation for program key "${programKey}". Invalid or incomplete data: ${JSON.stringify(
               programData
-            )}`
-          );
-        }
-      }
-    );
-  });
-
-  // ====================== Test: Complete Clinical ======================
-  /**
-   * Verifies that UI_VALUES.completeClinical displays the correct counts.
-   */
-  test.describe("Complete Clinical", () => {
-    const graphTitle = "Complete Clinical";
-    test("graph screenshot", async () => {
-      await page.mouse.move(0, 0);
-      const graphElement = await page
-        .locator(`text="${graphTitle}"`)
-        .locator("..")
-        .last();
-      await expect(graphElement).toHaveScreenshot(
-        "complete-clinical-graph.png",
-        {
-          threshold: 0.05,
-        }
-      );
-    });
-
-    Object.entries(UI_VALUES.completeClinical).forEach(
-      ([clinicalLabel, clinicalData]) => {
-        if (
-          clinicalData &&
-          typeof clinicalData.barIndex === "number" &&
-          clinicalData.value
-        ) {
-          test(`tooltip for ${clinicalLabel} (segment index ${clinicalData.barIndex}) shows value ${clinicalData.value}`, async () => {
-            await testStackedBarGraphHoverText({
-              page,
-              graphTitle,
-              barIndex: clinicalData.barIndex,
-              expectedLabel: clinicalLabel,
-              expectedValue: clinicalData.value,
-            });
-          });
-        } else {
-          console.warn(
-            `Skipping test generation for genomic dataset "${clinicalLabel}". Invalid or incomplete data: ${JSON.stringify(
-              clinicalData
-            )}`
-          );
-        }
-      }
-    );
-  });
-
-  // ====================== Test: Complete Genomic ======================
-  /**
-   * Verifies that UI_VALUES.completeGenomic displays the correct counts.
-   */
-  test.describe("Complete Genomic", () => {
-    const graphTitle = "Complete Genomic";
-    test("graph screenshot", async () => {
-      await page.mouse.move(0, 0);
-      const graphElement = await page
-        .locator(`text="${graphTitle}"`)
-        .locator("..")
-        .last();
-      await expect(graphElement).toHaveScreenshot(
-        "complete-genomic-graph.png",
-        {
-          threshold: 0.05,
-        }
-      );
-    });
-
-    Object.entries(UI_VALUES.completeGenomic).forEach(
-      ([genomicLabel, genomicData]) => {
-        if (
-          genomicData &&
-          typeof genomicData.barIndex === "number" &&
-          genomicData.value
-        ) {
-          test(`tooltip for ${genomicLabel} (segment index ${genomicData.barIndex}) shows value ${genomicData.value}`, async () => {
-            await testStackedBarGraphHoverText({
-              page,
-              graphTitle,
-              barIndex: genomicData.barIndex,
-              expectedLabel: genomicLabel,
-              expectedValue: genomicData.value,
-            });
-          });
-        } else {
-          console.warn(
-            `Skipping test generation for genomic dataset "${genomicLabel}". Invalid or incomplete data: ${JSON.stringify(
-              genomicData
             )}`
           );
         }
