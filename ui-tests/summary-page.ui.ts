@@ -2,9 +2,11 @@ import { test, expect } from "@playwright/test";
 import dotenv from "dotenv";
 import path from "path";
 import { VIEWPORT } from "./constants";
-import { login } from "./helpers.ts";
+import { login, testBarGraphHoverText, testStackedBarGraphHoverText, fieldLevelCompletenessTest } from "./helpers.ts";
+
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
+const BASE_URL = `${process.env.CANDIG_URL}`
 /*
  * ======================
  * Editable test data for the current dataset
@@ -60,20 +62,7 @@ const UI_VALUES = {
     SYNTH_01: { value: "6", barIndex: 1 },
     "SYNTH_01 (transcriptomes)": { value: "1", barIndex: 2 },
     SYNTH_02: { value: "5", barIndex: 4 },
-  },
-  fieldLevelCompleteness: {
-    "Radiations: RADIATION THERAPY FRACTIONS": { value: "17%", barIndex: 0 },
-    "Radiations: RADIATION THERAPY DOSAGE": { value: "20%", barIndex: 1 },
-    "Radiations: RADIATION THERAPY TYPE": { value: "54%", barIndex: 2 },
-    "Donors: SEX AT BIRTH": { value: "60%", barIndex: 3 },
-    "Primary_diagnoses: BASIS OF DIAGNOSIS": { value: "65%", barIndex: 4 },
-    "Primary_diagnoses: CANCER TYPE CODE": { value: "67%", barIndex: 5 },
-    "Radiations: RADIATION THERAPY MODALITY": { value: "69%", barIndex: 6 },
-    "Primary_diagnoses: DATE OF DIAGNOSIS": { value: "73%", barIndex: 7 },
-    "Specimens: SPECIMEN STORAGE": { value: "74%", barIndex: 8 },
-    "Donors: IS DECEASED": { value: "75%", barIndex: 9 },
-    "Followups: DATE OF FOLLOWUP": { value: "75%", barIndex: 10 },
-  },
+  }
 };
 /*
  * =============================
@@ -104,62 +93,6 @@ test.describe("Summary Page Tests", () => {
     await context.close();
   });
   // ====================== End of Setup ======================
-
-  // ====================== Helper Functions ======================
-  async function testBarGraphHoverText({
-    page,
-    graphTitle,
-    barIndex,
-    expectedLabel,
-    expectedValue,
-  }) {
-    const selectedBar = await page
-      .locator("text")
-      .filter({ hasText: `${graphTitle}` })
-      .locator("..")
-      .locator(".highcharts-series > path")
-      .nth(barIndex);
-
-    await selectedBar.hover();
-
-    const tooltip = await page
-      .locator("text")
-      .filter({ hasText: `${graphTitle}` })
-      .locator("..")
-      .locator("..")
-      .locator(".highcharts-tooltip")
-      .nth(1);
-
-    await expect(tooltip).toContainText(expectedLabel);
-    await expect(tooltip).toContainText(expectedValue);
-  }
-
-  async function testStackedBarGraphHoverText({
-    page,
-    graphTitle,
-    barIndex,
-    expectedLabel,
-    expectedValue,
-  }) {
-    const selectedBar = await page
-      .locator("text")
-      .filter({ hasText: `${graphTitle}` })
-      .locator("..")
-      .locator(".highcharts-series > path")
-      .nth(barIndex);
-
-    await selectedBar.hover();
-
-    const tooltip = await page
-      .locator("text")
-      .filter({ hasText: `${graphTitle}` })
-      .locator("..")
-      .locator(".highcharts-tooltip");
-
-    await expect(tooltip).toContainText(expectedLabel);
-    await expect(tooltip).toContainText(expectedValue);
-  }
-  // ====================== End of Helper Functions ======================
 
   // ====================== Test: Page Overview ======================
   /**
@@ -414,43 +347,9 @@ test.describe("Summary Page Tests", () => {
           threshold: 0.05,
         }
       );
+
+      await fieldLevelCompletenessTest(page, BASE_URL);
     });
-
-    Object.entries(UI_VALUES.fieldLevelCompleteness).forEach(
-      ([label, { barIndex, value }]) => {
-        if (typeof barIndex !== "number") {
-          console.warn(
-            `Skipping "${label}" — invalid barIndex: ${JSON.stringify(
-              barIndex
-            )}`
-          );
-          return;
-        }
-
-        test(`tooltip for ${label} (bar index ${barIndex}) shows value ${value}`, async () => {
-          const graphLocator = page
-            .locator(`text="${graphTitle}"`)
-            .locator("..")
-            .locator("..");
-
-          const xAxisLabel = graphLocator
-            .locator(".highcharts-xaxis-labels > text")
-            .nth(barIndex);
-          const line1 = await xAxisLabel.locator("tspan").nth(0).textContent();
-          const line2 = await xAxisLabel.locator("tspan").nth(1).textContent();
-          const combinedLabel = `${line1} ${line2.toUpperCase()}`;
-
-          expect(combinedLabel).toEqual(label);
-
-          const barLabel = graphLocator
-            .locator(".highcharts-label")
-            .nth(barIndex);
-          const barValue = await barLabel.textContent();
-
-          expect(barValue).toEqual(value);
-        });
-      }
-    );
   });
 
   // ====================== Other Tests  ======================
