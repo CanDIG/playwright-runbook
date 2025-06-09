@@ -169,11 +169,9 @@ export async function verifyGenomicTable(page, genomicDataRows) {
             { field: "location", value: expected.location },
             { field: "donor_id", value: expected.donor_id },
             { field: "program_id", value: expected.program_id },
-            { field: "position", value: expected.position },
+            { field: "variant_count", value: expected.variant_count },
             { field: "tumour_normal_designation", value: expected.tumour_normal_designation },
-            { field: "submitter_specimen_id", value: expected.submitter_specimen_id },
-            { field: "genotypeLabel", value: expected.genotype },
-            { field: "zygosityLabel", value: expected.zygosity }
+            { field: "submitter_sample_id", value: expected.submitter_sample_id }
         ];
 
         // Verify each field
