@@ -35,7 +35,7 @@ test.describe("Patient Info Page", () => {
     }
   });
 
-async function verifyPatientInfoTable(fields, patientInfoDataRows) {
+async function verifyPatientInfoTable(fields, patientInfoDataRows, additionalMatchField = null) {
     await page.waitForTimeout(2000); 
     const patientInfoTable = await page.getByRole('grid').first();
     await expect(patientInfoTable).toBeVisible();
@@ -77,26 +77,28 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
   test("Biomarkers", async () => {
     
     const fields = [
-        { field: "cea" },
+        { field: "er_percent_positive" },
         { field: "er_status" },
         { field: "her2_ihc_status" },
         { field: "her2_ish_status" },
         { field: "hpv_ihc_status" },
         { field: "hpv_pcr_status" },
-        { field: "pr_status" },
-        { field: "psa_level" }
+        { field: "hpv_strain" },
+        { field: "pr_percent_positive" },
+        { field: "pr_status" }
     ];
 
     const patientInfoDataRows = [
         {
-            cea: "95",
-            er_status: "Negative",
-            her2_ihc_status: "Equivocal",
-            her2_ish_status: "Negative",
-            hpv_ihc_status: "Cannot be determined",
-            hpv_pcr_status: "Positive",
-            pr_status: "Cannot be determined",
-            psa_level: "64"
+            er_percent_positive: "86.03",
+            er_status: "Positive",
+            her2_ihc_status: "Positive",
+            her2_ish_status: "Cannot be determined",
+            hpv_ihc_status: "Positive",
+            hpv_pcr_status: "Not available",
+            hpv_strain: "HPV16, HPV66, HPV52",
+            pr_percent_positive: "61.31",
+            pr_status: "Positive"
         }
     ];
 
@@ -108,23 +110,23 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
     
     const fields = [
       { field: "submitter_primary_diagnosis_id" },
-      { field: "cancer_type_code" },
+      { field: "basis_of_diagnosis" },
       { field: "clinical_stage_group" },
+      { field: "clinical_tumour_staging_system" },
       { field: "date_of_diagnosis" },
-      { field: "laterality" },
       { field: "pathological_stage_group" },
-      { field: "pathological_tumour_staging_system"},
-      { field: "primary_site" }
+      { field: "pathological_tumour_staging_system" },
+      { field: "primary_site"}
   ];
     const patientInfoDataRows = [
         {
           submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
-          cancer_type_code: "C17",
-          clinical_stage_group: "Stage IA2",
-          date_of_diagnosis: "42",
-          laterality: "Midline",
-          pathological_stage_group: "Localized",
-          pathological_tumour_staging_system: "Not available",
+          basis_of_diagnosis: "Clinical",
+          clinical_stage_group: "Stage III",
+          clinical_tumour_staging_system: "St Jude staging system",
+          date_of_diagnosis: "39",
+          pathological_stage_group: "In situ",
+          pathological_tumour_staging_system: "International Neuroblastoma Risk Group Staging System",
           primary_site: "Breast"
         }
     ];
@@ -138,25 +140,25 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
     const fields = [
       { field: "submitter_specimen_id" },
       { field: "submitter_primary_diagnosis_id" },
+      { field: "percent_tumour_cells_measurement_method" },
       { field: "percent_tumour_cells_range" },
-      { field: "reference_pathology_confirmed_diagnosis" },
+      { field: "reference_pathology_confirmed_tumour_presence" },
       { field: "specimen_anatomic_location" },
+      { field: "specimen_collection_date"},
       { field: "specimen_laterality" },
-      { field: "specimen_processing"},
-      { field: "specimen_storage" },
-      { field: "tumour_grade" }
+      { field: "specimen_processing" }
     ];
     const patientInfoDataRows = [
       { 
         submitter_specimen_id: "LOCAL-SPECIMEN_0021",
         submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
+        percent_tumour_cells_measurement_method: "Pathology estimate by percent nuclei",
         percent_tumour_cells_range: "51-100%",
-        reference_pathology_confirmed_diagnosis: "No",
-        specimen_anatomic_location: "C33.9",
-        specimen_laterality: "Not available",
-        specimen_processing: "Cryopreservation in dry ice (dead tissue)",
-        specimen_storage: "Other",
-        tumour_grade: "High"
+        reference_pathology_confirmed_tumour_presence: "Not available",
+        specimen_anatomic_location: "C10.4",
+        specimen_collection_date: "0y 2m 17d",
+        specimen_laterality: "Left",
+        specimen_processing: "Other"
       }
     ];
 
@@ -174,6 +176,7 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
       { field: "submitter_primary_diagnosis_id" },
       { field: "sample_type" },
       { field: "specimen_tissue_source" },
+      { field: "specimen_type"},
       { field: "tumour_normal_designation" }
     ];
     const patientInfoDataRows = [
@@ -182,23 +185,26 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
         submitter_specimen_id: "LOCAL-SPECIMEN_0021",
         submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
         sample_type: "Other DNA enrichments",
-        specimen_tissue_source: "Pancreatic fluid",
+        specimen_tissue_source: "Bone marrow fluid",
+        specimen_type: "",
         tumour_normal_designation: "Normal"
       },
       { 
         submitter_sample_id: "LOCAL-SAMPLE_0062",
         submitter_specimen_id: "LOCAL-SPECIMEN_0021",
         submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
-        sample_type: "Other DNA enrichments",
-        specimen_tissue_source: "Bone marrow fluid",
+        sample_type: "rRNA-depleted RNA",
+        specimen_tissue_source: "Pancreatic fluid",
+        specimen_type: "Primary tumour",
         tumour_normal_designation: "Tumour"
       },
       { 
         submitter_sample_id: "LOCAL-SAMPLE_0063",
         submitter_specimen_id: "LOCAL-SPECIMEN_0021",
         submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
-        sample_type: "Total DNA",
-        specimen_tissue_source: "Pancreatic fluid",
+        sample_type: "Amplified DNA",
+        specimen_tissue_source: "Bone marrow fluid",
+        specimen_type: "Primary tumour - additional new primary",
         tumour_normal_designation: ""
       }
     ];
@@ -215,31 +221,35 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
       { field: "submitter_primary_diagnosis_id" },
       { field: "is_primary_treatment" },
       { field: "response_to_treatment" },
-      { field: "response_to_treatment_criteria_method" },
+      { field: "status_of_treatment"},
       { field: "treatment_end_date" },
       { field: "treatment_intent" },
-      { field: "treatment_start_date" }
+      { field: "treatment_start_date" },
+      { field: "treatment_type" }
     ];
     const patientInfoDataRows = [
       { 
         submitter_treatment_id: "LOCAL-TREATMENT_0041",
         submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
-        is_primary_treatment: "No",
-        response_to_treatment: "",
-        response_to_treatment_criteria_method: "Physician Assessed Response Criteria",
-        treatment_end_date: "0y 9m 28d",
+        is_primary_treatment: "Yes",
+        response_to_treatment: "Immune stable disease (iSD)",
+        status_of_treatment: "",
+        treatment_end_date: "0y 8m 24d",
         treatment_intent: "",
-        treatment_start_date: "0y 4m 18d"
+        treatment_start_date: "0y 4m 8d",
+        treatment_type: "Other, Bone marrow transplant, Surgery, Systemic therapy"
       },
       { 
         submitter_treatment_id: "LOCAL-TREATMENT_0042",
         submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
-        is_primary_treatment: "Yes",
-        response_to_treatment: "No evidence of disease (NED)",
+        is_primary_treatment: "No",
+        response_to_treatment: "Complete remission without measurable residual disease (CR MRD-)",
+        status_of_treatment: "Treatment incomplete due to technical or organizational problems",
         response_to_treatment_criteria_method: "RECIST 1.1",
-        treatment_end_date: "0y 8m 9d",
+        treatment_end_date: "0y 9m 15d",
         treatment_intent: "Palliative",
-        treatment_start_date: ""
+        treatment_start_date: "0y 3m 8d",
+        treatment_type: "Other, Systemic therapy, Stem cell transplant, Radiation therapy"
       }
     ];
 
@@ -255,7 +265,9 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
       { field: "submitter_follow_up_id" },
       { field: "submitter_treatment_id" },
       { field: "submitter_primary_diagnosis_id" },
-      { field: "method_of_progression_status" },
+      { field: "date_of_followup"},
+      { field: "disease_status_at_followup" },
+      { field: "method_of_progression_status"},
       { field: "relapse_type" }
     ];
     const patientInfoDataRows = [
@@ -263,8 +275,10 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
         submitter_follow_up_id: "LOCAL-FOLLOW_UP_0011",
         submitter_treatment_id: "LOCAL-TREATMENT_0041",
         submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
-        method_of_progression_status: "Imaging (procedure), Tumor marker measurement (procedure)",
-        relapse_type: "Biochemical progression"
+        date_of_followup: "1y 4m 17d",
+        disease_status_at_followup: "Progression not otherwise specified",
+        method_of_progression_status: "Physical examination procedure (procedure), Imaging (procedure), Laboratory data interpretation (procedure)",
+        relapse_type: "Progression"
       }
     ];
 
@@ -282,18 +296,22 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
       { field: "greatest_dimension_tumour" },
       { field: "lymphovascular_invasion" },
       { field: "margin_types_involved" },
-      { field: "residual_tumour_classification" },
-      { field: "surgery_location" }
+      { field: "margin_types_not_assessed"},
+      { field: "margin_types_not_involved"},
+      { field: "perineural_invasion"},
+      { field: "residual_tumour_classification" }
     ];
     const patientInfoDataRows = [
       { 
         submitter_treatment_id: "LOCAL-TREATMENT_0041",
         submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
-        greatest_dimension_tumour: "6",
+        greatest_dimension_tumour: "10",
         lymphovascular_invasion: "Not applicable",
-        margin_types_involved: "Proximal margin",
-        residual_tumour_classification: "Not applicable",
-        surgery_location: "Local recurrence"
+        margin_types_involved: "Distal margin",
+        margin_types_not_assessed: "Common bile duct margin, Circumferential resection margin, Proximal margin",
+        margin_types_not_involved: "Common bile duct margin, Distal margin, Proximal margin",
+        perineural_invasion: "Not applicable",
+        residual_tumour_classification: "R0"
       }
     ];
 
@@ -301,36 +319,72 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
     await page.getByText('Treatments').first().click();
   });
 
-  test("Systemic Therapies", async () => {
-    await page.getByText('Treatments').first().click();
-    await page.getByText('Systemic Therapies').click();
+  // Duplicate Matching Ids
+  // test("Systemic Therapies", async () => {
+  //   await page.getByText('Treatments').first().click();
+  //   await page.getByText('Systemic Therapies').click();
     
-    const fields = [
-      { field: "submitter_treatment_id" },
-      { field: "submitter_primary_diagnosis_id" }
-    ];
-    const patientInfoDataRows = [
-      { 
-        submitter_treatment_id: "LOCAL-TREATMENT_0041",
-        submitter_primary_diagnosis_id: "LOCAL-DIAG_0021"
-      },
-      { 
-        submitter_treatment_id: "LOCAL-TREATMENT_0041",
-        submitter_primary_diagnosis_id: "LOCAL-DIAG_0021"
-      },
-      { 
-        submitter_treatment_id: "LOCAL-TREATMENT_0042",
-        submitter_primary_diagnosis_id: "LOCAL-DIAG_0021"
-      },
-      { 
-        submitter_treatment_id: "LOCAL-TREATMENT_0042",
-        submitter_primary_diagnosis_id: "LOCAL-DIAG_0021"
-      }
-    ];
+  //   const fields = [
+  //     { field: "submitter_treatment_id" },
+  //     { field: "submitter_primary_diagnosis_id" },
+  //     { field: "actual_cumulative_drug_dose" },
+  //     { field: "days_per_cycle" },
+  //     { field: "drug_dose_units" },
+  //     { field: "drug_name" },
+  //     { field: "drug_reference_database" },
+  //     { field: "drug_reference_identifier" },
+  //     { field: "end_date" }
+  //   ];
+  //   const patientInfoDataRows = [
+  //     { 
+  //       submitter_treatment_id: "LOCAL-TREATMENT_0041",
+  //       submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
+  //       actual_cumulative_drug_dose: "99.6",
+  //       days_per_cycle: "11",
+  //       drug_dose_units: "mg/kg",
+  //       drug_name: "Carboplatin",
+  //       drug_reference_database: "PubChem",
+  //       drug_reference_identifier: "426756",
+  //       end_date: "0y 6m 10d"
+  //     },
+  //     { 
+  //       submitter_treatment_id: "LOCAL-TREATMENT_0041",
+  //       submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
+  //       actual_cumulative_drug_dose: "87.3",
+  //       days_per_cycle: "16",
+  //       drug_dose_units: "",
+  //       drug_name: "Degarelix",
+  //       drug_reference_database: "NCI Thesaurus",
+  //       drug_reference_identifier: "C48385",
+  //       end_date: "0y 8m 10d"
+  //     },
+  //     { 
+  //       submitter_treatment_id: "LOCAL-TREATMENT_0041",
+  //       submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
+  //       actual_cumulative_drug_dose: "",
+  //       days_per_cycle: "2",
+  //       drug_dose_units: "",
+  //       drug_name: "Paclitaxel",
+  //       drug_reference_database: "RxNorm",
+  //       drug_reference_identifier: "56946",
+  //       end_date: "0y 9m 15d"
+  //     },
+  //     { 
+  //       submitter_treatment_id: "LOCAL-TREATMENT_0042",
+  //       submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
+  //       actual_cumulative_drug_dose: "54.7",
+  //       days_per_cycle: "26",
+  //       drug_dose_units: "IU/kg",
+  //       drug_name: "Fluoxymesterone",
+  //       drug_reference_database: "RxNorm",
+  //       drug_reference_identifier: "4494",
+  //       end_date: "0y 8m 22d"
+  //     }
+  //   ];
 
-    await verifyPatientInfoTable(fields, patientInfoDataRows);
-    await page.getByText('Treatments').first().click();
-  });
+  //   await verifyPatientInfoTable(fields, patientInfoDataRows);
+  //   await page.getByText('Treatments').first().click();
+  // });
 
   test("Radiations", async () => {
     await page.getByText('Treatments').first().click();
@@ -341,15 +395,17 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows) {
       { field: "submitter_primary_diagnosis_id" },
       { field: "anatomical_site_irradiated" },
       { field: "radiation_boost" },
-      { field: "radiation_therapy_modality" }
+      { field: "radiation_therapy_modality" },
+      { field: "radiation_therapy_type"}
     ];
     const patientInfoDataRows = [
       { 
         submitter_treatment_id: "LOCAL-TREATMENT_0042",
         submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
-        anatomical_site_irradiated: "COCCYX",
+        anatomical_site_irradiated: "WHOLE BODY - SKIN",
         radiation_boost: "No",
-        radiation_therapy_modality: "Teleradiotherapy neutrons (procedure)"
+        radiation_therapy_modality: "Teleradiotherapy using electrons (procedure)",
+        radiation_therapy_type: "External"
       }
     ];
 

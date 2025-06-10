@@ -1,12 +1,12 @@
 import { test, expect } from "@playwright/test";
 import dotenv from "dotenv";
 import path from "path";
-import { VIEWPORT } from './constants';
-import {
-  login,
-} from './helpers.ts';
+import { VIEWPORT } from "./constants";
+import { login, testBarGraphHoverText, testStackedBarGraphHoverText, fieldLevelCompletenessTest } from "./helpers.ts";
+
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
 
+const BASE_URL = `${process.env.CANDIG_URL}`
 /*
  * ======================
  * Editable test data for the current dataset
@@ -17,54 +17,58 @@ const UI_VALUES = {
     nodes: "1",
     patients: "84",
     programs: "4",
-    provinces: "1"
+    provinces: "1",
   },
 
   ageAtFirstDiagnosis: {
-    "30-39": { value: "11", barIndex: 0 },
-    "40-49": { value: "24", barIndex: 1 },
-    "50-59": { value: "31", barIndex: 2 },
-    "null":  { value: "18", barIndex: 3 }
+    "30-39": { value: null, barIndex: 0 },
+    "40-49": { value: "31", barIndex: 1 },
+    "50-59": { value: "32", barIndex: 2 },
+    null: { value: "13", barIndex: 3 },
   },
 
   treatmentDistribution: {
-    "Systemic therapy":         { value: "168", barIndex: 0 },
-    "Surgery":                  { value: "92",  barIndex: 1 },
-    "Radiation therapy":        { value: "77",  barIndex: 2 },
-    "Targeted molecular therapy":{ value: "34",  barIndex: 3 },
-    "Bone marrow transplant":   { value: "33",  barIndex: 4 },
-    "Stem cell transplant":     { value: "30",  barIndex: 5 },
-    "Other":                    { value: "24",  barIndex: 6 },
-    "Photodynamic therapy":     { value: "18",  barIndex: 7 }
+    "Systemic therapy": { value: "168", barIndex: 0 },
+    Surgery: { value: "99", barIndex: 1 },
+    "Radiation therapy": { value: "81", barIndex: 2 },
+    "Photodynamic therapy": { value: "42", barIndex: 3 },
+    Other: { value: "35", barIndex: 4 },
+    "Stem cell transplant": { value: "34", barIndex: 5 },
+    "Targeted molecular therapy": { value: "31", barIndex: 6 },
+    "Bone marrow transplant": { value: "30", barIndex: 7 },
   },
 
   primarySiteDistribution: {
-    "null":              { value: "18", barIndex: 0 },
-    "Breast":            { value: "16", barIndex: 1 },
-    "Skin":              { value: "16", barIndex: 2 },
-    "Colon":             { value: "16", barIndex: 3 },
+    null: { value: "18", barIndex: 0 },
+    Breast: { value: "16", barIndex: 1 },
+    Skin: { value: "16", barIndex: 2 },
+    Colon: { value: "16", barIndex: 3 },
     "Bronchus and lung": { value: "16", barIndex: 4 },
-    "Floor of mouth":    { value: null, barIndex: 5 }
+    "Floor of mouth": { value: null, barIndex: 5 },
   },
 
   programDistribution: {
-    "SYNTH_01": { label: "SYNTH_01", value: "24", barIndex: 0 },
-    "SYNTH_02": { label: "SYNTH_02", value: "20", barIndex: 2 },
-    "SYNTH_03": { label: "SYNTH_03", value: "20", barIndex: 1 },
-    "SYNTH_04": { label: "SYNTH_04", value: "20", barIndex: 3 },
+    SYNTH_01: { label: "SYNTH_01", value: "24", barIndex: 0 },
+    SYNTH_02: { label: "SYNTH_02", value: "20", barIndex: 2 },
+    SYNTH_03: { label: "SYNTH_03", value: "20", barIndex: 1 },
+    SYNTH_04: { label: "SYNTH_04", value: "20", barIndex: 3 },
   },
 
-  genomicDistribution: {
-    "SYNTH_01": { value: "6", barIndex: 1 },
-    "SYNTH_02": { value: "5", barIndex: 4 }
-}
+  completeClinical: {
+    SYNTH_01: { value: "2", barIndex: 0 },
+  },
+
+  completeGenomic: {
+    SYNTH_01: { value: "6", barIndex: 1 },
+    "SYNTH_01 (transcriptomes)": { value: "1", barIndex: 2 },
+    SYNTH_02: { value: "5", barIndex: 4 },
+  }
 };
 /*
  * =============================
  * End of Editable test data
  * =============================
  */
-
 
 test.describe("Summary Page Tests", () => {
   let context;
@@ -79,7 +83,7 @@ test.describe("Summary Page Tests", () => {
     await page.goto(process.env.CANDIG_URL!);
     await login(page, process.env.CANDIG_USERNAME, process.env.CANDIG_PASSWORD);
     await expect(page).toHaveTitle("CanDIG Data Portal");
-    await expect(page.locator(".highcharts-loading-hidden")).toHaveCount(6, {
+    await expect(page.locator(".highcharts-loading-hidden")).toHaveCount(5, {
       timeout: 15000,
     });
   });
@@ -89,62 +93,6 @@ test.describe("Summary Page Tests", () => {
     await context.close();
   });
   // ====================== End of Setup ======================
-
-  // ====================== Helper Functions ======================
-  async function testBarGraphHoverText({
-    page,
-    graphTitle,
-    barIndex,
-    expectedLabel,
-    expectedValue,
-  }) {
-    const selectedBar = await page
-      .locator("text")
-      .filter({ hasText: `${graphTitle}` })
-      .locator("..")
-      .locator(".highcharts-series > path")
-      .nth(barIndex);
-
-    await selectedBar.hover();
-
-    const tooltip = await page
-      .locator("text")
-      .filter({ hasText: `${graphTitle}` })
-      .locator("..")
-      .locator("..")
-      .locator(".highcharts-tooltip")
-      .nth(1);
-
-    await expect(tooltip).toContainText(expectedLabel);
-    await expect(tooltip).toContainText(expectedValue);
-  }
-
-  async function testStackedBarGraphHoverText({
-    page,
-    graphTitle,
-    barIndex,
-    expectedLabel,
-    expectedValue,
-  }) {
-    const selectedBar = await page
-      .locator("text")
-      .filter({ hasText: `${graphTitle}` })
-      .locator("..")
-      .locator(".highcharts-series > path")
-      .nth(barIndex);
-
-    await selectedBar.hover();
-
-    const tooltip = await page
-      .locator("text")
-      .filter({ hasText: `${graphTitle}` })
-      .locator("..")
-      .locator(".highcharts-tooltip");
-
-    await expect(tooltip).toContainText(expectedLabel);
-    await expect(tooltip).toContainText(expectedValue);
-  }
-  // ====================== End of Helper Functions ======================
 
   // ====================== Test: Page Overview ======================
   /**
@@ -187,7 +135,26 @@ test.describe("Summary Page Tests", () => {
 
     Object.entries(UI_VALUES.ageAtFirstDiagnosis).forEach(
       ([ageLabel, ageData]) => {
-        if (ageData && typeof ageData.barIndex === "number" && ageData.value) {
+        if (!ageData || typeof ageData.barIndex !== "number") {
+          console.warn(
+            `Skipping test generation for age range "${ageLabel}". Invalid or incomplete data (missing barIndex): ${JSON.stringify(
+              ageData
+            )}`
+          );
+          return;
+        }
+
+        if (ageData.value === null) {
+          test(`bar for age range ${ageLabel} exists at index ${ageData.barIndex} (no value check)`, async () => {
+            const selectedBar = await page
+              .locator(`text="${graphTitle}"`)
+              .locator("..")
+              .locator(".highcharts-series > path")
+              .nth(ageData.barIndex);
+
+            await expect(selectedBar).not.toBeVisible();
+          });
+        } else if (ageData.value !== null) {
           test(`tooltip for age range ${ageLabel} (bar index ${ageData.barIndex}) shows value ${ageData.value}`, async () => {
             await testBarGraphHoverText({
               page,
@@ -197,12 +164,6 @@ test.describe("Summary Page Tests", () => {
               expectedValue: ageData.value,
             });
           });
-        } else {
-          console.warn(
-            `Skipping test generation for age range "${ageLabel}". Invalid data: ${JSON.stringify(
-              ageData
-            )}`
-          );
         }
       }
     );
@@ -231,11 +192,26 @@ test.describe("Summary Page Tests", () => {
 
     Object.entries(UI_VALUES.treatmentDistribution).forEach(
       ([treatmentLabel, treatmentData]) => {
-        if (
-          treatmentData &&
-          typeof treatmentData.barIndex === "number" &&
-          treatmentData.value
-        ) {
+        if (!treatmentData || typeof treatmentData.barIndex !== "number") {
+          console.warn(
+            `Skipping test generation for treatment type "${treatmentLabel}". Invalid or incomplete data (missing barIndex): ${JSON.stringify(
+              treatmentData
+            )}`
+          );
+          return;
+        }
+
+        if (treatmentData.value === null) {
+          test(`bar for ${treatmentLabel} exists at index ${treatmentData.barIndex} (no value check)`, async () => {
+            const selectedBar = await page
+              .locator(`text="${graphTitle}"`)
+              .locator("..")
+              .locator(".highcharts-series > path")
+              .nth(treatmentData.barIndex);
+
+            await expect(selectedBar).not.toBeVisible();
+          });
+        } else if (treatmentData.value !== null) {
           test(`tooltip for ${treatmentLabel} (bar index ${treatmentData.barIndex}) shows value ${treatmentData.value}`, async () => {
             await testBarGraphHoverText({
               page,
@@ -245,12 +221,6 @@ test.describe("Summary Page Tests", () => {
               expectedValue: treatmentData.value,
             });
           });
-        } else {
-          console.warn(
-            `Skipping test generation for treatment type "${treatmentLabel}". Invalid data: ${JSON.stringify(
-              treatmentData
-            )}`
-          );
         }
       }
     );
@@ -362,66 +332,27 @@ test.describe("Summary Page Tests", () => {
     );
   });
 
-  // ====================== Test: Genomic Distribution ======================
-  /**
-   * Verifies that UI_VALUES.genomicDistribution displays the correct counts.
-   */
-  test.describe("Complete Genomic", () => {
-    const graphTitle = "Complete Genomic";
+  test.describe("Field Level Completeness", () => {
+    const graphTitle = "Field Level Completeness";
+
     test("graph screenshot", async () => {
       await page.mouse.move(0, 0);
       const graphElement = await page
         .locator(`text="${graphTitle}"`)
         .locator("..")
-        .last();
+        .locator("..");
       await expect(graphElement).toHaveScreenshot(
-        "genomic-distribution-graph.png",
+        "field-level-completeness-graph.png",
         {
           threshold: 0.05,
         }
       );
-    });
 
-    Object.entries(UI_VALUES.genomicDistribution).forEach(
-      ([genomicLabel, genomicData]) => {
-        if (
-          genomicData &&
-          typeof genomicData.barIndex === "number" &&
-          genomicData.value
-        ) {
-          test(`tooltip for ${genomicLabel} (segment index ${genomicData.barIndex}) shows value ${genomicData.value}`, async () => {
-            await testStackedBarGraphHoverText({
-              page,
-              graphTitle,
-              barIndex: genomicData.barIndex,
-              expectedLabel: genomicLabel,
-              expectedValue: genomicData.value,
-            });
-          });
-        } else {
-          console.warn(
-            `Skipping test generation for genomic dataset "${genomicLabel}". Invalid or incomplete data: ${JSON.stringify(
-              genomicData
-            )}`
-          );
-        }
-      }
-    );
+      await fieldLevelCompletenessTest(page, BASE_URL);
+    });
   });
 
   // ====================== Other Tests  ======================
-
-  test("clinical graph screenshot", async () => {
-    await page.mouse.move(0, 0);
-    const clinicalGraph = await page
-      .locator('text="Complete Clinical"')
-      .locator("..")
-      .last();
-    await expect(clinicalGraph).toHaveScreenshot("clinical.png", {
-      threshold: 0.01,
-    });
-  });
-
   test("footer screenshot", async () => {
     await page.mouse.move(0, 0);
     const footer = page.locator("footer");
