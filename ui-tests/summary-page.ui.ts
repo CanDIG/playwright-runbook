@@ -344,7 +344,7 @@ test.describe("Summary Page Tests", () => {
       await expect(graphElement).toHaveScreenshot(
         "field-level-completeness-graph.png",
         {
-          threshold: 0.05,
+          maxDiffPixelRatio: 0.05,
         }
       );
 
