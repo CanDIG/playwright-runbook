@@ -417,6 +417,8 @@ test.describe('Sidebar Tests', () => {
       { name: 'LOCAL-SYNTH_04', full: 'LOCAL-SYNTH_04<1020Request Access' }
     ];
   
+    // sleep for 1 second for slow loading
+    await page.waitForTimeout(1000);
     await verifyPatientData(page, expectedValues);
   
     // Clinical data rows to verify
@@ -450,7 +452,9 @@ test.describe('Sidebar Tests', () => {
       { name: 'LOCAL-SYNTH_02', full: 'LOCAL-SYNTH_02420' }, 
       { name: 'LOCAL-SYNTH_04', full: 'LOCAL-SYNTH_04<1020Request Access' }
     ];
-  
+    
+    // sleep for 1 second for slow loading
+    await page.waitForTimeout(1000);
     await verifyPatientData(page, expectedValues);
   
     // Clinical data rows to verify
@@ -614,6 +618,8 @@ test.describe('Sidebar Tests', () => {
     ];
 
     // Verify patient data
+    // sleep for 1 second for slow loading
+    await page.waitForTimeout(1000);
     await verifyPatientData(page, expectedValues);
 
     // Check LOCAL Node
@@ -631,6 +637,8 @@ test.describe('Sidebar Tests', () => {
     ];
 
     // Verify updated patient data
+    // sleep for 1 second for slow loading
+    await page.waitForTimeout(1000);
     await verifyPatientData(page, expectedValuesCheck);
 
     await clickResetButton(page);
