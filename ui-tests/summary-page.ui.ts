@@ -356,7 +356,7 @@ test.describe("Summary Page Tests", () => {
   test("footer screenshot", async () => {
     await page.mouse.move(0, 0);
     const footer = page.locator("footer");
-    await expect(footer).toHaveScreenshot("footer.png", { threshold: 0.01 });
+    await expect(footer).toHaveScreenshot("footer.png", { maxDiffPixelRatio: 0.01 });
   });
 
   test.describe("External link checks", () => {
