@@ -28,7 +28,7 @@ test.describe("Patient Info Page", () => {
     try {
         await page.goto(config.url);
         await login(page, config.username, config.password);
-        await page.goto(`${config.url}patientView?patientId=LOCAL-DONOR_0021&programId=LOCAL-SYNTH_02&location=LOCAL`);
+        await page.goto(`${config.url}patientView?patientId=local-DONOR_0021&programId=local-SYNTH_02&location=local`);
     } catch (error) {
       console.error("Error during test setup:", error);
       throw error;
@@ -120,7 +120,7 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows, additionalMat
   ];
     const patientInfoDataRows = [
         {
-          submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
+          submitter_primary_diagnosis_id: "local-DIAG_0021",
           basis_of_diagnosis: "Clinical",
           clinical_stage_group: "Stage III",
           clinical_tumour_staging_system: "St Jude staging system",
@@ -150,8 +150,8 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows, additionalMat
     ];
     const patientInfoDataRows = [
       { 
-        submitter_specimen_id: "LOCAL-SPECIMEN_0021",
-        submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
+        submitter_specimen_id: "local-SPECIMEN_0021",
+        submitter_primary_diagnosis_id: "local-DIAG_0021",
         percent_tumour_cells_measurement_method: "Pathology estimate by percent nuclei",
         percent_tumour_cells_range: "51-100%",
         reference_pathology_confirmed_tumour_presence: "Not available",
@@ -181,27 +181,27 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows, additionalMat
     ];
     const patientInfoDataRows = [
       { 
-        submitter_sample_id: "LOCAL-SAMPLE_0061",
-        submitter_specimen_id: "LOCAL-SPECIMEN_0021",
-        submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
+        submitter_sample_id: "local-SAMPLE_0061",
+        submitter_specimen_id: "local-SPECIMEN_0021",
+        submitter_primary_diagnosis_id: "local-DIAG_0021",
         sample_type: "Other DNA enrichments",
         specimen_tissue_source: "Bone marrow fluid",
         specimen_type: "",
         tumour_normal_designation: "Normal"
       },
       { 
-        submitter_sample_id: "LOCAL-SAMPLE_0062",
-        submitter_specimen_id: "LOCAL-SPECIMEN_0021",
-        submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
+        submitter_sample_id: "local-SAMPLE_0062",
+        submitter_specimen_id: "local-SPECIMEN_0021",
+        submitter_primary_diagnosis_id: "local-DIAG_0021",
         sample_type: "rRNA-depleted RNA",
         specimen_tissue_source: "Pancreatic fluid",
         specimen_type: "Primary tumour",
         tumour_normal_designation: "Tumour"
       },
       { 
-        submitter_sample_id: "LOCAL-SAMPLE_0063",
-        submitter_specimen_id: "LOCAL-SPECIMEN_0021",
-        submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
+        submitter_sample_id: "local-SAMPLE_0063",
+        submitter_specimen_id: "local-SPECIMEN_0021",
+        submitter_primary_diagnosis_id: "local-DIAG_0021",
         sample_type: "Amplified DNA",
         specimen_tissue_source: "Bone marrow fluid",
         specimen_type: "Primary tumour - additional new primary",
@@ -229,8 +229,8 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows, additionalMat
     ];
     const patientInfoDataRows = [
       { 
-        submitter_treatment_id: "LOCAL-TREATMENT_0041",
-        submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
+        submitter_treatment_id: "local-TREATMENT_0041",
+        submitter_primary_diagnosis_id: "local-DIAG_0021",
         is_primary_treatment: "Yes",
         response_to_treatment: "Immune stable disease (iSD)",
         status_of_treatment: "",
@@ -240,8 +240,8 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows, additionalMat
         treatment_type: "Other, Bone marrow transplant, Surgery, Systemic therapy"
       },
       { 
-        submitter_treatment_id: "LOCAL-TREATMENT_0042",
-        submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
+        submitter_treatment_id: "local-TREATMENT_0042",
+        submitter_primary_diagnosis_id: "local-DIAG_0021",
         is_primary_treatment: "No",
         response_to_treatment: "Complete remission without measurable residual disease (CR MRD-)",
         status_of_treatment: "Treatment incomplete due to technical or organizational problems",
@@ -272,9 +272,9 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows, additionalMat
     ];
     const patientInfoDataRows = [
       { 
-        submitter_follow_up_id: "LOCAL-FOLLOW_UP_0011",
-        submitter_treatment_id: "LOCAL-TREATMENT_0041",
-        submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
+        submitter_follow_up_id: "local-FOLLOW_UP_0011",
+        submitter_treatment_id: "local-TREATMENT_0041",
+        submitter_primary_diagnosis_id: "local-DIAG_0021",
         date_of_followup: "1y 4m 17d",
         disease_status_at_followup: "Progression not otherwise specified",
         method_of_progression_status: "Physical examination procedure (procedure), Imaging (procedure), Laboratory data interpretation (procedure)",
@@ -303,8 +303,8 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows, additionalMat
     ];
     const patientInfoDataRows = [
       { 
-        submitter_treatment_id: "LOCAL-TREATMENT_0041",
-        submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
+        submitter_treatment_id: "local-TREATMENT_0041",
+        submitter_primary_diagnosis_id: "local-DIAG_0021",
         greatest_dimension_tumour: "10",
         lymphovascular_invasion: "Not applicable",
         margin_types_involved: "Distal margin",
@@ -337,8 +337,8 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows, additionalMat
   //   ];
   //   const patientInfoDataRows = [
   //     { 
-  //       submitter_treatment_id: "LOCAL-TREATMENT_0041",
-  //       submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
+  //       submitter_treatment_id: "local-TREATMENT_0041",
+  //       submitter_primary_diagnosis_id: "local-DIAG_0021",
   //       actual_cumulative_drug_dose: "99.6",
   //       days_per_cycle: "11",
   //       drug_dose_units: "mg/kg",
@@ -348,8 +348,8 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows, additionalMat
   //       end_date: "0y 6m 10d"
   //     },
   //     { 
-  //       submitter_treatment_id: "LOCAL-TREATMENT_0041",
-  //       submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
+  //       submitter_treatment_id: "local-TREATMENT_0041",
+  //       submitter_primary_diagnosis_id: "local-DIAG_0021",
   //       actual_cumulative_drug_dose: "87.3",
   //       days_per_cycle: "16",
   //       drug_dose_units: "",
@@ -359,8 +359,8 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows, additionalMat
   //       end_date: "0y 8m 10d"
   //     },
   //     { 
-  //       submitter_treatment_id: "LOCAL-TREATMENT_0041",
-  //       submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
+  //       submitter_treatment_id: "local-TREATMENT_0041",
+  //       submitter_primary_diagnosis_id: "local-DIAG_0021",
   //       actual_cumulative_drug_dose: "",
   //       days_per_cycle: "2",
   //       drug_dose_units: "",
@@ -370,8 +370,8 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows, additionalMat
   //       end_date: "0y 9m 15d"
   //     },
   //     { 
-  //       submitter_treatment_id: "LOCAL-TREATMENT_0042",
-  //       submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
+  //       submitter_treatment_id: "local-TREATMENT_0042",
+  //       submitter_primary_diagnosis_id: "local-DIAG_0021",
   //       actual_cumulative_drug_dose: "54.7",
   //       days_per_cycle: "26",
   //       drug_dose_units: "IU/kg",
@@ -400,8 +400,8 @@ async function verifyPatientInfoTable(fields, patientInfoDataRows, additionalMat
     ];
     const patientInfoDataRows = [
       { 
-        submitter_treatment_id: "LOCAL-TREATMENT_0042",
-        submitter_primary_diagnosis_id: "LOCAL-DIAG_0021",
+        submitter_treatment_id: "local-TREATMENT_0042",
+        submitter_primary_diagnosis_id: "local-DIAG_0021",
         anatomical_site_irradiated: "WHOLE BODY - SKIN",
         radiation_boost: "No",
         radiation_therapy_modality: "Teleradiotherapy using electrons (procedure)",
