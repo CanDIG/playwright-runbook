@@ -109,7 +109,7 @@ test.describe("Search page", () => {
       await expect(patientDataSection).toBeVisible();
 
       // Verify initial data prior to expanding
-      const locationText = patientDataSection.locator('span:has-text("LOCAL")');
+      const locationText = patientDataSection.locator('span:has-text("local")');
       await expect(locationText).toBeVisible();
 
       const patientsInSearch = patientDataSection.locator('p:has-text("84")').nth(0);
@@ -125,11 +125,11 @@ test.describe("Search page", () => {
       await expandButton.click();
 
       const expectedValues = [
-          { name: 'LOCAL', firstNumber: '84', secondNumber: '84', thirdNumber: '4', full: 'LOCAL84844' },
-          { name: 'LOCAL-SYNTH_01', full: 'LOCAL-SYNTH_012424Request Access' },
-          { name: 'LOCAL-SYNTH_03', full: 'LOCAL-SYNTH_032020Request Access' },
-          { name: 'LOCAL-SYNTH_02', full: 'LOCAL-SYNTH_022020' }, 
-          { name: 'LOCAL-SYNTH_04', full: 'LOCAL-SYNTH_042020Request Access' }
+          { name: 'local', firstNumber: '84', secondNumber: '84', thirdNumber: '4', full: 'local84844' },
+          { name: 'local-SYNTH_01', full: 'local-SYNTH_012424Request Access' },
+          { name: 'local-SYNTH_03', full: 'local-SYNTH_032020Request Access' },
+          { name: 'local-SYNTH_02', full: 'local-SYNTH_022020' }, 
+          { name: 'local-SYNTH_04', full: 'local-SYNTH_042020Request Access' }
       ];
 
     const rows = page.locator('div.PatientCountSingle-container');
@@ -351,21 +351,21 @@ test.describe('Sidebar Tests', () => {
   
     // Expected patient data values after selecting 'Breast'
     const expectedValues = [
-      { name: 'LOCAL', firstNumber: '4-34', secondNumber: '84', thirdNumber: '4', full: 'LOCAL4-34844' },
-      { name: 'LOCAL-SYNTH_01', full: 'LOCAL-SYNTH_01<1024Request Access' },
-      { name: 'LOCAL-SYNTH_03', full: 'LOCAL-SYNTH_03<1020Request Access' },
-      { name: 'LOCAL-SYNTH_02', full: 'LOCAL-SYNTH_02420' },
-      { name: 'LOCAL-SYNTH_04', full: 'LOCAL-SYNTH_04<1020Request Access' }
+      { name: 'local', firstNumber: '4-34', secondNumber: '84', thirdNumber: '4', full: 'local4-34844' },
+      { name: 'local-SYNTH_01', full: 'local-SYNTH_01<1024Request Access' },
+      { name: 'local-SYNTH_03', full: 'local-SYNTH_03<1020Request Access' },
+      { name: 'local-SYNTH_02', full: 'local-SYNTH_02420' },
+      { name: 'local-SYNTH_04', full: 'local-SYNTH_04<1020Request Access' }
     ];
   
     await verifyPatientData(page, expectedValues);
   
     // Expected clinical data rows
     const clinicalDataRows = [
-      { submitterDonorId: 'DONOR_0031', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: '', deceased: 'false', dateOfBirth: '', dateOfDeath: '' },
-      { submitterDonorId: 'DONOR_0036', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: 'Female', deceased: 'true', dateOfBirth: '42', dateOfDeath: '81' },
-      { submitterDonorId: 'DONOR_0021', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: '', deceased: 'false', dateOfBirth: '39', dateOfDeath: '' },
-      { submitterDonorId: 'DONOR_0026', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: 'Male', deceased: 'false', dateOfBirth: '59', dateOfDeath: '' }
+      { submitterDonorId: 'DONOR_0031', location: 'local', programId: 'local-SYNTH_02', sexAtBirth: '', deceased: 'false', dateOfBirth: '', dateOfDeath: '' },
+      { submitterDonorId: 'DONOR_0036', location: 'local', programId: 'local-SYNTH_02', sexAtBirth: 'Female', deceased: 'true', dateOfBirth: '42', dateOfDeath: '81' },
+      { submitterDonorId: 'DONOR_0021', location: 'local', programId: 'local-SYNTH_02', sexAtBirth: '', deceased: 'false', dateOfBirth: '39', dateOfDeath: '' },
+      { submitterDonorId: 'DONOR_0026', location: 'local', programId: 'local-SYNTH_02', sexAtBirth: 'Male', deceased: 'false', dateOfBirth: '59', dateOfDeath: '' }
     ];
   
     await verifyClinicalData(page, clinicalDataRows);
@@ -379,11 +379,11 @@ test.describe('Sidebar Tests', () => {
   
     // Expected patient data values after selecting 'Targeted molecular therapy'
     const expectedValues = [
-      { name: 'LOCAL', firstNumber: '13-43', secondNumber: '84', thirdNumber: '4', full: 'LOCAL15-35844' },
-      { name: 'LOCAL-SYNTH_01', full: 'LOCAL-SYNTH_01<1024Request Access' },
-      { name: 'LOCAL-SYNTH_03', full: 'LOCAL-SYNTH_031020Request Access' },
-      { name: 'LOCAL-SYNTH_02', full: 'LOCAL-SYNTH_02520' },
-      { name: 'LOCAL-SYNTH_04', full: 'LOCAL-SYNTH_04<1020Request Access' }
+      { name: 'local', firstNumber: '13-43', secondNumber: '84', thirdNumber: '4', full: 'local15-35844' },
+      { name: 'local-SYNTH_01', full: 'local-SYNTH_01<1024Request Access' },
+      { name: 'local-SYNTH_03', full: 'local-SYNTH_031020Request Access' },
+      { name: 'local-SYNTH_02', full: 'local-SYNTH_02520' },
+      { name: 'local-SYNTH_04', full: 'local-SYNTH_04<1020Request Access' }
     ];
   
     // Step 3: Verify the patient data section
@@ -392,11 +392,11 @@ test.describe('Sidebar Tests', () => {
     await verifyPatientData(page, expectedValues);
   
     const clinicalDataRows = [
-      { submitterDonorId: 'DONOR_0039', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: 'Male', deceased: 'true', dateOfBirth: '51', dateOfDeath: '84' },
-      { submitterDonorId: 'DONOR_0027', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: 'Female', deceased: 'true', dateOfBirth: '', dateOfDeath: '' },
-      { submitterDonorId: 'DONOR_0036', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: 'Female', deceased: 'true', dateOfBirth: '42', dateOfDeath: '81' },
-      { submitterDonorId: 'DONOR_0023', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: '', deceased: 'true', dateOfBirth: '57', dateOfDeath: '70' },
-      { submitterDonorId: 'DONOR_0033', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: 'Other', deceased: 'false', dateOfBirth: '43', dateOfDeath: '' }
+      { submitterDonorId: 'DONOR_0039', location: 'local', programId: 'local-SYNTH_02', sexAtBirth: 'Male', deceased: 'true', dateOfBirth: '51', dateOfDeath: '84' },
+      { submitterDonorId: 'DONOR_0027', location: 'local', programId: 'local-SYNTH_02', sexAtBirth: 'Female', deceased: 'true', dateOfBirth: '', dateOfDeath: '' },
+      { submitterDonorId: 'DONOR_0036', location: 'local', programId: 'local-SYNTH_02', sexAtBirth: 'Female', deceased: 'true', dateOfBirth: '42', dateOfDeath: '81' },
+      { submitterDonorId: 'DONOR_0023', location: 'local', programId: 'local-SYNTH_02', sexAtBirth: '', deceased: 'true', dateOfBirth: '57', dateOfDeath: '70' },
+      { submitterDonorId: 'DONOR_0033', location: 'local', programId: 'local-SYNTH_02', sexAtBirth: 'Other', deceased: 'false', dateOfBirth: '43', dateOfDeath: '' }
     ];
   
     await verifyClinicalData(page, clinicalDataRows);
@@ -410,11 +410,11 @@ test.describe('Sidebar Tests', () => {
   
     // Expected patient data values after applying filters
     const expectedValues = [
-      { name: 'LOCAL', firstNumber: '13-43', secondNumber: '84', thirdNumber: '4', full: 'LOCAL8-38844' },
-      { name: 'LOCAL-SYNTH_01', full: 'LOCAL-SYNTH_01<1024Request Access' },
-      { name: 'LOCAL-SYNTH_03', full: 'LOCAL-SYNTH_03<1020Request Access' },
-      { name: 'LOCAL-SYNTH_02', full: 'LOCAL-SYNTH_02820' }, 
-      { name: 'LOCAL-SYNTH_04', full: 'LOCAL-SYNTH_04<1020Request Access' }
+      { name: 'local', firstNumber: '13-43', secondNumber: '84', thirdNumber: '4', full: 'local8-38844' },
+      { name: 'local-SYNTH_01', full: 'local-SYNTH_01<1024Request Access' },
+      { name: 'local-SYNTH_03', full: 'local-SYNTH_03<1020Request Access' },
+      { name: 'local-SYNTH_02', full: 'local-SYNTH_02820' }, 
+      { name: 'local-SYNTH_04', full: 'local-SYNTH_04<1020Request Access' }
     ];
   
     // sleep for 1 second for slow loading
@@ -423,14 +423,14 @@ test.describe('Sidebar Tests', () => {
   
     // Clinical data rows to verify
     const clinicalDataRows = [
-      { submitterDonorId: 'DONOR_0026', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: 'Male', deceased: 'false', dateOfBirth: '59', dateOfDeath: '' },
-      { submitterDonorId: 'DONOR_0030', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: '', deceased: 'false', dateOfBirth: '49', dateOfDeath: '' },
-      { submitterDonorId: 'DONOR_0027', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: 'Female', deceased: 'true', dateOfBirth: '', dateOfDeath: '' },
-      { submitterDonorId: 'DONOR_0031', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: '', deceased: 'false', dateOfBirth: '', dateOfDeath: '' },
-      { submitterDonorId: 'DONOR_0037', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: 'Female', deceased: 'true', dateOfBirth: '41', dateOfDeath: '52' },
-      { submitterDonorId: 'DONOR_0029', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: '', deceased: 'true', dateOfBirth: '', dateOfDeath: '' },
-      { submitterDonorId: 'DONOR_0021', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: '', deceased: 'false', dateOfBirth: '39', dateOfDeath: '' },
-      { submitterDonorId: 'DONOR_0033', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: 'Other', deceased: 'false', dateOfBirth: '43', dateOfDeath: '' }
+      { submitterDonorId: 'DONOR_0026', location: 'local', programId: 'local-SYNTH_02', sexAtBirth: 'Male', deceased: 'false', dateOfBirth: '59', dateOfDeath: '' },
+      { submitterDonorId: 'DONOR_0030', location: 'local', programId: 'local-SYNTH_02', sexAtBirth: '', deceased: 'false', dateOfBirth: '49', dateOfDeath: '' },
+      { submitterDonorId: 'DONOR_0027', location: 'local', programId: 'local-SYNTH_02', sexAtBirth: 'Female', deceased: 'true', dateOfBirth: '', dateOfDeath: '' },
+      { submitterDonorId: 'DONOR_0031', location: 'local', programId: 'local-SYNTH_02', sexAtBirth: '', deceased: 'false', dateOfBirth: '', dateOfDeath: '' },
+      { submitterDonorId: 'DONOR_0037', location: 'local', programId: 'local-SYNTH_02', sexAtBirth: 'Female', deceased: 'true', dateOfBirth: '41', dateOfDeath: '52' },
+      { submitterDonorId: 'DONOR_0029', location: 'local', programId: 'local-SYNTH_02', sexAtBirth: '', deceased: 'true', dateOfBirth: '', dateOfDeath: '' },
+      { submitterDonorId: 'DONOR_0021', location: 'local', programId: 'local-SYNTH_02', sexAtBirth: '', deceased: 'false', dateOfBirth: '39', dateOfDeath: '' },
+      { submitterDonorId: 'DONOR_0033', location: 'local', programId: 'local-SYNTH_02', sexAtBirth: 'Other', deceased: 'false', dateOfBirth: '43', dateOfDeath: '' }
     ];
     
     // sleep for 1 second for slow loading
@@ -446,11 +446,11 @@ test.describe('Sidebar Tests', () => {
   
     // Expected patient data values after applying filters
     const expectedValues = [
-      { name: 'LOCAL', firstNumber: '4-34', secondNumber: '84', thirdNumber: '4', full: 'LOCAL4-34844' },
-      { name: 'LOCAL-SYNTH_01', full: 'LOCAL-SYNTH_01<1024Request Access' },
-      { name: 'LOCAL-SYNTH_03', full: 'LOCAL-SYNTH_03<1020Request Access' },
-      { name: 'LOCAL-SYNTH_02', full: 'LOCAL-SYNTH_02420' }, 
-      { name: 'LOCAL-SYNTH_04', full: 'LOCAL-SYNTH_04<1020Request Access' }
+      { name: 'local', firstNumber: '4-34', secondNumber: '84', thirdNumber: '4', full: 'local4-34844' },
+      { name: 'local-SYNTH_01', full: 'local-SYNTH_01<1024Request Access' },
+      { name: 'local-SYNTH_03', full: 'local-SYNTH_03<1020Request Access' },
+      { name: 'local-SYNTH_02', full: 'local-SYNTH_02420' }, 
+      { name: 'local-SYNTH_04', full: 'local-SYNTH_04<1020Request Access' }
     ];
     
     // sleep for 1 second for slow loading
@@ -459,10 +459,10 @@ test.describe('Sidebar Tests', () => {
   
     // Clinical data rows to verify
     const clinicalDataRows = [
-      { submitterDonorId: 'DONOR_0034', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: 'Male', deceased: 'false', dateOfBirth: '44', dateOfDeath: '' },
-      { submitterDonorId: 'DONOR_0029', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: '', deceased: 'true', dateOfBirth: '', dateOfDeath: '' },  
-      { submitterDonorId: 'DONOR_0040', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: 'Other', deceased: 'false', dateOfBirth: '59', dateOfDeath: '' },
-      { submitterDonorId: 'DONOR_0028', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: 'Other', deceased: 'false', dateOfBirth: '47', dateOfDeath: '' }
+      { submitterDonorId: 'DONOR_0034', location: 'local', programId: 'local-SYNTH_02', sexAtBirth: 'Male', deceased: 'false', dateOfBirth: '44', dateOfDeath: '' },
+      { submitterDonorId: 'DONOR_0029', location: 'local', programId: 'local-SYNTH_02', sexAtBirth: '', deceased: 'true', dateOfBirth: '', dateOfDeath: '' },  
+      { submitterDonorId: 'DONOR_0040', location: 'local', programId: 'local-SYNTH_02', sexAtBirth: 'Other', deceased: 'false', dateOfBirth: '59', dateOfDeath: '' },
+      { submitterDonorId: 'DONOR_0028', location: 'local', programId: 'local-SYNTH_02', sexAtBirth: 'Other', deceased: 'false', dateOfBirth: '47', dateOfDeath: '' }
     ];
   
     await verifyClinicalData(page, clinicalDataRows);
@@ -489,25 +489,25 @@ test.describe('Sidebar Tests', () => {
     expect(searchValue).toBe('LOC102723996');
 
     const expectedValues = [
-        { name: 'LOCAL', firstNumber: '1-11', secondNumber: '84', thirdNumber: '4', full: 'LOCAL65844' },
-        { name: 'LOCAL-SYNTH_01', full: 'LOCAL-SYNTH_012424Request Access' },
-        { name: 'LOCAL-SYNTH_03', full: 'LOCAL-SYNTH_032020Request Access' },
-        { name: 'LOCAL-SYNTH_02', full: 'LOCAL-SYNTH_02120' }, 
-        { name: 'LOCAL-SYNTH_04', full: 'LOCAL-SYNTH_042020Request Access' }
+        { name: 'local', firstNumber: '1-11', secondNumber: '84', thirdNumber: '4', full: 'local65844' },
+        { name: 'local-SYNTH_01', full: 'local-SYNTH_012424Request Access' },
+        { name: 'local-SYNTH_03', full: 'local-SYNTH_032020Request Access' },
+        { name: 'local-SYNTH_02', full: 'local-SYNTH_02120' }, 
+        { name: 'local-SYNTH_04', full: 'local-SYNTH_042020Request Access' }
     ];
 
 
     await verifyPatientData(page, expectedValues);
 
     const clinicalDataRows = [
-      { submitterDonorId: 'DONOR_0021', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: '', deceased: 'false', dateOfBirth: '39', dateOfDeath: '' }
+      { submitterDonorId: 'DONOR_0021', location: 'local', programId: 'local-SYNTH_02', sexAtBirth: '', deceased: 'false', dateOfBirth: '39', dateOfDeath: '' }
     ];
 
     await verifyClinicalData(page, clinicalDataRows);
 
     const genomicDataRows = [
-      { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', variant_count: '3', tumour_normal_designation: 'Tumour', submitter_sample_id: 'LOCAL-SAMPLE_0062'},
-      { donor_id: 'DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', variant_count: '3',  tumour_normal_designation: 'Normal', submitter_sample_id: 'LOCAL-SAMPLE_0061'}
+      { donor_id: 'DONOR_0021', location: 'local', program_id: 'local-SYNTH_02', variant_count: '3', tumour_normal_designation: 'Tumour', submitter_sample_id: 'local-SAMPLE_0062'},
+      { donor_id: 'DONOR_0021', location: 'local', program_id: 'local-SYNTH_02', variant_count: '3',  tumour_normal_designation: 'Normal', submitter_sample_id: 'local-SAMPLE_0061'}
     ];
 
     await verifyGenomicData(page, genomicDataRows);
@@ -527,11 +527,11 @@ test.describe('Sidebar Tests', () => {
     await clickSearchButton(page);
   
       const expectedValues = [
-          { name: 'LOCAL', firstNumber: '0', secondNumber: '84', thirdNumber: '4', full: 'LOCAL84844' },
-          { name: 'LOCAL-SYNTH_01', full: 'LOCAL-SYNTH_012424Request Access' },
-          { name: 'LOCAL-SYNTH_03', full: 'LOCAL-SYNTH_032020Request Access' },
-          { name: 'LOCAL-SYNTH_02', full: 'LOCAL-SYNTH_022020' }, 
-          { name: 'LOCAL-SYNTH_04', full: 'LOCAL-SYNTH_042020Request Access' }
+          { name: 'local', firstNumber: '0', secondNumber: '84', thirdNumber: '4', full: 'local84844' },
+          { name: 'local-SYNTH_01', full: 'local-SYNTH_012424Request Access' },
+          { name: 'local-SYNTH_03', full: 'local-SYNTH_032020Request Access' },
+          { name: 'local-SYNTH_02', full: 'local-SYNTH_022020' }, 
+          { name: 'local-SYNTH_04', full: 'local-SYNTH_042020Request Access' }
       ];
   
       await verifyPatientData(page, expectedValues);
@@ -570,24 +570,24 @@ test.describe('Sidebar Tests', () => {
     await clickSearchButton(page);
   
       const expectedValues = [
-          { name: 'LOCAL', firstNumber: '65', secondNumber: '84', thirdNumber: '4', full: 'LOCAL65844' },
-          { name: 'LOCAL-SYNTH_01', full: 'LOCAL-SYNTH_012424Request Access' },
-          { name: 'LOCAL-SYNTH_03', full: 'LOCAL-SYNTH_032020Request Access' },
-          { name: 'LOCAL-SYNTH_02', full: 'LOCAL-SYNTH_02120' }, 
-          { name: 'LOCAL-SYNTH_04', full: 'LOCAL-SYNTH_042020Request Access' }
+          { name: 'local', firstNumber: '65', secondNumber: '84', thirdNumber: '4', full: 'local65844' },
+          { name: 'local-SYNTH_01', full: 'local-SYNTH_012424Request Access' },
+          { name: 'local-SYNTH_03', full: 'local-SYNTH_032020Request Access' },
+          { name: 'local-SYNTH_02', full: 'local-SYNTH_02120' }, 
+          { name: 'local-SYNTH_04', full: 'local-SYNTH_042020Request Access' }
       ];
   
       await verifyPatientData(page, expectedValues);
 
       const clinicalDataRows = [
-        { submitterDonorId: 'DONOR_0021', location: 'LOCAL', programId: 'LOCAL-SYNTH_02', sexAtBirth: '', deceased: 'false', dateOfBirth: '39', dateOfDeath: '' }
+        { submitterDonorId: 'DONOR_0021', location: 'local', programId: 'local-SYNTH_02', sexAtBirth: '', deceased: 'false', dateOfBirth: '39', dateOfDeath: '' }
     ];
 
       await verifyClinicalData(page, clinicalDataRows);
 
       const genomicDataRows = [
-        { donor_id: 'LOCAL-DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', variant_count: '3', tumour_normal_designation: 'Tumour', submitter_sample_id: 'LOCAL-SAMPLE_0062' },
-        { donor_id: 'LOCAL-DONOR_0021', location: 'LOCAL', program_id: 'LOCAL-SYNTH_02', variant_count: '3', tumour_normal_designation: 'Normal', submitter_sample_id: 'LOCAL-SAMPLE_0061' }
+        { donor_id: 'local-DONOR_0021', location: 'local', program_id: 'local-SYNTH_02', variant_count: '3', tumour_normal_designation: 'Tumour', submitter_sample_id: 'local-SAMPLE_0062' },
+        { donor_id: 'local-DONOR_0021', location: 'local', program_id: 'local-SYNTH_02', variant_count: '3', tumour_normal_designation: 'Normal', submitter_sample_id: 'local-SAMPLE_0061' }
       ];
 
       await verifyGenomicData(page, genomicDataRows);
@@ -601,20 +601,20 @@ test.describe('Sidebar Tests', () => {
     const fieldset = await page.locator('fieldset:has(label:text("Node"))');
 
 
-    // Uncheck LOCAL Node
-    await fieldset.locator('label:has-text("LOCAL") input[type="checkbox"]').uncheck();
+    // Uncheck local Node
+    await fieldset.locator('label:has-text("local") input[type="checkbox"]').uncheck();
 
     // const searchButton = page.locator('button:has-text("Search")');
     const searchButton = page.locator('button:text("Search")');
     await searchButton.click();
 
-    // Expected values after unchecking LOCAL
+    // Expected values after unchecking local
     const expectedValues = [
-        { name: 'LOCAL', firstNumber: '0', secondNumber: '84', thirdNumber: '4', full: 'LOCAL0844' },
-        { name: 'LOCAL-SYNTH_01', full: 'LOCAL-SYNTH_01024Request Access' },
-        { name: 'LOCAL-SYNTH_03', full: 'LOCAL-SYNTH_03020Request Access' },
-        { name: 'LOCAL-SYNTH_02', full: 'LOCAL-SYNTH_02020' },
-        { name: 'LOCAL-SYNTH_04', full: 'LOCAL-SYNTH_04020Request Access' }
+        { name: 'local', firstNumber: '0', secondNumber: '84', thirdNumber: '4', full: 'local0844' },
+        { name: 'local-SYNTH_01', full: 'local-SYNTH_01024Request Access' },
+        { name: 'local-SYNTH_03', full: 'local-SYNTH_03020Request Access' },
+        { name: 'local-SYNTH_02', full: 'local-SYNTH_02020' },
+        { name: 'local-SYNTH_04', full: 'local-SYNTH_04020Request Access' }
     ];
 
     // Verify patient data
@@ -622,18 +622,18 @@ test.describe('Sidebar Tests', () => {
     await page.waitForTimeout(1000);
     await verifyPatientData(page, expectedValues);
 
-    // Check LOCAL Node
-    await fieldset.locator('label:has-text("LOCAL") input[type="checkbox"]').check();
+    // Check local Node
+    await fieldset.locator('label:has-text("local") input[type="checkbox"]').check();
 
     await searchButton.click();
 
-    // Expected values after re-checking LOCAL
+    // Expected values after re-checking local
     const expectedValuesCheck = [
-        { name: 'LOCAL', firstNumber: '84', secondNumber: '84', thirdNumber: '4', full: 'LOCAL84844' },
-        { name: 'LOCAL-SYNTH_01', full: 'LOCAL-SYNTH_012424Request Access' },
-        { name: 'LOCAL-SYNTH_03', full: 'LOCAL-SYNTH_032020Request Access' },
-        { name: 'LOCAL-SYNTH_02', full: 'LOCAL-SYNTH_022020' },
-        { name: 'LOCAL-SYNTH_04', full: 'LOCAL-SYNTH_042020Request Access' }
+        { name: 'local', firstNumber: '84', secondNumber: '84', thirdNumber: '4', full: 'local84844' },
+        { name: 'local-SYNTH_01', full: 'local-SYNTH_012424Request Access' },
+        { name: 'local-SYNTH_03', full: 'local-SYNTH_032020Request Access' },
+        { name: 'local-SYNTH_02', full: 'local-SYNTH_022020' },
+        { name: 'local-SYNTH_04', full: 'local-SYNTH_042020Request Access' }
     ];
 
     // Verify updated patient data
